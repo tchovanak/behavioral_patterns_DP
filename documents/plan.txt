@@ -1,0 +1,11 @@
+
+PRILOHA A - Algoritmy dolovania frekventovaných množín v statických dátach
+PRILOHA B - Algoritmy dolovania frekventovaných sekvencií v statických dátach
+PRILOHA C - Algoritmy dolovania frekventovaných množín v prúde dát
+PRILOHA D - Algoritmy zhlukovania v prúde dát
+PRILOHA E - Detailne vyhodnotenie ALEF - odporucanie
+PRILOHA F - Detailne vyhodnotenie ALEF - vysledne vyhodnotenie 
+PRILOHA G - Detailne vyhodnotenie SACBEE - odporucanie
+PRILOHA H - Detailne vyhodnotenie SACBEE - vysledne vyhodnotenie 
+PRÍLOHA I - Plán ďalšej práce
+PRÍLOHA J - Obsah elektronického média
