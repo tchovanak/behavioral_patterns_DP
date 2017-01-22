@@ -2,17 +2,36 @@
 
 function heatmap(){
 
-    var maxRange = 100;
-    var width = 750;
+    var yCatCount = 100;
+    var xCatCount = 100;
     var height = 110;
-    var counter = 0;
+    var width = 750;
+
+    var maxRange = 100;
+
     var selector = "heatmap-container";
     var colorRange = ['#D8E6E7', '#218380'];
-    var rectData = [[0.5,0.6,0.7,0.8], [0.4,0.5,0.6,0.7]];
-    var SQUARE_WIDTH = 11;
-    var SQUARE_HEIGHT = 11;
-    var SQUARE_PADDING = 2;
-    var MONTH_LABEL_PADDING = 6;
+    var rectData = [[0.5,0,0], [0.7,0,1]];
+    var SQUARE_WIDTH = width / xCatCount;
+    var SQUARE_HEIGHT = height / yCatCount;
+
+    var SQUARE_PADDING = 0.0;
+
+    chart.readDataFrom = function(file){
+        var allText =[];
+        var allTextLines = [];
+        var Lines = [];
+        var txtFile = new XMLHttpRequest();
+        txtFile.open("GET", "file://G:/workspace_DP3/ux-for-ppsdm/example data/sample.txt", true);
+        txtFile.onreadystatechange = function()
+        {
+            allText = txtFile.responseText;
+            allTextLines = allText.split(/\r\n|\n/);
+        };
+        document.write(allTextLines);<br>
+        document.write(allText);<br>
+        document.write(txtFile);<br>
+    }
 
     chart.selector = function (value) {
         if (!arguments.length) { return selector; }
@@ -52,14 +71,12 @@ function heatmap(){
                 .attr('class', 'rect')
                 .attr('width', SQUARE_WIDTH)
                 .attr('height', SQUARE_HEIGHT)
-                .attr('fill', function(d) { return color(countForDate(d)); })
+                .attr('fill', function(d) { return color(d[0]); })
                 .attr('x', function (d, i) {
-                  var cellDate = moment(d);
-                  var result = cellDate.week() - firstDate.week() + (firstDate.weeksInYear() * (cellDate.weekYear() - firstDate.weekYear()));
-                  return result * (SQUARE_LENGTH + SQUARE_PADDING);
+                  return d[1] * (SQUARE_WIDTH + SQUARE_PADDING);
                 })
                 .attr('y', function (d, i) {
-                  return MONTH_LABEL_PADDING + formatWeekday(d.getDay()) * (SQUARE_LENGTH + SQUARE_PADDING);
+                  return d[2] * (SQUARE_HEIGHT + SQUARE_PADDING);
                 });
         }
     }
