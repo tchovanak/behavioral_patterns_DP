@@ -85,7 +85,6 @@ public class PreprocessingBolt implements IRichBolt {
             }
         }   
         // PERFORM CLUSTERING
-        this.clusteringId++;
         this.performClustering(um); 
         // ack when finished
         collector.ack(tuple);
