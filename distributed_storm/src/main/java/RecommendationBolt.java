@@ -2,9 +2,13 @@
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import moa.core.FrequentItemset;
 
 import org.apache.storm.task.OutputCollector;
@@ -28,8 +32,23 @@ public class RecommendationBolt  implements IRichBolt  {
     Jedis jedis;
     
     private OutputCollector collector;
+    
+    private int counter = 0;
+    
+    private int ews = 1;
+    
+    private RecommendationGenerator recGen;
+    
+    private RecommendationEvaluator recEval;
 
-    public RecommendationBolt() {
+    /**
+     * 
+     * @param ews - Evaluation window size 
+     */
+    public RecommendationBolt(int ews) {
+        this.ews = ews;
+        this.recGen = new RecommendationGenerator();
+        this.recEval = new RecommendationEvaluator();
     }
     
     @Override
@@ -39,24 +58,58 @@ public class RecommendationBolt  implements IRichBolt  {
         jedis = pool.getResource();
     }
 
+    
     @Override
     public void execute(Tuple tuple) {
+
+        // get instance - session for which recommendations should be generated
+        // from tuple
+        List<Double> instance = (List<Double>)tuple.getValue(1);
+        // get uid of session
+        Integer uid = tuple.getInteger(0);
         // get last global TS
         byte[] resultsGlobal = jedis.get("SFCIS_GLOBAL".getBytes());
+        List<FrequentItemset> globItemsets = null;
         if(resultsGlobal != null){
-            List<FrequentItemset> globItemsets = this.deSerialize(resultsGlobal);
-            for(FrequentItemset fi : globItemsets){
-                System.out.println(fi.toString());
-            }
+            globItemsets = this.deSerialize(resultsGlobal);
         }
         // get last group TS
-        byte[] resultsGroup = jedis.get("SFCIS_GROUP".getBytes());
+        byte[] resultsGroup = jedis.get(("SFCIS_GID=" + uid).getBytes());
+        List<FrequentItemset> groupItemsets = null;
         if(resultsGroup != null){
-            List<FrequentItemset> groupItemsets = this.deSerialize(resultsGroup);
-            for(FrequentItemset fi : groupItemsets){
-                System.out.println(fi.toString());
+            groupItemsets = this.deSerialize(resultsGroup);
+        }
+        counter++;
+        if(counter > 2000  && resultsGroup != null){
+            try {
+                FileOutputStream fos = new FileOutputStream("G:\\global");
+                fos.write(resultsGlobal);
+                fos.close();
+            } catch (IOException ex) {
+                Logger.getLogger(GlobalPatternsBolt.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                FileOutputStream fos = new FileOutputStream("G:\\group");
+                fos.write(resultsGroup);
+                fos.close();
+            } catch (IOException ex) {
+                Logger.getLogger(GlobalPatternsBolt.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+
+//        
+//        // get evaluation window and testing part from instance
+//        List<Integer> ew = new ArrayList<>(); // items inside window 
+//        List<Integer> tw = new ArrayList<>(); // items out of window 
+//        
+//        if((ews >= (instance.size()-2))){ 
+//            return; // this is when session array is too short - it is ignored.
+//        }
+//        
+//        RecommendationResults recs = recGen.generateRecommendations(ew,globItemsets,groupItemsets);
+//        
+//        recEval.addRecommendationResults(recs);
         
     }
     

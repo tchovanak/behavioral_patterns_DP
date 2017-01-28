@@ -37,10 +37,14 @@ public class SessionsInputSpout implements IRichSpout {
     //Create instance for SpoutOutputCollector which passes tuples to bolt.
     private SpoutOutputCollector collector;
     private boolean completed = false;
-    
+    private int ews = 1;
     
      //Create instance for TopologyContext which contains topology data.
     private TopologyContext context;
+
+    public SessionsInputSpout(int ews) {
+       ews = 2;
+    }
     
     @Override
     public void open(Map map, TopologyContext tc, SpoutOutputCollector soc) {
@@ -68,17 +72,18 @@ public class SessionsInputSpout implements IRichSpout {
                 in++;
                 String[] lineSplitted = line.split(",");
                 List<Double> values = new ArrayList<>();
-                // to each session instance we add one item representing group user belongs to 
-
-                for(int i = 0; i < lineSplitted.length; i++){
-                    values.add(Double.parseDouble(lineSplitted[i].trim()));
+                List<Double> valuesEW = new ArrayList<>();
+                
+                int uid = (int)Math.round(Double.parseDouble(lineSplitted[0].trim()));
+                for(int i = 1; i < lineSplitted.length; i++){
+                    Double val = Double.parseDouble(lineSplitted[i].trim());
+                    values.add(val);
+                    valuesEW.add(val);
+                    if(valuesEW.size() == ews){
+                        this.collector.emit(new Values(uid,valuesEW,"RECOMMENDATION"));
+                    }
                 }
-
-                int uid = (int)Math.round(values.get(1));
-                values.remove(0);
-                values.remove(0);
-                this.collector.emit(new Values(uid,values));
-                this.collector.emit(new Values(uid,values));
+                this.collector.emit(new Values(uid,values,"LEARNING"));
                 System.out.println(in);
                 try {
                     TimeUnit.MILLISECONDS.sleep(10);
@@ -96,7 +101,7 @@ public class SessionsInputSpout implements IRichSpout {
     
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declare(new Fields("uid","items"));
+        ofd.declare(new Fields("uid","items", "task"));
     }
 
     @Override

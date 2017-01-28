@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.core.PPSDM.dto;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import java.util.List;
  */
 public class RecommendationResults {
     
-    private List<Integer> recommendationsGGC = new ArrayList<>();
-    private List<Integer> recommendationsGO = new ArrayList<>();
-    private List<Integer> recommendationsOG = new ArrayList<>();
+    private List<Integer> recommendationsGG = new ArrayList<>();
+    private List<Integer> recommendationsGL = new ArrayList<>();
+    private List<Integer> recommendationsGR = new ArrayList<>();
     private List<Integer> testWindow = new ArrayList<>();
     private Integer numOfRecommendedItems = null;
-    private int groupid = -1;
+        private int groupid = -1;
 
     public int getGroupid() {
         return groupid;
@@ -29,28 +29,28 @@ public class RecommendationResults {
         this.groupid = groupid;
     }
     
-    public List<Integer> getRecommendationsGGC() {
-        return recommendationsGGC;
+    public List<Integer> getRecommendationsGG() {
+        return recommendationsGG;
     }
 
-    public void setRecommendationsGGC(List<Integer> recommendationsGGC) {
-        this.recommendationsGGC = recommendationsGGC;
+    public void setRecommendationsGG(List<Integer> recommendationsGG) {
+        this.recommendationsGG = recommendationsGG;
     }
 
-    public List<Integer> getRecommendationsGO() {
-        return recommendationsGO;
+    public List<Integer> getRecommendationsGL() {
+        return recommendationsGL;
     }
 
-    public void setRecommendationsGO(List<Integer> recommendationsGO) {
-        this.recommendationsGO = recommendationsGO;
+    public void setRecommendationsGL(List<Integer> recommendationsGL) {
+        this.recommendationsGL = recommendationsGL;
     }
 
-    public List<Integer> getRecommendationsOG() {
-        return recommendationsOG;
+    public List<Integer> getRecommendationsGR() {
+        return recommendationsGR;
     }
 
-    public void setRecommendationsOG(List<Integer> recommendationsOG) {
-        this.recommendationsOG = recommendationsOG;
+    public void setRecommendationsGR(List<Integer> recommendationsGR){
+        this.recommendationsGR = recommendationsGR;
     }
 
     public List<Integer> getTestWindow() {
@@ -70,38 +70,28 @@ public class RecommendationResults {
     }
 
     public List<Integer> getFirstNRecommendationsGGC(int numRec) {
-       if(this.recommendationsGGC.size() >= numRec){
-            return this.recommendationsGGC.subList(0, numRec); 
+       if(this.recommendationsGG.size() >= numRec){
+            return this.recommendationsGG.subList(0, numRec); 
         }else{
-            List<Integer> res = this.recommendationsGGC.subList(0, this.recommendationsGGC.size()); 
-//            for(int i = this.recommendationsGGC.size(); i < numRec; i++){
-//                res.add(-1);
-//            }
+            List<Integer> res = this.recommendationsGG.subList(0, this.recommendationsGG.size()); 
             return res;
         }
     }
 
-    public List<Integer> getFirstNRecommendationsGO(int numRec) {
-        if(this.recommendationsGO.size() >= numRec){
-           return this.recommendationsGO.subList(0, numRec); 
+    public List<Integer> getFirstNRecommendationsGL(int numRec) {
+        if(this.recommendationsGL.size() >= numRec){
+           return this.recommendationsGL.subList(0, numRec); 
         }else{
-            List<Integer> res = this.recommendationsGO.subList(0, this.recommendationsGO.size()); 
-//            for(int i = this.recommendationsGO.size(); i < numRec; i++){
-//                res.add(-1);
-//            }
-            return res;
-           
+            List<Integer> res = this.recommendationsGL.subList(0, this.recommendationsGL.size()); 
+            return res;        
         }
     }
     
-    public List<Integer> getFirstNRecommendationsOG(int numRec) {
-        if(this.recommendationsOG.size() >= numRec){
-            return this.recommendationsOG.subList(0, numRec); 
+    public List<Integer> getFirstNRecommendationsGR(int numRec) {
+        if(this.recommendationsGR.size() >= numRec){
+            return this.recommendationsGR.subList(0, numRec); 
         }else{
-            List<Integer> res = this.recommendationsOG.subList(0, this.recommendationsOG.size()); 
-//            for(int i = this.recommendationsOG.size(); i < numRec; i++){
-//                res.add(-1);
-//            }
+            List<Integer> res = this.recommendationsGR.subList(0, this.recommendationsGR.size()); 
             return res;
         }
     }

@@ -71,23 +71,30 @@ public class PreprocessingBolt implements IRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        // first send tuple to global method
-        collector.emit("streamGlobal",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1)));
-        // then resolve group uid belongs to
-        // get user model by uid
-        UserModelPPSDM um = updateUserModel(tuple);
+        if(tuple.getString(2).equals("RECOMMENDATION")){
+            // this tuple is to be used for recommendation purpose only
+            // send it to RecommendationBolt with identified GID
+            
+        }else{
+            // first send tuple to global method
+            collector.emit("streamGlobal",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1)));
+            // then resolve group uid belongs to
+            // get user model by uid
+            UserModelPPSDM um = updateUserModel(tuple);
+
+            if(kmeansClustering != null){
+                updateGroupingInUserModelClustream(um);
+                if(um.getGroupid() != -1.0){
+                    // send it to group method
+                    collector.emit("streamGroup" + (int)Math.round(um.getGroupid()),new Values(um.getGroupid(),um.getId(),tuple.getValue(1)));
+                }
+            }   
+            // PERFORM CLUSTERING
+            this.performClustering(um); 
+            // ack when finished
+            collector.ack(tuple);
+        }
         
-        if(kmeansClustering != null){
-            updateGroupingInUserModelClustream(um);
-            if(um.getGroupid() != -1.0){
-                // send it to group method
-                collector.emit("streamGroup" + (int)Math.round(um.getGroupid()),new Values(um.getGroupid(),um.getId(),tuple.getValue(1)));
-            }
-        }   
-        // PERFORM CLUSTERING
-        this.performClustering(um); 
-        // ack when finished
-        collector.ack(tuple);
     }
     
      private Map<Integer,Integer> readCategoriesMap() throws FileNotFoundException, IOException {

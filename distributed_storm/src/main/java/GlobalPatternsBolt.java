@@ -2,12 +2,16 @@
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import moa.core.FrequentItemset;
 import moa.core.PPSDM.SegmentPPSDM;
 import moa.core.PPSDM.charm.Itemset;
@@ -154,6 +158,9 @@ public class GlobalPatternsBolt  implements IRichBolt  {
         jedis.expire(key, 2);
         byte[] results = jedis.get(key.getBytes());
         List<FrequentItemset> res = this.deSerialize(results);
+       
+        
+        
         // FINALLY ACK BACK TO SPOUT
        
     }

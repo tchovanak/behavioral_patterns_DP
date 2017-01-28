@@ -27,12 +27,12 @@ public class PPSDMStormTopology {
       config.put(Config.NIMBUS_HOST, "localhost");
       
       TopologyBuilder builder = new TopologyBuilder();
-      builder.setSpout("sessions-spout", new SessionsInputSpout());
+      builder.setSpout("sessions-spout", new SessionsInputSpout(2));
 
       builder.setBolt("preprocessing-bolt", new PreprocessingBolt(5,18,100,6,"g:\\workspace_DP2\\results_grid\\alef\\categories_mapping.csv"))
          .shuffleGrouping("sessions-spout");
       
-      builder.setBolt("recommendation-bolt", new RecommendationBolt())
+      builder.setBolt("recommendation-bolt", new RecommendationBolt(2))
          .shuffleGrouping("sessions-spout");
       
       builder.setBolt("global-patterns-bolt-1", new GlobalPatternsBolt(),1).setMaxTaskParallelism(1)
