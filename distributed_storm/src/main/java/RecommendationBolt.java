@@ -2,20 +2,13 @@
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
 import moa.core.FrequentItemset;
-import moa.core.PPSDM.SegmentPPSDM;
-import moa.core.PPSDM.charm.Itemset;
-import moa.learners.StormIncMine;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
-import static org.apache.storm.topology.BasicBoltExecutor.LOG;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -43,12 +36,27 @@ public class RecommendationBolt  implements IRichBolt  {
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
         this.collector = oc;
         pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
-      
         jedis = pool.getResource();
     }
 
     @Override
     public void execute(Tuple tuple) {
+        // get last global TS
+        byte[] resultsGlobal = jedis.get("SFCIS_GLOBAL".getBytes());
+        if(resultsGlobal != null){
+            List<FrequentItemset> globItemsets = this.deSerialize(resultsGlobal);
+            for(FrequentItemset fi : globItemsets){
+                System.out.println(fi.toString());
+            }
+        }
+        // get last group TS
+        byte[] resultsGroup = jedis.get("SFCIS_GROUP".getBytes());
+        if(resultsGroup != null){
+            List<FrequentItemset> groupItemsets = this.deSerialize(resultsGroup);
+            for(FrequentItemset fi : groupItemsets){
+                System.out.println(fi.toString());
+            }
+        }
         
     }
     

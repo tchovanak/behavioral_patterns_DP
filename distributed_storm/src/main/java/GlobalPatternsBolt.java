@@ -144,8 +144,11 @@ public class GlobalPatternsBolt  implements IRichBolt  {
         List<FrequentItemset> sfcis = sincmine.getFciTable().getSemiFcis();
         Collections.sort(sfcis);
         
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String key = "SFCIS_TS=" + timestamp.getTime() + "GID=" + tuples.get(0).getDouble(0);
+        //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        //String keyTS = "LAST_TS_GID=" + tuples.get(0).getDouble(0); 
+        //jedis.set(keyTS, ((Long)timestamp.getTime()).toString()); 
+        //jedis.expire(keyTS, 2);
+        String key = "SFCIS_GLOBAL";
         byte[] bytes = this.serialize(sfcis);
         jedis.set(key.getBytes(), bytes);
         jedis.expire(key, 2);

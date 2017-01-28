@@ -146,12 +146,12 @@ public class GroupPatternsBolt  implements IRichBolt  {
         Collections.sort(sfcis);
         
         
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String key = "SFCIS_TS=" + timestamp.getTime() + "GID=" + tuples.get(0).getDouble(0);
+        //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String key = "SFCIS_GID=" + tuples.get(0).getDouble(0);
         byte[] bytes = this.serialize(sfcis);
         jedis.set(key.getBytes(), bytes);
-        byte[] results = jedis.get(key.getBytes());
-        List<FrequentItemset> res = this.deSerialize(results);
+        //byte[] results = jedis.get(key.getBytes());
+        //List<FrequentItemset> res = this.deSerialize(results);
         
     }
     
