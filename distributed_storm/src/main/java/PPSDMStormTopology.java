@@ -32,6 +32,9 @@ public class PPSDMStormTopology {
       builder.setBolt("preprocessing-bolt", new PreprocessingBolt(5,18,100,6,"g:\\workspace_DP2\\results_grid\\alef\\categories_mapping.csv"))
          .shuffleGrouping("sessions-spout");
       
+      builder.setBolt("recommendation-bolt", new RecommendationBolt())
+         .shuffleGrouping("sessions-spout");
+      
       builder.setBolt("global-patterns-bolt-1", new GlobalPatternsBolt(),1).setMaxTaskParallelism(1)
             .fieldsGrouping("preprocessing-bolt", "streamGlobal", new Fields("gid"))
             .setNumTasks(1);
