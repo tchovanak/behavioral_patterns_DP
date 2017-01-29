@@ -76,19 +76,20 @@ public class RecommendationBoltTest {
         // create mocks for redis connection
         JedisPool mockJedisPool = mock(JedisPool.class);
         Jedis mockJedis = mock(Jedis.class);
+        OutputCollector mockCollector = mock(OutputCollector.class);
         
         //stubbing
         when(mockJedisPool.getResource()).thenReturn(mockJedis);
         when(mockJedis.get("SFCIS_GID=1.0".getBytes())).thenReturn(groupPatterns);
         when(mockJedis.get("SFCIS_GLOBAL".getBytes())).thenReturn(globalPatterns);
         
-        RecommendationBolt recBolt = new RecommendationBolt(mockJedisPool, 2);
-        
+        RecommendationBolt recBolt = new RecommendationBolt(mockJedisPool, 2, mockCollector);
         recBolt.execute(tuple);
         
+        // verify interactions
         verify(mockJedis, times(1)).get("SFCIS_GID=1.0".getBytes());
         verify(mockJedis, times(1)).get("SFCIS_GLOBAL".getBytes());
-               
+        //verify(mockCollector, times(1)).emit();
         
         
     }

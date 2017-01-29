@@ -41,10 +41,11 @@ public class RecommendationBolt  implements IRichBolt  {
      * 
      * @param ews - Evaluation window size 
      */
-    public RecommendationBolt(JedisPool pool, int ews) {
+    public RecommendationBolt(JedisPool pool, int ews, OutputCollector oc) {
         this.ews = ews;
         this.pool = pool;
         jedis = pool.getResource(); 
+        this.collector = oc;
     }
     
     /**
