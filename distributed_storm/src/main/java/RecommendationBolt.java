@@ -89,16 +89,16 @@ public class RecommendationBolt  implements IRichBolt  {
         
        
        
-        // get evaluation window and testing part from instance
-        List<Integer> ew = new ArrayList<>(); // items inside window 
-        List<Integer> tw = new ArrayList<>(); // items out of window 
-        
-        if((ews >= (instance.size()-2))){ 
-            return; // this is when session array is too short - it is ignored.
-        }
-        
-        RecommendationResults recs = generateRecommendations(ew,globItemsets,groupItemsets);
-        addRecommendationResults(recs);
+//        // get evaluation window and testing part from instance
+//        List<Integer> ew = new ArrayList<>(); // items inside window 
+//        List<Integer> tw = new ArrayList<>(); // items out of window 
+//        
+//        if((ews >= (instance.size()-2))){ 
+//            return; // this is when session array is too short - it is ignored.
+//        }
+//        
+//        RecommendationResults recs = generateRecommendations(ew,globItemsets,groupItemsets);
+//        addRecommendationResults(recs);
         
     }
     
@@ -139,12 +139,12 @@ public class RecommendationBolt  implements IRichBolt  {
         return null;
     }
 
-    private RecommendationResults generateRecommendations(List<Integer> ew, List<FrequentItemset> globItemsets, List<FrequentItemset> groupItemsets) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void addRecommendationResults(RecommendationResults recs) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    private RecommendationResults generateRecommendations(List<Integer> ew, List<FrequentItemset> globItemsets, List<FrequentItemset> groupItemsets) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    private void addRecommendationResults(RecommendationResults recs) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
     
 }
