@@ -2,13 +2,11 @@
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import moa.core.FrequentItemset;
 
 import org.apache.storm.task.OutputCollector;
@@ -88,18 +86,16 @@ public class RecommendationBolt  implements IRichBolt  {
         }
         counter++;
         
+        // get evaluation window and testing part from instance
+        List<Integer> ew = new ArrayList<>(); // items inside window 
+        List<Integer> tw = new ArrayList<>(); // items out of window 
+        
+        if((ews >= (instance.size()-2))){ 
+            return; // this is when session array is too short - it is ignored.
+        }
+        
+        RecommendationResults recs = generateRecommendations(ew,globItemsets,groupItemsets, 5);
        
-       
-//        // get evaluation window and testing part from instance
-//        List<Integer> ew = new ArrayList<>(); // items inside window 
-//        List<Integer> tw = new ArrayList<>(); // items out of window 
-//        
-//        if((ews >= (instance.size()-2))){ 
-//            return; // this is when session array is too short - it is ignored.
-//        }
-//        
-//        RecommendationResults recs = generateRecommendations(ew,globItemsets,groupItemsets);
-//        addRecommendationResults(recs);
         
     }
     
@@ -140,12 +136,12 @@ public class RecommendationBolt  implements IRichBolt  {
         return null;
     }
 
-//    private RecommendationResults generateRecommendations(List<Integer> ew, List<FrequentItemset> globItemsets, List<FrequentItemset> groupItemsets) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//
-//    private void addRecommendationResults(RecommendationResults recs) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+
+
+    RecommendationResults generateRecommendations(List<Integer> ew, List<FrequentItemset> globalPatternsDES, List<FrequentItemset> groupPatternsDES, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
     
 }
