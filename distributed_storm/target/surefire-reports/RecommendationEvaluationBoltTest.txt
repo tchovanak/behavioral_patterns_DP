@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
-Test set: RecommendationBoltTest
+Test set: RecommendationEvaluationBoltTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 5.748 sec <<< FAILURE!
-testExecuteShouldGetPatternsFromRedisCallToGenerateRecommendationsEmitToEvaluationBolt(RecommendationBoltTest)  Time elapsed: 5.413 sec  <<< ERROR!
+Tests run: 3, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.021 sec <<< FAILURE!
+testCalculatePrecisionShouldCalculateRightPrecisionMetricResult(RecommendationEvaluationBoltTest)  Time elapsed: 0 sec  <<< ERROR!
 java.lang.NoClassDefFoundError: org/mockito/exceptions/base/MockitoSerializationIssue
 	at org.powermock.api.mockito.repackaged.CglibMockMaker.createMock(CglibMockMaker.java:23)
 	at org.powermock.api.mockito.internal.mockmaker.PowerMockMaker.createMock(PowerMockMaker.java:45)
@@ -10,7 +10,7 @@ java.lang.NoClassDefFoundError: org/mockito/exceptions/base/MockitoSerialization
 	at org.mockito.internal.MockitoCore.mock(MockitoCore.java:51)
 	at org.mockito.Mockito.mock(Mockito.java:1243)
 	at org.mockito.Mockito.mock(Mockito.java:1120)
-	at RecommendationBoltTest.testExecuteShouldGetPatternsFromRedisCallToGenerateRecommendationsEmitToEvaluationBolt(RecommendationBoltTest.java:86)
+	at RecommendationEvaluationBoltTest.testCalculatePrecisionShouldCalculateRightPrecisionMetricResult(RecommendationEvaluationBoltTest.java:78)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -51,10 +51,14 @@ Caused by: java.lang.ClassNotFoundException: org.mockito.exceptions.base.Mockito
 	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
 	... 38 more
-testGenerateRecommendationsShouldReturnRightNumberOfRightRecommendations(RecommendationBoltTest)  Time elapsed: 0.091 sec  <<< ERROR!
-java.lang.UnsupportedOperationException: Not supported yet.
-	at RecommendationBolt.generateRecommendations(RecommendationBolt.java:142)
-	at RecommendationBoltTest.testGenerateRecommendationsShouldReturnRightNumberOfRightRecommendations(RecommendationBoltTest.java:120)
+testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile(RecommendationEvaluationBoltTest)  Time elapsed: 0.018 sec  <<< ERROR!
+java.lang.NoClassDefFoundError: org/mockito/exceptions/base/MockitoSerializationIssue
+	at org.powermock.api.mockito.repackaged.CglibMockMaker.createMock(CglibMockMaker.java:23)
+	at org.powermock.api.mockito.internal.mockmaker.PowerMockMaker.createMock(PowerMockMaker.java:45)
+	at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:26)
+	at org.mockito.internal.MockitoCore.mock(MockitoCore.java:51)
+	at org.mockito.Mockito.spy(Mockito.java:1322)
+	at RecommendationEvaluationBoltTest.testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile(RecommendationEvaluationBoltTest.java:61)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -86,3 +90,12 @@ java.lang.UnsupportedOperationException: Not supported yet.
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
+Caused by: java.lang.ClassNotFoundException: org.mockito.exceptions.base.MockitoSerializationIssue
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:372)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	... 37 more

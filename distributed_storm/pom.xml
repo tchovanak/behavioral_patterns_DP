@@ -25,6 +25,13 @@
                 <artifactId>mockito-all</artifactId>
                 <version>1.9.5</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.powermock/powermock-module-junit4 -->
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
 
           <!-- http://mvnrepository.com/artifact/nz.ac.waikato.cms.moa/moa -->
         <dependency>

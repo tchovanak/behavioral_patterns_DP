@@ -2,6 +2,7 @@
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,7 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
     public RecommendationEvaluationBolt() {
       
     }
-    
-    
+
     
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
@@ -62,6 +62,18 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
     @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
+    }
+
+    double calculatePrecision(List<Integer> recs, List<Integer> testWindow) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void storeResults(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void storeResults(double d, double anyDouble) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
