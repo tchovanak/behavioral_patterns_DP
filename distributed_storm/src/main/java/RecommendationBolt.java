@@ -37,36 +37,42 @@ public class RecommendationBolt  implements IRichBolt  {
     
     private int ews = 1;
     
-    private RecommendationGenerator recGen;
+    /**
+     * 
+     * @param ews - Evaluation window size 
+     */
+    public RecommendationBolt(JedisPool pool, int ews) {
+        this.ews = ews;
+        this.pool = pool;
+        jedis = pool.getResource(); 
+    }
     
-    private RecommendationEvaluator recEval;
-
     /**
      * 
      * @param ews - Evaluation window size 
      */
     public RecommendationBolt(int ews) {
         this.ews = ews;
-        this.recGen = new RecommendationGenerator();
-        this.recEval = new RecommendationEvaluator();
+        pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
+        jedis = pool.getResource(); 
     }
     
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
         this.collector = oc;
-        pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
-        jedis = pool.getResource();
+        
     }
 
     
     @Override
     public void execute(Tuple tuple) {
-
         // get instance - session for which recommendations should be generated
         // from tuple
-        List<Double> instance = (List<Double>)tuple.getValue(1);
+        List<Double> instance = (List<Double>)tuple.getValue(2);
         // get uid of session
-        Integer uid = tuple.getInteger(0);
+        Integer uid = tuple.getInteger(1);
+        // get gid of session 
+        Double gid = tuple.getDouble(0);
         // get last global TS
         byte[] resultsGlobal = jedis.get("SFCIS_GLOBAL".getBytes());
         List<FrequentItemset> globItemsets = null;
@@ -74,42 +80,25 @@ public class RecommendationBolt  implements IRichBolt  {
             globItemsets = this.deSerialize(resultsGlobal);
         }
         // get last group TS
-        byte[] resultsGroup = jedis.get(("SFCIS_GID=" + uid).getBytes());
+        byte[] resultsGroup = jedis.get(("SFCIS_GID=" + gid).getBytes());
         List<FrequentItemset> groupItemsets = null;
         if(resultsGroup != null){
             groupItemsets = this.deSerialize(resultsGroup);
         }
         counter++;
-        if(counter > 2000  && resultsGroup != null){
-            try {
-                FileOutputStream fos = new FileOutputStream("G:\\global");
-                fos.write(resultsGlobal);
-                fos.close();
-            } catch (IOException ex) {
-                Logger.getLogger(GlobalPatternsBolt.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                FileOutputStream fos = new FileOutputStream("G:\\group");
-                fos.write(resultsGroup);
-                fos.close();
-            } catch (IOException ex) {
-                Logger.getLogger(GlobalPatternsBolt.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        
+       
+       
+        // get evaluation window and testing part from instance
+        List<Integer> ew = new ArrayList<>(); // items inside window 
+        List<Integer> tw = new ArrayList<>(); // items out of window 
+        
+        if((ews >= (instance.size()-2))){ 
+            return; // this is when session array is too short - it is ignored.
         }
         
-
-//        
-//        // get evaluation window and testing part from instance
-//        List<Integer> ew = new ArrayList<>(); // items inside window 
-//        List<Integer> tw = new ArrayList<>(); // items out of window 
-//        
-//        if((ews >= (instance.size()-2))){ 
-//            return; // this is when session array is too short - it is ignored.
-//        }
-//        
-//        RecommendationResults recs = recGen.generateRecommendations(ew,globItemsets,groupItemsets);
-//        
-//        recEval.addRecommendationResults(recs);
+        RecommendationResults recs = generateRecommendations(ew,globItemsets,groupItemsets);
+        addRecommendationResults(recs);
         
     }
     
@@ -148,6 +137,14 @@ public class RecommendationBolt  implements IRichBolt  {
     @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
+    }
+
+    private RecommendationResults generateRecommendations(List<Integer> ew, List<FrequentItemset> globItemsets, List<FrequentItemset> groupItemsets) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void addRecommendationResults(RecommendationResults recs) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

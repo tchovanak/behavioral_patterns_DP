@@ -74,6 +74,9 @@ public class PreprocessingBolt implements IRichBolt {
         if(tuple.getString(2).equals("RECOMMENDATION")){
             // this tuple is to be used for recommendation purpose only
             // send it to RecommendationBolt with identified GID
+            // first send tuple to global method
+            UserModelPPSDM um = updateUserModel(tuple);
+            collector.emit("streamRec",new Values(um.getGroupid(), tuple.getInteger(0),tuple.getValue(1)));
             
         }else{
             // first send tuple to global method
@@ -91,9 +94,9 @@ public class PreprocessingBolt implements IRichBolt {
             }   
             // PERFORM CLUSTERING
             this.performClustering(um); 
-            // ack when finished
-            collector.ack(tuple);
         }
+        // ack when finished
+        collector.ack(tuple);
         
     }
     
@@ -164,7 +167,7 @@ public class PreprocessingBolt implements IRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        //ofd.declareStream("streamClustering", new Fields("uid","items"));
+        ofd.declareStream("streamRec", new Fields("gid","uid","items"));
         ofd.declareStream("streamGlobal", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup0", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup1", new Fields("gid","uid","items"));
