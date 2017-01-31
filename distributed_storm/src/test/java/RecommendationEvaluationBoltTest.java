@@ -18,6 +18,7 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -46,14 +47,14 @@ class Collections {
 }
 
 @RunWith(Parameterized.class)
-@PrepareForTest(RecommendationEvaluationBolt.class)
+@PrepareForTest({RecommendationEvaluationBolt.class, java.io.*})
 public class RecommendationEvaluationBoltTest {
     
     @Parameters
     public static Collection<Object[]> data() {
         return Collections.asList(new Object[][] {     
                  { Collections.asList(1, 2, 3, 4, 5, 6),Collections.asList(1, 2, 4, 6, 7,8,9,10), 4.0/6.0},
-                 { Collections.asList(1, 3), Collections.asList(1), 1.0 }, 
+                 { Collections.asList(1, 3), Collections.asList(1), 0.5 }, 
                  { Collections.asList(5), Collections.asList(6), 0.0}  
            });
     }
@@ -92,14 +93,12 @@ public class RecommendationEvaluationBoltTest {
                 
         RecommendationEvaluationBolt spyBolt = spy(new RecommendationEvaluationBolt());
         
-        
         spyBolt.cacheRecs(2,recs);
         spyBolt.execute(tuple);
-        
-        
-        verify(spyBolt).calculatePrecision(Matchers.anyList(), testWindow);
+                
+        verify(spyBolt).calculatePrecision(Matchers.anyList(), eq(testWindow));
         // stores results of precision, first arg is group id, second precision metric for session
-        verify(spyBolt).storeResults(2, 1.0, anyDouble());
+        verify(spyBolt).storeResults(eq(2), eq(1.0), anyDouble());
         
     }
     
@@ -117,8 +116,8 @@ public class RecommendationEvaluationBoltTest {
         spyBolt.execute(tuple);
         
         verify(spyBolt, times(1)).cacheRecs(2,recs);
-        verify(spyBolt, times(0)).calculatePrecision(Matchers.anyList(), testWindow);
-        verify(spyBolt, times(0)).storeResults(2, 1.0, anyDouble());
+        verify(spyBolt, times(0)).calculatePrecision(Matchers.anyList(), eq(testWindow));
+        verify(spyBolt, times(0)).storeResults(eq(2), eq(1.0), anyDouble());
         
     }
 
@@ -130,7 +129,7 @@ public class RecommendationEvaluationBoltTest {
        
        RecommendationEvaluationBolt spyBolt = new RecommendationEvaluationBolt();
        double prec = spyBolt.calculatePrecision(recs, testWindow);
-       assertTrue(prec == expectedResult);
+       assertEquals((Double)prec,(Double)expectedResult);
        
     }
     
@@ -140,13 +139,6 @@ public class RecommendationEvaluationBoltTest {
     @Test
     public void testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId() {
         
-        FileWriter mockFileWriter = mock(FileWriter.class, withSettings().serializable());
-        try {
-            PowerMockito.whenNew(FileWriter.class).withArguments(File.class,true).thenReturn(mockFileWriter);
-        } catch (Exception ex) {
-            Logger.getLogger(RecommendationEvaluationBoltTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
         PrintWriter mockWriter = mock(PrintWriter.class, withSettings().serializable());
         try {
             PowerMockito.whenNew(PrintWriter.class).withAnyArguments().thenReturn(mockWriter);
@@ -154,10 +146,10 @@ public class RecommendationEvaluationBoltTest {
             Logger.getLogger(RecommendationEvaluationBoltTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        RecommendationEvaluationBolt spyBolt = new RecommendationEvaluationBolt();
+        RecommendationEvaluationBolt spyBolt = spy(new RecommendationEvaluationBolt());
         double prec = spyBolt.calculatePrecision(recs, testWindow);
         spyBolt.storeResults(2, 1.0, prec);
-        verify(mockWriter, times(1)).println(""+prec);
+        verify(mockWriter, times(1)).println("2,1.0,"+prec);
         
     }
    

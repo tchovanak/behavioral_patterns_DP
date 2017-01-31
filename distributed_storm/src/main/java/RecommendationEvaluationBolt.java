@@ -1,4 +1,9 @@
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,17 +79,24 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
     }
 
     double calculatePrecision(List<Integer> recs, List<Integer> testWindow) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Integer> hits = new ArrayList<>(recs);
+        hits.retainAll(testWindow);
+        return (double)hits.size()/(double)recs.size();
     }
     
     void storeResults(int sid, double gid, double precision) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try(FileWriter fw = new FileWriter("log_prec_gid_" + gid, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            out.println(sid+","+gid+","+precision);
+        } catch (IOException e) {
+            //exception handling left as an exercise for the reader
+        }
     }
 
-    void cacheRecs(int i, List<Integer> recs) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    void cacheRecs(int sid, List<Integer> recs) {
+        this.SessionRecsMap.put(sid, recs);
     }
-
-  
-
+ 
 }

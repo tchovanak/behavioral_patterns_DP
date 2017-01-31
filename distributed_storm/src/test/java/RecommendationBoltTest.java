@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.Matchers;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -88,14 +89,14 @@ public class RecommendationBoltTest {
         when(jedis.get("SFCIS_GID=1.0".getBytes())).thenReturn(groupPatterns);
         when(jedis.get("SFCIS_GLOBAL".getBytes())).thenReturn(globalPatterns);
         
-        RecommendationBolt bolt = spy(new RecommendationBolt(jedisPool,2));
+        RecommendationBolt bolt = spy(new RecommendationBolt(jedisPool,2, collector));
         bolt.execute(tuple);
         
         // verify interactions
         verify(jedis, times(1)).get("SFCIS_GID=1.0".getBytes());
         verify(jedis, times(1)).get("SFCIS_GLOBAL".getBytes());
-        verify(collector, times(1)).emit("streamEval",Matchers.any(Values.class));
-        verify(bolt, times(1)).generateRecommendations(1.0, Matchers.anyList(), Matchers.anyList(), Matchers.anyList(), Matchers.anyInt());
+        verify(collector, times(1)).emit(eq("streamEval"),Matchers.any(Values.class));
+        verify(bolt, times(1)).generateRecommendations(eq(1.0), Matchers.anyList(), Matchers.anyList(), Matchers.anyList(), Matchers.anyInt());
         
     }
 
@@ -118,9 +119,7 @@ public class RecommendationBoltTest {
             assertTrue(results.getRecommendations().size() == results.getNumOfRecommendedItems());
         }      
         
-        int i = -1;
-        RecommendationResults results = recBolt.generateRecommendations(1.0, ew, globalPatternsDES, groupPatternsDES, i);
-        assertTrue(results == null);
+        
         
     }
 
