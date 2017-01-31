@@ -95,7 +95,7 @@ public class RecommendationBoltTest {
         verify(jedis, times(1)).get("SFCIS_GID=1.0".getBytes());
         verify(jedis, times(1)).get("SFCIS_GLOBAL".getBytes());
         verify(collector, times(1)).emit("streamEval",Matchers.any(Values.class));
-        verify(bolt, times(1)).generateRecommendations(Matchers.anyList(), Matchers.anyList(), Matchers.anyList(), Matchers.anyInt());
+        verify(bolt, times(1)).generateRecommendations(1.0, Matchers.anyList(), Matchers.anyList(), Matchers.anyList(), Matchers.anyInt());
         
     }
 
@@ -113,13 +113,13 @@ public class RecommendationBoltTest {
         }
         RecommendationBolt recBolt = new RecommendationBolt(2);
         for(int i = 1; i < 10; i++){
-            RecommendationResults results = recBolt.generateRecommendations(ew, globalPatternsDES, groupPatternsDES, i);
+            RecommendationResults results = recBolt.generateRecommendations(1.0, ew, globalPatternsDES, groupPatternsDES, i);
             assertTrue(results.getNumOfRecommendedItems() == i);
             assertTrue(results.getRecommendations().size() == results.getNumOfRecommendedItems());
         }      
         
         int i = -1;
-        RecommendationResults results = recBolt.generateRecommendations(ew, globalPatternsDES, groupPatternsDES, i);
+        RecommendationResults results = recBolt.generateRecommendations(1.0, ew, globalPatternsDES, groupPatternsDES, i);
         assertTrue(results == null);
         
     }

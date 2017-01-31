@@ -11,15 +11,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.storm.spout.SpoutOutputCollector;
-import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
-import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.IRichSpout;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
-import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -38,12 +34,14 @@ public class SessionsInputSpout implements IRichSpout {
     private SpoutOutputCollector collector;
     private boolean completed = false;
     private int ews = 1;
+    private int id = 0;
     
      //Create instance for TopologyContext which contains topology data.
     private TopologyContext context;
 
     public SessionsInputSpout(int ews) {
        ews = 2;
+       id = 0;
     }
     
     @Override
@@ -55,7 +53,8 @@ public class SessionsInputSpout implements IRichSpout {
     
      @Override
     public void nextTuple() {
-       
+        // session id - in future unique value generated 
+        id++;
         BufferedReader fileReader = null;
         try {
             InputStream fileStream = new FileInputStream("g:\\workspace_DP2\\Preprocessing\\alef\\alef_sessions_aggregated.csv");
@@ -80,10 +79,10 @@ public class SessionsInputSpout implements IRichSpout {
                     values.add(val);
                     valuesEW.add(val);
                     if(valuesEW.size() == ews){
-                        this.collector.emit(new Values(uid,valuesEW,"RECOMMENDATION"));
+                        this.collector.emit(new Values(uid,valuesEW,"RECOMMENDATION",id));
                     }
                 }
-                this.collector.emit(new Values(uid,values,"LEARNING"));
+                this.collector.emit(new Values(uid,values,"LEARNING",id));
                 System.out.println(in);
                 try {
                     TimeUnit.MILLISECONDS.sleep(10);
@@ -101,7 +100,7 @@ public class SessionsInputSpout implements IRichSpout {
     
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declare(new Fields("uid","items", "task"));
+        ofd.declare(new Fields("uid","items", "task", "sid"));
     }
 
     @Override

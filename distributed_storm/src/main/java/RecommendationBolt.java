@@ -4,10 +4,17 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import moa.core.FrequentItemset;
+import moa.core.PPSDM.FciValue;
+import moa.core.PPSDM.utils.MapUtil;
+import moa.core.PPSDM.utils.UtilitiesPPSDM;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -15,6 +22,7 @@ import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -71,6 +79,8 @@ public class RecommendationBolt  implements IRichBolt  {
         Integer uid = tuple.getInteger(1);
         // get gid of session 
         Double gid = tuple.getDouble(0);
+        // get id of session 
+        Integer sid = tuple.getInteger(3);
         // get last global TS
         byte[] resultsGlobal = jedis.get("SFCIS_GLOBAL".getBytes());
         List<FrequentItemset> globItemsets = null;
@@ -87,14 +97,15 @@ public class RecommendationBolt  implements IRichBolt  {
         
         // get evaluation window and testing part from instance
         List<Integer> ew = new ArrayList<>(); // items inside window 
-        List<Integer> tw = new ArrayList<>(); // items out of window 
         
         if((ews >= (instance.size()-2))){ 
             return; // this is when session array is too short - it is ignored.
         }
         
-        RecommendationResults recs = generateRecommendations(ew,globItemsets,groupItemsets, 5);
-       
+        RecommendationResults recs = generateRecommendations(gid,ew,globItemsets,groupItemsets, 5);
+        
+        // send recommendations to evaluation bolt
+        collector.emit("streamEval",new Values(recs, sid));
         
     }
     
@@ -123,11 +134,8 @@ public class RecommendationBolt  implements IRichBolt  {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declareStream("streamGroup0", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup1", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup2", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup3", new Fields("gid","uid","items"));
-   
+        ofd.declareStream("streamEval", new Fields("recs"));
+       
     }
 
     @Override
@@ -135,12 +143,112 @@ public class RecommendationBolt  implements IRichBolt  {
         return null;
     }
 
-
-
-    RecommendationResults generateRecommendations(List<Integer> ew, List<FrequentItemset> globalPatternsDES, List<FrequentItemset> groupPatternsDES, int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public RecommendationResults generateRecommendations(Double gid, List<Integer> ew, 
+            List<FrequentItemset> globalPatternsDES, 
+            List<FrequentItemset> groupPatternsDES, 
+            int rc) {
+        //to get all fcis found 
+        List<FciValue> mapFciWeightGlobal = new LinkedList<>();
+        Iterator<FrequentItemset> itFis = globalPatternsDES.iterator();
+        while(itFis.hasNext()){
+            FrequentItemset fi = itFis.next();
+            if(fi.getSize() > 1){
+                List<Integer> items = fi.getItems();
+                double hitsVal = this.computeSimilarity(items,ew);
+                if(hitsVal == 0.0){ continue; }
+                FciValue fciVal = new FciValue();
+                fciVal.setItems(fi.getItems());
+                fciVal.computeValue(hitsVal, fi.getSupportDouble());
+                mapFciWeightGlobal.add(fciVal);
+            }
+        }
+        List<FciValue> mapFciWeightGroup = new LinkedList<>();
+        if(gid >= 0.0){
+            Iterator<FrequentItemset> itFisG = groupPatternsDES.iterator();
+            while(itFisG.hasNext()){
+                FrequentItemset fi = itFisG.next();
+                if(fi.getSize() > 1){
+                    List<Integer> items = fi.getItems();
+                    double hitsVal = this.computeSimilarity(items,ew);
+                    if(hitsVal == 0.0){ continue; }
+                    FciValue fciVal = new FciValue();
+                    fciVal.setItems(fi.getItems());
+                    fciVal.computeValue(hitsVal, fi.getSupportDouble());
+                    mapFciWeightGroup.add(fciVal);
+               }
+            }
+        }
+        // all fcis found have to be sorted descending by its support and similarity.
+        Collections.sort(mapFciWeightGlobal);
+        Collections.sort(mapFciWeightGroup);
+        List<Integer> recs = generateRecsVoteStrategy(mapFciWeightGlobal, mapFciWeightGroup, ew, rc);
+        RecommendationResults results = new RecommendationResults();
+        results.setNumOfRecommendedItems(rc);
+        results.setRecommendations(recs);
+        return results;
+        
+    }
+    
+    private List<Integer> generateRecsVoteStrategy(
+                                    List<FciValue> mapFciWeightGlobal,
+                                    List<FciValue> mapFciWeightGroup, 
+                                    List<Integer> ew, int rc){
+        Map<Integer, Double> mapItemsVotes = new HashMap<>();
+        Iterator<FciValue> itGlobal = mapFciWeightGlobal.iterator();
+        Iterator<FciValue> itGroup = mapFciWeightGroup.iterator();
+        while(itGlobal.hasNext() || itGroup.hasNext()){
+            if(itGlobal.hasNext()){
+               FciValue fci = itGlobal.next();
+               Iterator<Integer> itFciItems = fci.getItems().iterator();
+               while(itFciItems.hasNext()){
+                   Integer item = itFciItems.next();         
+                   if(mapItemsVotes.containsKey(item)){   
+                       Double newVal = mapItemsVotes.get(item) + fci.getLcsVal()*fci.getSupport();
+                       mapItemsVotes.put(item, newVal);
+                   }else{
+                       if(!ew.contains(item)){
+                           Double newVal =  fci.getLcsVal()*fci.getSupport();
+                           mapItemsVotes.put(item, newVal);
+                       }
+                   }
+               }
+            }
+            if(itGroup.hasNext()){
+               FciValue fci = itGroup.next();
+               Iterator<Integer> itFciItems = fci.getItems().iterator();
+               while(itFciItems.hasNext()){
+                   Integer item = itFciItems.next();
+                   if(mapItemsVotes.containsKey(item)){
+                       Double newVal = mapItemsVotes.get(item) + fci.getLcsVal()*fci.getSupport();
+                       mapItemsVotes.put(item, newVal);
+                   }else{
+                       if(!ew.contains(item)){
+                           Double newVal =  fci.getLcsVal()*fci.getSupport();
+                           mapItemsVotes.put(item, newVal);
+                       }
+                   }
+               }
+            }
+        }
+        mapItemsVotes = MapUtil.sortByValue(mapItemsVotes);
+        int cntAll = 0;
+        List<Integer> recsCombined = new ArrayList<>();
+        for(Map.Entry<Integer,Double> e : mapItemsVotes.entrySet()) {
+            Integer item = e.getKey();
+            recsCombined.add(item);
+            cntAll++;
+            if(cntAll >= rc){
+                break;
+            }       
+        }
+        return recsCombined;
+        
     }
 
-   
-    
+    private double computeSimilarity(List<Integer> items, List<Integer> window) {
+        return ((double)UtilitiesPPSDM.computeLongestCommonSubset(items,window)) / 
+                ((double)window.size());
+    }
+       
 }

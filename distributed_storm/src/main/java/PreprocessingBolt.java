@@ -1,6 +1,5 @@
 
 import com.yahoo.labs.samoa.instances.Instance;
-import com.yahoo.labs.samoa.instances.SparseInstance;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,9 +14,7 @@ import moa.cluster.Cluster;
 import moa.cluster.Clustering;
 import moa.cluster.PPSDM.SphereClusterPPSDM;
 import moa.clusterers.clustream.PPSDM.WithKmeansPPSDM;
-import moa.clusterers.macro.NonConvexCluster;
 import moa.core.AutoExpandVector;
-import moa.core.InstanceExample;
 import moa.core.PPSDM.Configuration;
 import moa.core.PPSDM.UserModelPPSDM;
 import moa.core.PPSDM.enums.DistanceMetricsEnum;
@@ -76,9 +73,11 @@ public class PreprocessingBolt implements IRichBolt {
             // send it to RecommendationBolt with identified GID
             // first send tuple to global method
             UserModelPPSDM um = updateUserModel(tuple);
-            collector.emit("streamRec",new Values(um.getGroupid(), tuple.getInteger(0),tuple.getValue(1)));
+            collector.emit("streamRec",new Values(um.getGroupid(), tuple.getInteger(0),tuple.getValue(1), tuple.getValue(3)));
             
         }else{
+            // send tuple to recommendation evaluation bolt
+            collector.emit("streamEval",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1), tuple.getValue(3)));
             // first send tuple to global method
             collector.emit("streamGlobal",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1)));
             // then resolve group uid belongs to
@@ -167,7 +166,8 @@ public class PreprocessingBolt implements IRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declareStream("streamRec", new Fields("gid","uid","items"));
+        ofd.declareStream("streamEval", new Fields("gid","uid","items","sid"));
+        ofd.declareStream("streamRec", new Fields("gid","uid","items", "sid"));
         ofd.declareStream("streamGlobal", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup0", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup1", new Fields("gid","uid","items"));
