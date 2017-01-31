@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: RecommendationEvaluationBoltTest
 -------------------------------------------------------------------------------
-Tests run: 9, Failures: 3, Errors: 6, Skipped: 0, Time elapsed: 0.24 sec <<< FAILURE!
+Tests run: 9, Failures: 3, Errors: 6, Skipped: 0, Time elapsed: 0.354 sec <<< FAILURE!
 testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[0](RecommendationEvaluationBoltTest)  Time elapsed: 0.001 sec  <<< ERROR!
 java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
@@ -45,7 +45,7 @@ java.lang.UnsupportedOperationException: Not supported yet.
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[0](RecommendationEvaluationBoltTest)  Time elapsed: 0.008 sec  <<< FAILURE!
+testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[0](RecommendationEvaluationBoltTest)  Time elapsed: 0.123 sec  <<< FAILURE!
 Wanted but not invoked:
 recommendationEvaluationBolt.calculatePrecision(
     [1, 2, 3, 4, 5, 6],
@@ -96,7 +96,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[0](RecommendationEvaluationBoltTest)  Time elapsed: 0.084 sec  <<< ERROR!
+testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[0](RecommendationEvaluationBoltTest)  Time elapsed: 0.094 sec  <<< ERROR!
 java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId(RecommendationEvaluationBoltTest.java:139)
@@ -139,7 +139,7 @@ java.lang.UnsupportedOperationException: Not supported yet.
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[1](RecommendationEvaluationBoltTest)  Time elapsed: 0.006 sec  <<< ERROR!
+testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[1](RecommendationEvaluationBoltTest)  Time elapsed: 0.001 sec  <<< ERROR!
 java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testCalculatePrecisionShouldCalculateRightPrecisionMetricResult(RecommendationEvaluationBoltTest.java:113)
@@ -182,7 +182,7 @@ java.lang.UnsupportedOperationException: Not supported yet.
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[1](RecommendationEvaluationBoltTest)  Time elapsed: 0.072 sec  <<< FAILURE!
+testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[1](RecommendationEvaluationBoltTest)  Time elapsed: 0.06 sec  <<< FAILURE!
 Wanted but not invoked:
 recommendationEvaluationBolt.calculatePrecision(
     [1, 3],
@@ -233,7 +233,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[1](RecommendationEvaluationBoltTest)  Time elapsed: 0.007 sec  <<< ERROR!
+testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[1](RecommendationEvaluationBoltTest)  Time elapsed: 0.004 sec  <<< ERROR!
 java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId(RecommendationEvaluationBoltTest.java:139)
@@ -276,7 +276,7 @@ java.lang.UnsupportedOperationException: Not supported yet.
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[2](RecommendationEvaluationBoltTest)  Time elapsed: 0.003 sec  <<< ERROR!
+testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[2](RecommendationEvaluationBoltTest)  Time elapsed: 0.002 sec  <<< ERROR!
 java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testCalculatePrecisionShouldCalculateRightPrecisionMetricResult(RecommendationEvaluationBoltTest.java:113)

@@ -29,6 +29,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Matchers;
 
 /**
  *
@@ -84,22 +85,40 @@ public class RecommendationEvaluationBoltTest {
      * Test of execute method, of class RecommendationEvaluationBolt.
      */
     @Test
-    public void testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile() {
-        RecommendationResults testResults = new RecommendationResults();
-                        
-        testResults.setRecommendations(recs);
-        testResults.setTestWindow(testWindow);
-        testResults.setNumOfRecommendedItems(6);
-        //gid, recommendations, test window
-        Tuple tuple = Testing.testTuple(new Values(1.0,testResults));
+    public void testExecuteFromPreprocessingBoltShouldCalculatePrecisionMetricAndAppendToLogFile() {
+     
+        //gid, sid, task, test
+        Tuple tuple = Testing.testTuple(new Values(1.0, 2, "REC_EVAL", testWindow));
+                
+        RecommendationEvaluationBolt spyBolt = spy(new RecommendationEvaluationBolt());
+        
+        
+        spyBolt.cacheRecs(2,recs);
+        spyBolt.execute(tuple);
+        
+        
+        verify(spyBolt).calculatePrecision(Matchers.anyList(), testWindow);
+        // stores results of precision, first arg is group id, second precision metric for session
+        verify(spyBolt).storeResults(2, 1.0, anyDouble());
+        
+    }
+    
+    /**
+     * Test of execute method, of class RecommendationEvaluationBolt.
+     */
+    @Test
+    public void testExecuteFromRecommendationBoltShouldCacheRecs() {
+     
+        //gid, sid, task, recs 
+        Tuple tuple = Testing.testTuple(new Values(1.0, 2, "REC_CACHE", recs));
                 
         RecommendationEvaluationBolt spyBolt = spy(new RecommendationEvaluationBolt());
         
         spyBolt.execute(tuple);
         
-        verify(spyBolt).calculatePrecision(recs,testWindow);
-        // stores results of precision, first arg is group id, second precision metric for session
-        verify(spyBolt).storeResults(1.0, anyDouble());
+        verify(spyBolt, times(1)).cacheRecs(2,recs);
+        verify(spyBolt, times(0)).calculatePrecision(Matchers.anyList(), testWindow);
+        verify(spyBolt, times(0)).storeResults(2, 1.0, anyDouble());
         
     }
 
@@ -137,7 +156,7 @@ public class RecommendationEvaluationBoltTest {
         
         RecommendationEvaluationBolt spyBolt = new RecommendationEvaluationBolt();
         double prec = spyBolt.calculatePrecision(recs, testWindow);
-        spyBolt.storeResults(1.0, prec);
+        spyBolt.storeResults(2, 1.0, prec);
         verify(mockWriter, times(1)).println(""+prec);
         
     }

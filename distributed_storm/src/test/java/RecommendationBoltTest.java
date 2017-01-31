@@ -77,7 +77,7 @@ public class RecommendationBoltTest {
         for(Integer i : testData[0]){
             instance.add((double)i);
         }
-        Tuple tuple = Testing.testTuple(new Values(1.0,437,instance));
+        Tuple tuple = Testing.testTuple(new Values(1.0,437,instance,1));
               
         JedisPool jedisPool = mock(JedisPool.class);
         Jedis jedis = mock(Jedis.class);

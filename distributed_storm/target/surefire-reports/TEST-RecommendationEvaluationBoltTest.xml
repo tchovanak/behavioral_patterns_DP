@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="9" failures="3" name="RecommendationEvaluationBoltTest" time="0.254" errors="6" skipped="0">
+<testsuite tests="9" failures="3" name="RecommendationEvaluationBoltTest" time="0.369" errors="6" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_05\jre\bin"/>
@@ -106,7 +106,7 @@
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </error>
   </testcase>
-  <testcase classname="RecommendationEvaluationBoltTest" name="testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[0]" time="0.008">
+  <testcase classname="RecommendationEvaluationBoltTest" name="testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[0]" time="0.123">
     <failure message="
 Wanted but not invoked:
 recommendationEvaluationBolt.calculatePrecision(
@@ -169,7 +169,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </failure>
   </testcase>
-  <testcase classname="RecommendationEvaluationBoltTest" name="testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[0]" time="0.084">
+  <testcase classname="RecommendationEvaluationBoltTest" name="testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[0]" time="0.094">
     <error message="Not supported yet." type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId(RecommendationEvaluationBoltTest.java:139)
@@ -214,7 +214,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </error>
   </testcase>
-  <testcase classname="RecommendationEvaluationBoltTest" name="testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[1]" time="0.006">
+  <testcase classname="RecommendationEvaluationBoltTest" name="testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[1]" time="0.001">
     <error message="Not supported yet." type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testCalculatePrecisionShouldCalculateRightPrecisionMetricResult(RecommendationEvaluationBoltTest.java:113)
@@ -259,7 +259,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </error>
   </testcase>
-  <testcase classname="RecommendationEvaluationBoltTest" name="testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[1]" time="0.072">
+  <testcase classname="RecommendationEvaluationBoltTest" name="testExecuteShouldCalculatePrecisionMetricAndAppendToLogFile[1]" time="0.06">
     <failure message="
 Wanted but not invoked:
 recommendationEvaluationBolt.calculatePrecision(
@@ -322,7 +322,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </failure>
   </testcase>
-  <testcase classname="RecommendationEvaluationBoltTest" name="testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[1]" time="0.007">
+  <testcase classname="RecommendationEvaluationBoltTest" name="testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId[1]" time="0.004">
     <error message="Not supported yet." type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId(RecommendationEvaluationBoltTest.java:139)
@@ -367,7 +367,7 @@ However, there were other interactions with this mock:
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </error>
   </testcase>
-  <testcase classname="RecommendationEvaluationBoltTest" name="testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[2]" time="0.003">
+  <testcase classname="RecommendationEvaluationBoltTest" name="testCalculatePrecisionShouldCalculateRightPrecisionMetricResult[2]" time="0.002">
     <error message="Not supported yet." type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException: Not supported yet.
 	at RecommendationEvaluationBolt.calculatePrecision(RecommendationEvaluationBolt.java:68)
 	at RecommendationEvaluationBoltTest.testCalculatePrecisionShouldCalculateRightPrecisionMetricResult(RecommendationEvaluationBoltTest.java:113)
