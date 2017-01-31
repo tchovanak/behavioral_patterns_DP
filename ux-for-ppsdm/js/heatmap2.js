@@ -17,20 +17,23 @@ function heatmap(){
 
     var SQUARE_PADDING = 0.0;
 
-    chart.readDataFrom = function(file){
+    chart.readDataFrom = function(){
         var allText =[];
         var allTextLines = [];
-        var Lines = [];
+
         var txtFile = new XMLHttpRequest();
-        txtFile.open("GET", "file://G:/workspace_DP3/ux-for-ppsdm/example data/sample.txt", true);
+        txtFile.open("GET", "file://G:/workspace_DP3/ux-for-ppsdm/example data/sample.txt", false);
         txtFile.onreadystatechange = function()
         {
-            allText = txtFile.responseText;
-            allTextLines = allText.split(/\r\n|\n/);
+           if (xmlhttp.readyState == 4) {
+               alert(txtFile.responseText);
+           }
         };
-        document.write(allTextLines);<br>
-        document.write(allText);<br>
-        document.write(txtFile);<br>
+
+        document.write(allTextLines);
+        document.write(allText);
+        document.write(txtFile);
+
     }
 
     chart.selector = function (value) {
@@ -45,9 +48,28 @@ function heatmap(){
         return chart;
     };
 
-    function chart(){
+    function chart(evt){
+        <!-- READ DATA -->
+        //Retrieve the first (and only!) File from the FileList object
+        var f = evt.target.files[0];
+        if (f) {
+            var r = new FileReader();
+            r.onload = function(e) {
+                var contents = e.target.result;
+                alert( "Got the file.n"
+                  +"name: " + f.name + "n"
+                  +"type: " + f.type + "n"
+                  +"size: " + f.size + " bytesn"
+                  + "starts with: " + contents.substr(1, contents.indexOf("n"))
+                 );
+            }
+            r.readAsText(f);
+            alert(r);
+        } else {
+          alert("Failed to load file");
+        }
+
         d3.select(chart.selector()).selectAll('svg.heatmap').remove(); // remove the existing chart, if it exists
-        var timeRange = chart.counter > maxRange ? maxRange : chart.counter;
 
         // color range
         var color = d3.scale.linear()
@@ -65,7 +87,7 @@ function heatmap(){
                 .style('padding', '36px');
 
             rects = svg.selectAll('.rect')
-                .data(rectData);  //  array of days for the last yr
+                .data(rectData);
 
             rects.enter().append('rect')
                 .attr('class', 'rect')

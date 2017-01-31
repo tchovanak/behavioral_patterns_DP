@@ -47,7 +47,7 @@ class Collections {
 }
 
 @RunWith(Parameterized.class)
-@PrepareForTest({RecommendationEvaluationBolt.class, java.io.*})
+@PrepareForTest({RecommendationEvaluationBolt.class, PrintWriter.class})
 public class RecommendationEvaluationBoltTest {
     
     @Parameters

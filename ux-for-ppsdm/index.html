@@ -28,7 +28,7 @@
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" charset="utf-8"></script>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="js/heatmap.js"></script>
+    <!--<script src="js/heatmap.js"></script>-->
      <script src="js/heatmap2.js"></script>
 
     <div id="wrapper">
@@ -119,6 +119,7 @@
                         <div class="panel-body">
 
                         </div>
+                        <input type="file" id="fileinput" />
                         <div class="heatmap-container"></div>
                     </div>
                 </div>
@@ -508,9 +509,11 @@
           heatmap();  // render the chart
     </script>-->
      <script type="text/javascript">
+
           var hm = heatmap().selector('.heatmap-container')
                           .colorRange(['#f4f7f7', '#79a8a9'])
-          hm();  // render the chart
+          document.getElementById('fileinput').addEventListener('change', hm, false);
+          <!-- hm();  render the chart-->
     </script>
     <script type="text/javascript">
         jQuery(function ($) {
