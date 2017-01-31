@@ -9,16 +9,14 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.storm.Testing;
-
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+
 import org.junit.After;
 import static org.junit.Assert.assertTrue;
 
@@ -42,7 +40,6 @@ class Collections {
             for (T item : items) {
                 list.add(item);
             }
-
             return list;
         }
 }
@@ -112,7 +109,7 @@ public class RecommendationEvaluationBoltTest {
     @Test
     public void testCalculatePrecisionShouldCalculateRightPrecisionMetricResult() {
        
-       RecommendationEvaluationBolt spyBolt = spy(new RecommendationEvaluationBolt());
+       RecommendationEvaluationBolt spyBolt = new RecommendationEvaluationBolt();
        double prec = spyBolt.calculatePrecision(recs, testWindow);
        assertTrue(prec == expectedResult);
        
@@ -124,28 +121,26 @@ public class RecommendationEvaluationBoltTest {
     @Test
     public void testStoreResultsShouldStoreGivenResultsToFileForGivenGroupWithTimestampAndTransactionId() {
         
-        
-        FileWriter mockFileWriter = mock(FileWriter.class);
+        FileWriter mockFileWriter = mock(FileWriter.class, withSettings().serializable());
         try {
             PowerMockito.whenNew(FileWriter.class).withArguments(File.class,true).thenReturn(mockFileWriter);
         } catch (Exception ex) {
             Logger.getLogger(RecommendationEvaluationBoltTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        PrintWriter mockWriter = mock(PrintWriter.class);
+        PrintWriter mockWriter = mock(PrintWriter.class, withSettings().serializable());
         try {
             PowerMockito.whenNew(PrintWriter.class).withAnyArguments().thenReturn(mockWriter);
         } catch (Exception ex) {
             Logger.getLogger(RecommendationEvaluationBoltTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        RecommendationEvaluationBolt spyBolt = spy(new RecommendationEvaluationBolt());
+        RecommendationEvaluationBolt spyBolt = new RecommendationEvaluationBolt();
         double prec = spyBolt.calculatePrecision(recs, testWindow);
         spyBolt.storeResults(1.0, prec);
         verify(mockWriter, times(1)).println(""+prec);
         
     }
-
-    
+   
     
 }

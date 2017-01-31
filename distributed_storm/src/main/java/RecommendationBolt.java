@@ -25,25 +25,24 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public class RecommendationBolt  implements IRichBolt  {
     
-    JedisPool pool;
+    private  JedisPool pool;
     
-    Jedis jedis;
+    private  Jedis jedis;
     
-    private OutputCollector collector;
+    private  OutputCollector collector;
     
-    private int counter = 0;
+    private  int counter = 0;
     
-    private int ews = 1;
+    private  int ews = 1;
     
     /**
      * 
      * @param ews - Evaluation window size 
      */
-    public RecommendationBolt(JedisPool pool, int ews, OutputCollector oc) {
+    public RecommendationBolt(JedisPool pool, int ews) {
         this.ews = ews;
         this.pool = pool;
         jedis = pool.getResource(); 
-        this.collector = oc;
     }
     
     /**
