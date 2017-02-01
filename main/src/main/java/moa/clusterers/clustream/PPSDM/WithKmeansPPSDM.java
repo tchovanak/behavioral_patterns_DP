@@ -43,9 +43,7 @@ import com.yahoo.labs.samoa.instances.DenseInstance;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.Map;
 import moa.core.AutoExpandVector;
-import moa.core.PPSDM.Configuration;
 import moa.core.PPSDM.utils.UtilitiesPPSDM;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 /* Changes > Author: Tomas Chovanak
  * Choice of distance metric is now made with parameter from static Configuration 
