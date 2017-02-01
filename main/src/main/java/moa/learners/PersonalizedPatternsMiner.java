@@ -7,9 +7,6 @@ import moa.core.PPSDM.UserModelPPSDM;
 import java.util.*;
 import moa.MOAObject;
 import moa.core.*;
-import com.github.javacliparser.FloatOption;
-import com.github.javacliparser.IntOption;
-import com.github.javacliparser.FlagOption;
 import com.yahoo.labs.samoa.instances.Prediction;
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.core.InstanceExample;
@@ -221,7 +218,8 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
                     break;
                 case DENSTREAM:
                     updateGroupingInUserModelDenstream(um);
-                    break;
+                   
+                break;
             }
             double groupid = um.getGroupid(); // now update instance with groupid from user model
             if(groupid > -1){   
