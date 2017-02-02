@@ -5,8 +5,16 @@
  */
 package moa.clusterers.PPSDM;
 
+import com.yahoo.labs.samoa.instances.Instance;
+import java.util.List;
+import moa.cluster.Cluster;
 import moa.cluster.Clustering;
 import moa.clusterers.Clusterer;
+import moa.clusterers.denstream.WithDBSCAN;
+import moa.clusterers.macro.NonConvexCluster;
+import moa.core.PPSDM.Configuration;
+import moa.core.PPSDM.UserModelPPSDM;
+import moa.learners.PersonalizedIncMine;
 
 /**
  *
@@ -14,6 +22,15 @@ import moa.clusterers.Clusterer;
  */
 public class ClustererPPSDMDenstream implements ClustererPPSDM {
 
+    private Clustering clustering;
+    private WithDBSCAN clusterer;
+    private int clusteringID;
+    private PersonalizedIncMine incMine;
+    
+    public ClustererPPSDMDenstream(PersonalizedIncMine incMine) {
+        this.incMine = incMine;
+    }
+    
     @Override
     public Clusterer getClusterer() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -26,22 +43,63 @@ public class ClustererPPSDMDenstream implements ClustererPPSDM {
 
     @Override
     public void performMacroclustering() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.clustering = clusterer.getClusteringResult(this.clustering);
+        System.out.println("CLUSTERING-----------------------------------------------" + 
+                this.clustering.getClustering().size());
+        Configuration.GROUP_COUNTER = this.clustering.getClustering().size();
+        this.clusteringID++;
+        if(this.incMine.fciTablesGroups.size() < clustering.size()){
+            for(int i = this.incMine.fciTablesGroups.size(); 
+                    i < clustering.getClustering().size(); i++){
+                this.incMine.addFciTable();
+            }
+        }
     }
-
-    @Override
-    public void updateGroupingInUserModel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public boolean isClustering() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public int getClusteringID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
-    public void resetLearning() {
+    public void trainOnInstance(Instance umInstance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateGroupingInUserModel(UserModelPPSDM um) {
+        if(this.clusteringID > um.getClusteringId()){
+            // in um there is not set group for actual clustering so we need to set it now
+            Instance umInstance = um.getInstance();   
+            if(umInstance == null){
+                return;
+            }
+            List<Cluster> clusters = null;
+            if(clustering != null){  // if already clustering was performed
+                clusters = this.clustering.getClustering();
+            }
+            for(Cluster c : clusters){
+                NonConvexCluster cs = (NonConvexCluster) c; 
+                //double prob = cs.getInclusionProbability(umInstance);
+                double dist = cs.getDistanceToRadius(umInstance);
+                NonConvexCluster bestCluster;
+                //double minProb = 0.0;
+                double minDist = Double.MAX_VALUE;
+                //if(prob > 0.0 && prob > minProb){
+                if(dist > 0.0 && dist < minDist){
+                    bestCluster = cs;
+                    minDist = dist;
+                    um.setGroupid(bestCluster.getId());
+                    um.setDistance(0);
+                }
+                um.setClusteringId(this.clusteringID);
+            }
+        }
     }
     
 }

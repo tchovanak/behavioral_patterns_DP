@@ -33,7 +33,7 @@ public class GridSearchEvaluator extends MainTask {
             "Path to file where detail of configuration is stored.", "./");
     private String pathToStream = null;
     private int fromid = 0;
-    private boolean grouping = true;
+   
     
     private String pathToSummaryOutputFile = "";
     private String pathToOutputFile = "";
@@ -49,10 +49,8 @@ public class GridSearchEvaluator extends MainTask {
         for(Parameter p : params){
             paramsMap.put(p.getName(), p);
         }
-        grouping = (paramsMap.get("GROUPING").getValue() == 1.0)?true:false;
         gpLearnEvaluateTask = new GridSearchLearnEvaluatePPSDMTask(id, fromid, paramsMap, pathToStream, 
-                pathToSummaryOutputFile, pathToOutputFile, pathToCategoryMappingFile, 
-                grouping); 
+                pathToSummaryOutputFile, pathToOutputFile, pathToCategoryMappingFile); 
         gpLearnEvaluateTask.doTask(); 
         this.id = this.gpLearnEvaluateTask.getId();
         gpLearnEvaluateTask = null;

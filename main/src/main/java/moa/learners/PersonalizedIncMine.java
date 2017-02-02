@@ -119,7 +119,7 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
     protected double sigma;
     
     protected FCITablePPSDM fciTableGlobal;
-    protected ArrayList<FCITablePPSDM> fciTablesGroups;
+    public ArrayList<FCITablePPSDM> fciTablesGroups;
     protected SlidingWindowManagerPPSDM swmGlobal;
     protected ArrayList<SlidingWindowManagerPPSDM> swmGroups;
     protected int[] minsup;

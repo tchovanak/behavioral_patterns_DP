@@ -5,12 +5,14 @@
  */
 package moa.clusterers.PPSDM;
 
+import com.yahoo.labs.samoa.instances.Instance;
 import moa.cluster.Clustering;
 import moa.clusterers.Clusterer;
+import moa.core.PPSDM.UserModelPPSDM;
 
 /**
  *
- * @author Tomas
+ * @author Tomas Chovanak
  */
 public class ClustererPPSDMClustree implements ClustererPPSDM {
 
@@ -30,17 +32,22 @@ public class ClustererPPSDMClustree implements ClustererPPSDM {
     }
 
     @Override
-    public void updateGroupingInUserModel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean isClustering() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void resetLearning() {
+    public int getClusteringID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void trainOnInstance(Instance umInstance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateGroupingInUserModel(UserModelPPSDM um) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

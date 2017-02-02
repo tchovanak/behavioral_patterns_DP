@@ -5,11 +5,13 @@
  */
 package moa.clusterers.PPSDM;
 
+import com.yahoo.labs.samoa.instances.Instance;
 import moa.cluster.Clustering;
 import moa.clusterers.Clusterer;
+import moa.core.PPSDM.UserModelPPSDM;
 
 /**
- * This class is
+ * This interface is common for all different clustering components of PPSDM method.
  * @author Tomas Chovanak
  */
 public interface ClustererPPSDM {
@@ -17,9 +19,9 @@ public interface ClustererPPSDM {
     Clusterer getClusterer();
     Clustering getClustering();
     void performMacroclustering();
-    void updateGroupingInUserModel();
     boolean isClustering();
-
-    public void resetLearning();
+    int getClusteringID();
+    void trainOnInstance(Instance umInstance);
+    void updateGroupingInUserModel(UserModelPPSDM um);
         
 }
