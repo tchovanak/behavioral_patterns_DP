@@ -27,9 +27,9 @@ import java.util.List;
 import moa.core.PPSDM.utils.UtilitiesPPSDM;
 
 public class ClustreamKernelPPSDM extends CFCluster {
-	private static final long serialVersionUID = 1L;
-
-	private final static double EPSILON = 0.00005;
+    
+    private static final long serialVersionUID = 1L;
+    private final static double EPSILON = 0.00005;
     public static final double MIN_VARIANCE = 1e-50;
 
     protected double LST;

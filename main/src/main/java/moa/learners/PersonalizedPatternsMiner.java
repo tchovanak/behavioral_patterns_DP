@@ -7,6 +7,7 @@ import moa.core.PPSDM.UserModelPPSDM;
 import java.util.*;
 import moa.MOAObject;
 import moa.core.*;
+import moa.clusterers.PPSDM.ClustererPPSDMClustream;
 import com.yahoo.labs.samoa.instances.Prediction;
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.core.InstanceExample;
@@ -16,6 +17,7 @@ import moa.cluster.Cluster;
 import com.yahoo.labs.samoa.instances.SparseInstance;
 import java.util.concurrent.ConcurrentHashMap;
 import moa.cluster.PPSDM.SphereClusterPPSDM;
+import moa.clusterers.PPSDM.ClustererPPSDM;
 import moa.clusterers.denstream.WithDBSCAN;
 import moa.clusterers.macro.NonConvexCluster;
 //import moa.clusterers.macrosubspace.PROCLUS;
@@ -72,6 +74,9 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     private int snapshotId = 1;
     private int cntOnlyGroup;
     private int cntOnlyGlobal;
+    
+    private ClustererPPSDM clustererPPSDM;
+    
     private WithDBSCAN clustererDBSCAN;
     
      
@@ -100,11 +105,19 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
                 numberOfGroups, minSupport, relaxationRate,fixedSegmentLength, 
                 groupFixedSegmentLength);
         this.incMine.resetLearning();
-        this.clusterer =  new WithKmeansPPSDM();
-        this.clusterer.kOption.setValue(numberOfGroups);
-        this.clusterer.maxNumKernelsOption.setValue(maxNumKernels);
-        this.clusterer.kernelRadiFactorOption.setValue(kernelRadiFactor);
-        this.clusterer.resetLearning();
+        
+        // INITIALIZE CLUSTERER 
+        this.clustererPPSDM = new ClustererPPSDMClustream(numberOfGroups,
+            maxNumKernels,
+            kernelRadiFactor);
+        this.clustererPPSDM.resetLearning();
+        
+
+//this.clusterer =  new WithKmeansPPSDM();
+        //this.clusterer.kOption.setValue(numberOfGroups);
+        //this.clusterer.maxNumKernelsOption.setValue(maxNumKernels);
+        //this.clusterer.kernelRadiFactorOption.setValue(kernelRadiFactor);
+        //this.clusterer.resetLearning();
         //this.clustererDBSCAN =  new WithDBSCAN();
         //this.clustererDBSCAN.resetLearning();
         usermodels.clear();
