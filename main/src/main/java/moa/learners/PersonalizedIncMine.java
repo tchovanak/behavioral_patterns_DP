@@ -101,6 +101,14 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
     private int fixedSegmentLengthOption;
     private int groupFixedSegmentLengthOption;
     
+    public double getMinSupport(){
+        return minSupportOption;
+    }
+    
+    public int getFixedSegmentLength(){
+        return fixedSegmentLengthOption;
+    }
+    
     public PersonalizedIncMine(int windowSizeOption,int maxItemsetLengthOption,
             int numberOfGroupsOption, double minSupportOption,
             double relaxationRateOption, int fixedSegmentLengthOption, 
@@ -119,7 +127,7 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
     protected double r;
     protected double sigma;
     
-    protected FCITablePPSDM fciTableGlobal;
+    public FCITablePPSDM fciTableGlobal;
     public ArrayList<FCITablePPSDM> fciTablesGroups;
     protected SlidingWindowManagerPPSDM swmGlobal;
     protected ArrayList<SlidingWindowManagerPPSDM> swmGroups;
@@ -337,9 +345,9 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         fciTable.computeSemiFcis(this.fixedSegmentLengthOption);
         System.out.println("Update done in " + this.getUpdateTime()/1e6 + " ms.");
         System.out.println(fciTable.size() + " SemiFCIs actually stored\n");
-        if(Configuration.RECOMMEND_WITH_FI){
-            fciTable.computeFis(minSupportOption, lastSegmentLenght);
-        }
+//        if(Configuration.RECOMMEND_WITH_FI){
+//            fciTable.computeFis(minSupportOption, lastSegmentLenght);
+//        }
     }
 
     /**

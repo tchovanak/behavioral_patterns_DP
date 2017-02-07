@@ -15,7 +15,7 @@ import moa.core.PPSDM.UserModelPPSDM;
  *
  * @author Tomas Chovanak
  */
-public class ClustererClustree implements ClusteringComponent{
+public class ClustererClustree extends ClusteringComponent{
 
     @Override
     public Clusterer getClusterer() {

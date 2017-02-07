@@ -5,6 +5,14 @@
  */
 package moa.core.PPSDM.patternMining;
 
+import java.util.Iterator;
+import java.util.List;
+import moa.core.Example;
+import moa.core.FrequentItemset;
+import moa.core.PPSDM.FciValue;
+import moa.core.PPSDM.clustering.ClusteringComponent;
+import moa.core.PPSDM.dto.SnapshotResults;
+
 
 
 /**
@@ -12,7 +20,14 @@ package moa.core.PPSDM.patternMining;
  * @author Tomas Chovanak
  */
 public interface PatternMiningComponent {
+
+    public void trainOnInstance(Example copy);
     
-    
-        
+    public Iterator<FrequentItemset> iteratorGlobalPatterns();
+
+    public Iterator<FrequentItemset> iteratorGroupPatterns(int i);
+
+    public SnapshotResults generateSnapshot(ClusteringComponent clusterer);
+
+    public List<FciValue> extractPatterns();
 }

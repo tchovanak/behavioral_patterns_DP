@@ -37,10 +37,7 @@ public class Configuration {
     */
     public static boolean GROUPING = false;
     
-    /*
-        Recommendation strategy only with frequent itemsets or with all semifcis.
-    */
-    public static boolean RECOMMEND_WITH_FI = false;
+   
     
     /*
         Maximal time of semifci's update after segment of data

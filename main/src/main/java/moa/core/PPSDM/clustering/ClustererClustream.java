@@ -8,6 +8,8 @@ package moa.core.PPSDM.clustering;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import moa.cluster.Cluster;
 import moa.cluster.Clustering;
 import moa.cluster.PPSDM.SphereClusterPPSDM;
@@ -19,9 +21,9 @@ import moa.core.PPSDM.enums.DistanceMetricsEnum;
 
 /**
  *
- * @author Tomas
+ * @author Tomas Chovanak
  */
-public class ClustererClustream implements ClusteringComponent {
+public class ClustererClustream extends ClusteringComponent {
 
     private WithKmeansPPSDM clusterer;
     private Clustering clustering;
@@ -29,7 +31,9 @@ public class ClustererClustream implements ClusteringComponent {
     private int numOfGroups;
     private int clusteringID;
     
+    
     public ClustererClustream(Integer numberOfGroups, Integer maxNumKernels, Integer kernelRadiFactor) {
+         super() ;
          this.clusterer = new WithKmeansPPSDM();
          this.numOfGroups = numberOfGroups;
          this.clusterer.kOption.setValue(numberOfGroups);
@@ -120,5 +124,8 @@ public class ClustererClustream implements ClusteringComponent {
             um.setClusteringId(this.clusteringID);
         }
     }
+
+
+
     
 }

@@ -20,7 +20,7 @@ import moa.learners.PersonalizedIncMine;
  *
  * @author Tomas
  */
-public class ClustererDenstream implements ClusteringComponent {
+public class ClustererDenstream extends ClusteringComponent {
 
     private Clustering clustering;
     private WithDBSCAN clusterer;
