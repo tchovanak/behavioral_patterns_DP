@@ -5,10 +5,11 @@
  */
 package moa.tasks;
 
+import moa.core.PPSDM.dto.Parameter;
+import moa.core.PPSDM.utils.OutputManager;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,7 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Runs and evaluates all experiments from  configurations defined in config file
+ * Runs and evaluates all experiments from parameters configurations defined in 
+ * config file
  * @author Tomas Chovanak
  */
 public class GridSearchEvaluator extends MainTask {
@@ -32,13 +34,12 @@ public class GridSearchEvaluator extends MainTask {
     public StringOption pathToConfigFile = new StringOption("pathToConfigFile", 'o',
             "Path to file where detail of configuration is stored.", "./");
     private String pathToStream = null;
-    private int fromid = 0;
-   
-    
+    private int fromid = 0; 
     private String pathToSummaryOutputFile = "";
     private String pathToOutputFile = "";
     private String pathToCategoryMappingFile = "";
     private GridSearchLearnEvaluatePPSDMTask gpLearnEvaluateTask = null;
+    private OutputManager om;
     
     public GridSearchEvaluator(int fromid) {
         this.fromid = fromid;
@@ -85,7 +86,6 @@ public class GridSearchEvaluator extends MainTask {
         }
     }
     
-    
     @Override
     protected Object doMainTask(TaskMonitor tm, ObjectRepository or) {
         InputStream fileStream;
@@ -101,86 +101,6 @@ public class GridSearchEvaluator extends MainTask {
         }
         startEvaluation(fileReader);
         return null;
-    }
-    
-    
-    private List<Parameter> deepCopy(List<Parameter> orig){
-        List<Parameter> copy = new ArrayList<>(); 
-        Iterator<Parameter> iterator = orig.iterator(); 
-        while(iterator.hasNext()){ 
-            try { 
-                copy.add(iterator.next().clone());
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return copy;
-    }
-    
-    private static void writeHeader(String path) {
-        try {
-            try (FileWriter writer = new FileWriter(path, true)) {
-                writer.append("FILE ID");writer.append(',');
-                writer.append("USE GROUPING");writer.append(',');
-                // RECOMMEND PARAMETERS
-                writer.append("REC:RECOMMEND STRATEGY");writer.append(',');
-                writer.append("GEN:MAXIMAL DIFFERENCE OF CLUSTERING IDs");writer.append(',');
-                writer.append("REC:EVALUATION WINDOW SIZE");writer.append(',');
-                writer.append("REC:NUM OF RECOMMENDED ITEMS");writer.append(',');
-                // INCMINE PARAMETERS
-                writer.append("FPM:MIN SUPPORT");writer.append(',');
-                writer.append("FPM:RELAXATION RATE");writer.append(','); 
-                writer.append("FPM:FIXED SEGMENT LENGTH");writer.append(',');
-                writer.append("FPM:GROUP FIXED SEGMENT LENGTH");writer.append(',');
-                writer.append("FPM:MAX ITEMSET LENGTH");writer.append(',');
-                writer.append("FPM:WINDOW SIZE");writer.append(',');
-                // UNIVERSAL PARAMETERS - RESTRICTIONS
-                writer.append("RES:NUM OF DIMENSTIONS IN USER MODEL");writer.append(',');
-                writer.append("RES:MAX FCI SET COUNT");writer.append(',');
-                writer.append("RES:MIN TRANSACTIONS PER SECOND");writer.append(',');
-                writer.append("RES:MAX UPDATE TIME");writer.append(',');
-                writer.append("RES:START EVALUATING FROM TID");writer.append(',');
-                // CLUSTERING PARAMETERS
-                writer.append("CLU:MIN NUM OF CHANGES IN USER MODEL");writer.append(',');
-                writer.append("CLU:MIN NUM OF CHANGES IN MICROCLUSTERS");writer.append(',');
-                writer.append("CLU:NUM OF GROUPS");writer.append(',');
-                writer.append("CLU:NUM OF MICROKERNELS");writer.append(',');
-                writer.append("CLU:KERNEL RADI FACTOR");writer.append(',');
-                // RESULTS 
-                writer.append("GGC:ALL HITS");writer.append(',');
-                writer.append("GGC:REAL RECOMMENDED");writer.append(',');
-                writer.append("GGC:PRECISION");writer.append(',');
-                writer.append("GGC:RECALL");writer.append(',');
-                writer.append("GGC:F1");writer.append(',');
-                writer.append("GGC:NDCG");writer.append(',');
-                
-                writer.append("GO:ALL HITS");writer.append(',');
-                writer.append("GO:REAL RECOMMENDED ITEMS");writer.append(',');
-                writer.append("GO:PRECISION");writer.append(',');
-                writer.append("GO:RECALL");writer.append(',');
-                writer.append("GO:F1");writer.append(',');
-                writer.append("GO:NDCG");writer.append(',');
-                
-                writer.append("OG: ALL HITS");writer.append(',');
-                writer.append("OG: REAL RECOMMENDED ITEMS");writer.append(',');
-                writer.append("OG:PRECISION");writer.append(',');
-                writer.append("OG:RECALL");writer.append(',');
-                writer.append("OG:F1");writer.append(',');
-                writer.append("OG:NDCG");writer.append(',');
-                
-                writer.append("ALL TESTED ITEMS");writer.append(',');
-                writer.append("ALL TESTED TRANSACTIONS");writer.append(',');
-                writer.append("MAX RECOMMENDED ITEMS");writer.append(',');
-                writer.append("DURATION IN SECONDS");writer.append(',');
-                writer.append("TRANSACTIONS PER SECOND");writer.append(',');
-                writer.append("NUM ANALYZED TRANSACTIONS");writer.append(',');
-                writer.append('\n');
-                writer.close();
-                
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     private static void startEvaluation(BufferedReader fileReader) {
@@ -209,7 +129,7 @@ public class GridSearchEvaluator extends MainTask {
                 p.setName(row[0].trim());
                 params.add(p);
             }
-            writeHeader(outputToDirectory + "summary_results.csv");
+            OutputManager.writeHeader(outputToDirectory + "summary_results.csv");
             GridSearchEvaluator evaluator = new GridSearchEvaluator(fromid);
             evaluator.setPathToOutputFile(outputToDirectory);
             evaluator.setPathToInputFile(inputSessionFile);
@@ -222,32 +142,17 @@ public class GridSearchEvaluator extends MainTask {
         } 
     }
     
-    /**
-     * Arguments:
-     *  1. config file: path to config file where parameters for grid search are declared
-    * @param args 
-     */
-    public static void main(String args[]){
-        InputStream fileStream;
-        BufferedReader fileReader = null;
-        try {
-            if(args.length > 0){
-                fileStream = new FileInputStream(args[0]);
-            }else{
-                fileStream = new FileInputStream("g:\\workspace_DP2\\results_grid\\config\\config_sacbee.csv");
+    private List<Parameter> deepCopy(List<Parameter> orig){
+        List<Parameter> copy = new ArrayList<>(); 
+        Iterator<Parameter> iterator = orig.iterator(); 
+        while(iterator.hasNext()){ 
+            try { 
+                copy.add(iterator.next().clone());
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            fileReader = new BufferedReader(new InputStreamReader(fileStream));
-            
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(fileReader == null){
-            return;
-        }
-        
-        startEvaluation(fileReader);
-        
+        return copy;
     }
     
     public void setPathToInputFile(String path) {
@@ -277,6 +182,32 @@ public class GridSearchEvaluator extends MainTask {
     @Override
     public Class<?> getTaskResultType() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    /**
+     * Arguments:
+     *  1. config file: path to config file where parameters for grid search are declared
+    * @param args 
+     */
+    public static void main(String args[]){
+        InputStream fileStream;
+        BufferedReader fileReader = null;
+        try {
+            if(args.length > 0){
+                fileStream = new FileInputStream(args[0]);
+            }else{
+                fileStream = new FileInputStream("g:\\workspace_DP2\\results_grid\\config\\config_sacbee.csv");
+            }
+            fileReader = new BufferedReader(new InputStreamReader(fileStream));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(fileReader == null){
+            return;
+        }
+        
+        startEvaluation(fileReader);
+        
     }
     
 }

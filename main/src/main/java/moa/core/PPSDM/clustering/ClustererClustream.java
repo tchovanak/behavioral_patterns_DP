@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.clusterers.PPSDM;
+package moa.core.PPSDM.clustering;
+
 
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
@@ -20,7 +21,7 @@ import moa.core.PPSDM.enums.DistanceMetricsEnum;
  *
  * @author Tomas
  */
-public class ClustererPPSDMClustream implements ClustererPPSDM {
+public class ClustererClustream implements ClusteringComponent {
 
     private WithKmeansPPSDM clusterer;
     private Clustering clustering;
@@ -28,7 +29,7 @@ public class ClustererPPSDMClustream implements ClustererPPSDM {
     private int numOfGroups;
     private int clusteringID;
     
-    public ClustererPPSDMClustream(Integer numberOfGroups, Integer maxNumKernels, Integer kernelRadiFactor) {
+    public ClustererClustream(Integer numberOfGroups, Integer maxNumKernels, Integer kernelRadiFactor) {
          this.clusterer = new WithKmeansPPSDM();
          this.numOfGroups = numberOfGroups;
          this.clusterer.kOption.setValue(numberOfGroups);

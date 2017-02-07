@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.clusterers.PPSDM;
+package moa.core.PPSDM.clustering;
 
+import moa.clusterers.PPSDM.*;
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.cluster.Clustering;
 import moa.clusterers.Clusterer;
@@ -14,7 +15,7 @@ import moa.core.PPSDM.UserModelPPSDM;
  * This interface is common for all different clustering components of PPSDM method.
  * @author Tomas Chovanak
  */
-public interface ClustererPPSDM {
+public interface ClusteringComponent {
     
     Clusterer getClusterer();
     Clustering getClustering();

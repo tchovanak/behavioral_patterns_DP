@@ -2,22 +2,26 @@ package moa.learners;
 
 import moa.core.PPSDM.dto.RecommendationResults;
 import moa.core.PPSDM.FciValue;
-import moa.core.PPSDM.GroupCounter;
+
 import moa.core.PPSDM.UserModelPPSDM;
 import java.util.*;
 import moa.MOAObject;
 import moa.core.*;
-import moa.clusterers.PPSDM.ClustererPPSDMClustream;
+
 import com.yahoo.labs.samoa.instances.Prediction;
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.core.InstanceExample;
 import com.yahoo.labs.samoa.instances.SparseInstance;
 import java.util.concurrent.ConcurrentHashMap;
-import moa.clusterers.PPSDM.ClustererPPSDM;
+
 import moa.core.PPSDM.Configuration;
 import moa.core.PPSDM.FCITablePPSDM;
+import moa.core.PPSDM.clustering.ClustererClustream;
+import moa.core.PPSDM.clustering.ClusteringComponent;
 import moa.core.PPSDM.dto.GroupStatsResults;
 import moa.core.PPSDM.dto.SnapshotResults;
+import moa.core.PPSDM.patternMining.PatternMiningComponent;
+import moa.core.PPSDM.patternMining.PatternMiningIncMine;
 import moa.core.PPSDM.utils.MapUtil;
 import moa.core.PPSDM.utils.UtilitiesPPSDM;
 import moa.evaluation.PPSDMRecommendationEvaluator;
@@ -28,14 +32,8 @@ import moa.evaluation.PPSDMRecommendationEvaluator;
     
 */
 public class PersonalizedPatternsMiner extends AbstractLearner implements Observer {
-
+    
     private static final long serialVersionUID = 1L;
-    private PersonalizedIncMine incMine;
-    
-    private Map<Integer,UserModelPPSDM> usermodels = new ConcurrentHashMap<>();
-    private Map<Integer,Integer> catsToSupercats = new ConcurrentHashMap<>();
-    
-    private int microclusteringUpdatesCounter = 0;
     
     public Integer numMinNumberOfChangesInUserModel;
     public Integer numMinNumberOfMicroclustersUpdates;
@@ -51,30 +49,27 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     public Integer evaluationWindowSize;
     public Integer maxNumKernels;
     public Integer kernelRadiFactor;
-    
     public Boolean useGrouping;
 
     
+    //private PersonalizedIncMine incMine;
+    private PatternMiningComponent patternMiner;
+    private ClusteringComponent clustererPPSDM;
+    
+    private Map<Integer,UserModelPPSDM> usermodels = new ConcurrentHashMap<>();
+    private Map<Integer,Integer> catsToSupercats = new ConcurrentHashMap<>();
+    
+    private int microclusteringUpdatesCounter = 0;
+    private int snapshotId = 1;
     
     private int cntAll = 0;
+    private int cntOnlyGroup;
+    private int cntOnlyGlobal;
     private List<Integer> recsOnlyFromGlobal = new ArrayList<>();
     private List<Integer> recsOnlyFromGroup = new ArrayList<>();
     private List<Integer> recsCombined = new ArrayList<>();
     
-    // private Clustering kmeansClustering;
-    // private Clustering dbscanClustering;
-    //private SubspaceClustering subcluClustering;
-    // private Clustering cleanedKmeansClustering;
-    // private int clusteringId = 1;
-    private int snapshotId = 1;
-    private int cntOnlyGroup;
-    private int cntOnlyGlobal;
     
-    private ClustererPPSDM clustererPPSDM;
-    
-    //private WithDBSCAN clustererDBSCAN;
-    
-     
     public PersonalizedPatternsMiner(){
         super();
     }
@@ -92,26 +87,24 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     
     @Override
     public void resetLearningImpl() {
-        GroupCounter.groupscounters = new int [numberOfGroups + 1];
-        for(int i = 0; i < GroupCounter.groupscounters.length; i++){
-            GroupCounter.groupscounters[i] = 0;
-        }
-        this.incMine = new PersonalizedIncMine(windowSize, maxItemsetLength,
+       
+        // Initialize pattern mining component
+        this.patternMiner = new PatternMiningIncMine(windowSize, maxItemsetLength,
                 numberOfGroups, minSupport, relaxationRate,fixedSegmentLength, 
                 groupFixedSegmentLength);
-        this.incMine.resetLearning();
         
-        // INITIALIZE CLUSTERER 
-        this.clustererPPSDM = new ClustererPPSDMClustream(numberOfGroups,
+        // Initialize clustering component
+        this.clustererPPSDM = new ClustererClustream(numberOfGroups,
             maxNumKernels,
             kernelRadiFactor);
         
-        //this.clustererPPSDM = new ClustererPPSDMDenstream(incMine);
-        
+        // clear usermodels map
         usermodels.clear();
         usermodels = new ConcurrentHashMap<>();
+        
         System.gc(); // force garbage collection
     }
+    
     
     @Override
     public void trainOnInstance(Example e) {
@@ -149,7 +142,8 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
                 }
                 Instance instanceWithGroupid = new SparseInstance(1.0,attValues,indices,nItems);
                 InstanceExample instEx = new InstanceExample(instanceWithGroupid);
-                incMine.trainOnInstance(instEx.copy()); // first train on instance with groupid - group
+                //incMine.trainOnInstance(instEx.copy()); // first train on instance with groupid - group
+                patternsMiner.trainOnInstance(instEx.copy());
             }
         }
         incMine.trainOnInstance(e.copy());   // then train on instance without groupid - global

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.tasks;
+package moa.core.PPSDM.utils;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +15,8 @@ import moa.core.PPSDM.dto.GroupStatsResults;
 import moa.core.PPSDM.dto.SnapshotResults;
 import moa.core.PPSDM.dto.SummaryResults;
 import moa.learners.PersonalizedPatternsMiner;
+import moa.tasks.GridSearchEvaluator;
+import moa.tasks.GridSearchLearnEvaluatePPSDMTask;
 
 /**
  *
@@ -25,8 +27,78 @@ public class OutputManager {
     private FileWriter writer;
     private String pathToSummaryOutputFile;
     
-    OutputManager(String pathToSummaryOutputFile) {
+    public OutputManager(String pathToSummaryOutputFile) {
         this.pathToSummaryOutputFile = pathToSummaryOutputFile;
+    }
+
+    public OutputManager() {
+        
+    }
+    
+    public static void writeHeader(String path) {
+        try {
+            try (FileWriter writer = new FileWriter(path, true)) {
+                writer.append("FILE ID");writer.append(',');
+                writer.append("USE GROUPING");writer.append(',');
+                // RECOMMEND PARAMETERS
+                writer.append("REC:RECOMMEND STRATEGY");writer.append(',');
+                writer.append("GEN:MAXIMAL DIFFERENCE OF CLUSTERING IDs");writer.append(',');
+                writer.append("REC:EVALUATION WINDOW SIZE");writer.append(',');
+                writer.append("REC:NUM OF RECOMMENDED ITEMS");writer.append(',');
+                // INCMINE PARAMETERS
+                writer.append("FPM:MIN SUPPORT");writer.append(',');
+                writer.append("FPM:RELAXATION RATE");writer.append(','); 
+                writer.append("FPM:FIXED SEGMENT LENGTH");writer.append(',');
+                writer.append("FPM:GROUP FIXED SEGMENT LENGTH");writer.append(',');
+                writer.append("FPM:MAX ITEMSET LENGTH");writer.append(',');
+                writer.append("FPM:WINDOW SIZE");writer.append(',');
+                // UNIVERSAL PARAMETERS - RESTRICTIONS
+                writer.append("RES:NUM OF DIMENSTIONS IN USER MODEL");writer.append(',');
+                writer.append("RES:MAX FCI SET COUNT");writer.append(',');
+                writer.append("RES:MIN TRANSACTIONS PER SECOND");writer.append(',');
+                writer.append("RES:MAX UPDATE TIME");writer.append(',');
+                writer.append("RES:START EVALUATING FROM TID");writer.append(',');
+                // CLUSTERING PARAMETERS
+                writer.append("CLU:MIN NUM OF CHANGES IN USER MODEL");writer.append(',');
+                writer.append("CLU:MIN NUM OF CHANGES IN MICROCLUSTERS");writer.append(',');
+                writer.append("CLU:NUM OF GROUPS");writer.append(',');
+                writer.append("CLU:NUM OF MICROKERNELS");writer.append(',');
+                writer.append("CLU:KERNEL RADI FACTOR");writer.append(',');
+                // RESULTS 
+                writer.append("GGC:ALL HITS");writer.append(',');
+                writer.append("GGC:REAL RECOMMENDED");writer.append(',');
+                writer.append("GGC:PRECISION");writer.append(',');
+                writer.append("GGC:RECALL");writer.append(',');
+                writer.append("GGC:F1");writer.append(',');
+                writer.append("GGC:NDCG");writer.append(',');
+                
+                writer.append("GO:ALL HITS");writer.append(',');
+                writer.append("GO:REAL RECOMMENDED ITEMS");writer.append(',');
+                writer.append("GO:PRECISION");writer.append(',');
+                writer.append("GO:RECALL");writer.append(',');
+                writer.append("GO:F1");writer.append(',');
+                writer.append("GO:NDCG");writer.append(',');
+                
+                writer.append("OG: ALL HITS");writer.append(',');
+                writer.append("OG: REAL RECOMMENDED ITEMS");writer.append(',');
+                writer.append("OG:PRECISION");writer.append(',');
+                writer.append("OG:RECALL");writer.append(',');
+                writer.append("OG:F1");writer.append(',');
+                writer.append("OG:NDCG");writer.append(',');
+                
+                writer.append("ALL TESTED ITEMS");writer.append(',');
+                writer.append("ALL TESTED TRANSACTIONS");writer.append(',');
+                writer.append("MAX RECOMMENDED ITEMS");writer.append(',');
+                writer.append("DURATION IN SECONDS");writer.append(',');
+                writer.append("TRANSACTIONS PER SECOND");writer.append(',');
+                writer.append("NUM ANALYZED TRANSACTIONS");writer.append(',');
+                writer.append('\n');
+                writer.close();
+                
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void extractPatternsToFile(SnapshotResults snap, 

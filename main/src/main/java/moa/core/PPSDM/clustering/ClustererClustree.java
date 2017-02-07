@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.clusterers.PPSDM;
+package moa.core.PPSDM.clustering;
+
 
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.cluster.Clustering;
@@ -14,7 +15,7 @@ import moa.core.PPSDM.UserModelPPSDM;
  *
  * @author Tomas Chovanak
  */
-public class ClustererPPSDMClustree implements ClustererPPSDM {
+public class ClustererClustree implements ClusteringComponent{
 
     @Override
     public Clusterer getClusterer() {

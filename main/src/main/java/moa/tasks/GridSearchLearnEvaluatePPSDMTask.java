@@ -5,13 +5,14 @@
  */
 package moa.tasks;
 
+import moa.core.PPSDM.dto.Parameter;
+import moa.core.PPSDM.utils.OutputManager;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import moa.core.PPSDM.enums.SortStrategiesEnum;
 import moa.core.PPSDM.enums.RecommendStrategiesEnum;
 import moa.core.PPSDM.Configuration;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +23,6 @@ import moa.core.Example;
 import moa.core.ObjectRepository;
 import moa.core.TimingUtils;
 import moa.evaluation.PPSDMRecommendationEvaluator;
-import moa.core.PPSDM.FciValue;
-import moa.core.PPSDM.dto.GroupStatsResults;
 import moa.learners.PersonalizedPatternsMiner;
 import moa.streams.SessionsFileStream;
 import moa.core.PPSDM.dto.RecommendationResults;
@@ -48,6 +47,7 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
     private String pathToCategoryMappingFile;
     private OutputManager om;
     
+    
     public GridSearchLearnEvaluatePPSDMTask(int id, int fromid, Map<String,Parameter> params,
             String pathToStream, String pathToSummaryOutputFile, 
             String pathToOutputFile, String pathToCategoryMappingFile) {
@@ -59,18 +59,6 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
         this.pathToOutputFile = pathToOutputFile;
         this.pathToCategoryMappingFile = pathToCategoryMappingFile;
         this.om = new OutputManager(pathToSummaryOutputFile);
-    }
-    
-    private Map<Integer,Integer> readCategoriesMap() throws FileNotFoundException, IOException {
-        BufferedReader br = new BufferedReader(new FileReader(this.pathToCategoryMappingFile));
-        Map<Integer,Integer> map = new HashMap<>();
-        String line = "";
-        while ((line = br.readLine()) != null) {
-                // use comma as separator
-                String[] words = line.split(",");
-                map.put(Integer.parseInt(words[1].trim()), Integer.parseInt(words[0].trim()));
-        }
-        return map;
     }
 
     @Override
@@ -166,13 +154,10 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
                 RecommendStrategiesEnum.valueOf((int) params.get("RECOMMEND STRATEGY").getValue());
         Configuration.SORT_STRATEGY = 
                 SortStrategiesEnum.valueOf((int) params.get("SORT STRATEGY").getValue());
-        
         Configuration.MAX_DIFFERENCE_OF_CLUSTERING_ID = 
                 (int) params.get("MAXIMAL DIFFERENCE OF CLUSTERING IDS").getValue();
-        
         learner.evaluationWindowSize = (int) params.get("EVALUATION WINDOW SIZE").getValue();
         learner.numberOfRecommendedItems = (int) params.get("NUMBER OF RECOMMENDED ITEMS").getValue();
-        
         //FPM PARAMETERS
         learner.minSupport = params.get("MIN SUPPORT").getValue();
         learner.relaxationRate = params.get("RELAXATION RATE").getValue();
@@ -209,6 +194,18 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
         
     }
     
+    private Map<Integer,Integer> readCategoriesMap() throws FileNotFoundException, IOException {
+        BufferedReader br = new BufferedReader(new FileReader(this.pathToCategoryMappingFile));
+        Map<Integer,Integer> map = new HashMap<>();
+        String line = "";
+        while ((line = br.readLine()) != null) {
+                // use comma as separator
+                String[] words = line.split(",");
+                map.put(Integer.parseInt(words[1].trim()), Integer.parseInt(words[0].trim()));
+        }
+        return map;
+    }
+    
     public int getId() {
         return id;
     }
@@ -237,7 +234,5 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
     public Class<?> getTaskResultType() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    
     
 }

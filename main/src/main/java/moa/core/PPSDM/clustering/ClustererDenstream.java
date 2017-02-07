@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.clusterers.PPSDM;
+package moa.core.PPSDM.clustering;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
@@ -20,14 +20,14 @@ import moa.learners.PersonalizedIncMine;
  *
  * @author Tomas
  */
-public class ClustererPPSDMDenstream implements ClustererPPSDM {
+public class ClustererDenstream implements ClusteringComponent {
 
     private Clustering clustering;
     private WithDBSCAN clusterer;
     private int clusteringID;
     private PersonalizedIncMine incMine;
     
-    public ClustererPPSDMDenstream(PersonalizedIncMine incMine) {
+    public ClustererDenstream(PersonalizedIncMine incMine) {
         this.incMine = incMine;
     }
     

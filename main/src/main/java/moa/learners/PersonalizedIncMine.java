@@ -43,7 +43,8 @@ import moa.core.PPSDM.FixedLengthWindowManagerPPSDM;
 public class PersonalizedIncMine extends AbstractLearner implements Observer {
     
     private static final long serialVersionUID = 1L;
-    
+
+ 
     void setRelaxationRate(double d) {
         this.r = d;
     }

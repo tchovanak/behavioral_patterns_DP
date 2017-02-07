@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.tasks;
+package moa.core.PPSDM.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Tomas Chovanak
  */
-class Parameter {
+public class Parameter {
     
     private double value;
     private String name;
@@ -67,7 +67,7 @@ class Parameter {
     }
 
     @Override
-    protected Parameter clone() throws CloneNotSupportedException {
+    public Parameter clone() throws CloneNotSupportedException {
         Parameter clone = new Parameter(this.value);
         clone.setPossibleValues(this.possibleValues);
         clone.setName(this.name);
