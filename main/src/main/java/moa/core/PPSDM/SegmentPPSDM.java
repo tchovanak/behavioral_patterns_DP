@@ -20,15 +20,14 @@
 
 package moa.core.PPSDM;
 
-import moa.core.PPSDM.charm.AlgoCharmBitsetWithSpeedRegulation;
-import moa.core.PPSDM.charm.Context;
-import moa.core.PPSDM.charm.Itemset;
-import moa.core.PPSDM.charm.Itemsets;
+import moa.learners.patternMining.charm.AlgoCharmBitsetWithSpeedRegulation;
+import moa.learners.patternMining.charm.Context;
+import moa.learners.patternMining.charm.Itemset;
+import moa.learners.patternMining.charm.Itemsets;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import com.yahoo.labs.samoa.instances.Instance;
-import moa.core.SemiFCI;
 import moa.core.TimingUtils;
 
 

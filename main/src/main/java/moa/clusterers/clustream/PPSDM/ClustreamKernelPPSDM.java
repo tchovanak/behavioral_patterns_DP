@@ -24,7 +24,7 @@ import moa.cluster.CFCluster;
 import com.yahoo.labs.samoa.instances.Instance;
 import com.yahoo.labs.samoa.instances.SparseInstance;
 import java.util.List;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.utils.UtilitiesPPSDM;
 
 public class ClustreamKernelPPSDM extends CFCluster {
     

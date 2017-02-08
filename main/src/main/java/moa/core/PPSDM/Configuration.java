@@ -5,14 +5,15 @@
  */
 package moa.core.PPSDM;
 
-import moa.core.PPSDM.clustering.ClusteringComponentConfiguration;
-import moa.core.PPSDM.clustering.ClustreamConfiguration;
-import moa.core.PPSDM.patternMining.PersonalizedIncMineConfiguration;
-import moa.core.PPSDM.enums.ClusteringMethodsEnum;
-import moa.core.PPSDM.enums.DistanceMetricsEnum;
-import moa.core.PPSDM.enums.RecommendStrategiesEnum;
-import moa.core.PPSDM.enums.SortStrategiesEnum;
-import moa.core.PPSDM.patternMining.PatternMiningConfiguration;
+import moa.learners.recommendation.RecommendationConfiguration;
+import moa.learners.clustering.ClusteringComponentConfiguration;
+import moa.learners.clustering.ClustreamConfiguration;
+import moa.learners.patternMining.PersonalizedIncMineConfiguration;
+import moa.core.enums.ClusteringMethodsEnum;
+import moa.core.enums.DistanceMetricsEnum;
+import moa.core.enums.RecommendStrategiesEnum;
+import moa.core.enums.SortStrategiesEnum;
+import moa.learners.patternMining.PatternMiningConfiguration;
 import moa.evaluation.EvaluationConfiguration;
 
 /**

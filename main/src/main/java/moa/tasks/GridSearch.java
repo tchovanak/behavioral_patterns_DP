@@ -5,8 +5,8 @@
  */
 package moa.tasks;
 
-import moa.core.PPSDM.dto.Parameter;
-import moa.core.PPSDM.utils.OutputManager;
+import moa.core.dto.Parameter;
+import moa.core.utils.OutputManager;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -28,8 +28,8 @@ import com.yahoo.labs.samoa.instances.Instance;
 import com.yahoo.labs.samoa.instances.SparseInstance;
 import moa.cluster.Cluster;
 import moa.cluster.Miniball;
-import moa.core.PPSDM.enums.DistanceMetricsEnum;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.enums.DistanceMetricsEnum;
+import moa.core.utils.UtilitiesPPSDM;
 
 
 /**

@@ -30,41 +30,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import moa.core.PPSDM.Configuration;
-import moa.core.PPSDM.dto.GroupStatsResults;
-import moa.core.PPSDM.dto.RecommendationResults;
-import moa.core.PPSDM.dto.SummaryResults;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.dto.GroupStatsResults;
+import moa.core.dto.RecommendationResults;
+import moa.core.dto.SummaryResults;
+import moa.core.utils.UtilitiesPPSDM;
 
 /**
  * Pattern mining evaluator that performs basic incremental evaluation. 
  * @author Tomas Chovanak
  */
 public class RecommendationEvaluator extends AbstractMOAObject{
-
-    private final Queue<Double> window = new LinkedList<>();
+    
+    
     private int[] numRecommendedItems = {1,2,3,4,5,10,15};
     private int[] ggSumAllHits = new int[this.numRecommendedItems.length]; // 1,2,3,4,5,10,15  recommended items
     private int[] ggSumRealRecommended = new int[this.numRecommendedItems.length];
-    
-    private int[] goSumAllHits = new int[this.numRecommendedItems.length];
-    private int[] goSumRealRecommended = new int[this.numRecommendedItems.length];
-   
-    private int[] ogSumAllHits = new int[this.numRecommendedItems.length];
-    private int[] ogSumRealRecommended = new int[this.numRecommendedItems.length];
-    
+    private int[] glSumAllHits = new int[this.numRecommendedItems.length];
+    private int[] glSumRealRecommended = new int[this.numRecommendedItems.length];
+    private int[] grSumAllHits = new int[this.numRecommendedItems.length];
+    private int[] grSumRealRecommended = new int[this.numRecommendedItems.length];
     private int[] maxRecommendedItems = new int[this.numRecommendedItems.length];
     private int[] allTestedItems = new int[this.numRecommendedItems.length];
     
     private double[] ggSumNDCG = new double[this.numRecommendedItems.length];
     private double[] ggSumPrecision = new double[this.numRecommendedItems.length];
     private double[] ggSumRecall = new double[this.numRecommendedItems.length];
-    private double[] goSumNDCG = new double[this.numRecommendedItems.length];
-    private double[] goSumPrecision = new double[this.numRecommendedItems.length];
-    private double[] goSumRecall = new double[this.numRecommendedItems.length];
-    private double[] ogSumNDCG = new double[this.numRecommendedItems.length];
-    private double[] ogSumPrecision = new double[this.numRecommendedItems.length];
-    private double[] ogSumRecall = new double[this.numRecommendedItems.length];
+    private double[] glSumNDCG = new double[this.numRecommendedItems.length];
+    private double[] glSumPrecision = new double[this.numRecommendedItems.length];
+    private double[] glSumRecall = new double[this.numRecommendedItems.length];
+    private double[] grSumNDCG = new double[this.numRecommendedItems.length];
+    private double[] grSumPrecision = new double[this.numRecommendedItems.length];
+    private double[] grSumRecall = new double[this.numRecommendedItems.length];
     
     private Map<Integer,GroupStatsResults> groupStats = new HashMap<>();
     
@@ -91,23 +87,22 @@ public class RecommendationEvaluator extends AbstractMOAObject{
                 writer.append("TRANSACTION ID");writer.append(',');  // transaction id
                 writer.append("TOTAL LENGTH");writer.append(',');  // transaction length
                 writer.append("TEST LENGTH");writer.append(',');  // evaluation test length
-                writer.append("H111");writer.append(',');  // evaluation test length
-                writer.append("H110");writer.append(',');  // evaluation test length
-                writer.append("H101");writer.append(',');  // evaluation test length
-                writer.append("H100");writer.append(',');  // evaluation test length
-                writer.append("H011");writer.append(',');  // evaluation test length
-                writer.append("H010");writer.append(',');  // evaluation test length
-                writer.append("H001");writer.append(',');  // evaluation test length
-                writer.append("H000");writer.append(',');  // evaluation test length
-                writer.append("PRECISION GG");writer.append(',');  // evaluation test length
-                writer.append("RECALL GG");writer.append(',');  // evaluation test length
-                writer.append("NDCG GG");writer.append(',');  // evaluation test length
-                writer.append("PRECISION GO");writer.append(',');  // evaluation test length
-                writer.append("RECALL GO");writer.append(',');  // evaluation test length
-                writer.append("NDCG GO");writer.append(',');  // evaluation test length
+                writer.append("H111");writer.append(',');  
+                writer.append("H110");writer.append(',');  
+                writer.append("H101");writer.append(',');  
+                writer.append("H100");writer.append(',');  
+                writer.append("H011");writer.append(',');  
+                writer.append("H010");writer.append(',');  
+                writer.append("H001");writer.append(','); 
+                writer.append("H000");writer.append(',');  
+                writer.append("PRECISION GG");writer.append(',');  
+                writer.append("RECALL GG");writer.append(',');  
+                writer.append("NDCG GG");writer.append(',');  
+                writer.append("PRECISION GL");writer.append(',');  
+                writer.append("RECALL GL");writer.append(','); 
+                writer.append("NDCG GL");writer.append(','); 
                 writer.append("TRANSSEC");writer.append(',');
-                writer.append("GROUPS");writer.append(',');
-                writer.append("GROUPS CHANGES DIV");writer.append('\n');
+                writer.append("GROUPS");writer.append(',');writer.append('\n');
                 writer.flush();
             } catch (IOException ex) {
                 Logger.getLogger(RecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
@@ -191,21 +186,21 @@ public class RecommendationEvaluator extends AbstractMOAObject{
             writer.append(',');
             
             for(int i = 0; i < this.numRecommendedItems.length; i++){
-                Double goPrecision = this.goSumPrecision[i]/this.numOfTestedTransactions[i];
+                Double goPrecision = this.glSumPrecision[i]/this.numOfTestedTransactions[i];
                 writer.append(goPrecision.toString());
                 if(i < this.numRecommendedItems.length - 1) writer.append(':');
             }
             writer.append(',');
             
            for(int i = 0; i < this.numRecommendedItems.length; i++){
-                Double goRecall= this.goSumRecall[i]/this.numOfTestedTransactions[i];
+                Double goRecall= this.grSumRecall[i]/this.numOfTestedTransactions[i];
                 writer.append(goRecall.toString());
                 if(i < this.numRecommendedItems.length - 1) writer.append(':');
             }
             writer.append(',');
             
             for(int i = 0; i < this.numRecommendedItems.length; i++){
-                Double goNdcg = this.goSumNDCG[i]/this.numOfTestedTransactions[i];
+                Double goNdcg = this.glSumNDCG[i]/this.numOfTestedTransactions[i];
                 writer.append(goNdcg.toString());
                 if(i < this.numRecommendedItems.length - 1) writer.append(':');
             }
@@ -333,24 +328,24 @@ public class RecommendationEvaluator extends AbstractMOAObject{
         
         this.ggSumAllHits[ind] += intersectGGC.cardinality();
         this.ggSumRealRecommended[ind] += recsGGC.size();
-        this.goSumAllHits[ind] += intersectGO.cardinality();
-        this.goSumRealRecommended[ind] += recsGO.size();
-        this.ogSumAllHits[ind] += intersectOG.cardinality();
-        this.ogSumRealRecommended[ind] += recsOG.size();
+        this.glSumAllHits[ind] += intersectGO.cardinality();
+        this.glSumRealRecommended[ind] += recsGO.size();
+        this.grSumAllHits[ind] += intersectOG.cardinality();
+        this.grSumRealRecommended[ind] += recsOG.size();
         this.allTestedItems[ind] += testWindow.size();
         this.numOfTestedTransactions[ind] += 1;
         this.ggSumNDCG[ind] += dcgGG/idcg;
-        this.goSumNDCG[ind] += dcgGO/idcg;
-        this.ogSumNDCG[ind] += dcgOG/idcg;
+        this.glSumNDCG[ind] += dcgGO/idcg;
+        this.grSumNDCG[ind] += dcgOG/idcg;
         double precGGC = (double)intersectGGC.cardinality()/(double)numRecommendedItems[ind];
         double precGO = (double)intersectGO.cardinality()/(double)numRecommendedItems[ind];
         double precOG = (double)intersectOG.cardinality()/(double)numRecommendedItems[ind];
         this.ggSumPrecision[ind] += precGGC;
-        this.goSumPrecision[ind] += precGO;
-        this.ogSumPrecision[ind] += precOG;
+        this.glSumPrecision[ind] += precGO;
+        this.grSumPrecision[ind] += precOG;
         this.ggSumRecall[ind] += (double)intersectGGC.cardinality()/(double)testWindow.size();
-        this.goSumRecall[ind] += (double)intersectGO.cardinality()/(double)testWindow.size();
-        this.ogSumRecall[ind] += (double)intersectOG.cardinality()/(double)testWindow.size();
+        this.grSumRecall[ind] += (double)intersectGO.cardinality()/(double)testWindow.size();
+        this.grSumRecall[ind] += (double)intersectOG.cardinality()/(double)testWindow.size();
         GroupStatsResults gsr = null;
         if(this.groupStats.containsKey(groupid)){
            gsr  = this.groupStats.get(groupid);
@@ -401,12 +396,11 @@ public class RecommendationEvaluator extends AbstractMOAObject{
     }
     
     
-    
     public SummaryResults getResults() {
         SummaryResults results = new SummaryResults(numRecommendedItems);
         results.setAllHitsGGC(ggSumAllHits);
-        results.setAllHitsGO(goSumAllHits);
-        results.setAllHitsOG(ogSumAllHits);
+        results.setAllHitsGO(glSumAllHits);
+        results.setAllHitsOG(grSumAllHits);
         double[] ggprecision = new double[numRecommendedItems.length];
         double[] ggrecall = new double[numRecommendedItems.length];
         double[] ggf1 = new double[numRecommendedItems.length];
@@ -424,13 +418,13 @@ public class RecommendationEvaluator extends AbstractMOAObject{
             ggrecall[i] = this.ggSumRecall[i]/this.numOfTestedTransactions[i];
             ggndcg[i] = this.ggSumNDCG[i]/this.numOfTestedTransactions[i];
             ggf1[i] = computeF1(ggprecision[i], ggrecall[i]);
-            goprecision[i] = this.goSumPrecision[i]/this.numOfTestedTransactions[i];
-            gorecall[i] = this.goSumRecall[i]/this.numOfTestedTransactions[i];
-            gondcg[i] = this.goSumNDCG[i]/this.numOfTestedTransactions[i];
+            goprecision[i] = this.glSumPrecision[i]/this.numOfTestedTransactions[i];
+            gorecall[i] = this.grSumRecall[i]/this.numOfTestedTransactions[i];
+            gondcg[i] = this.glSumNDCG[i]/this.numOfTestedTransactions[i];
             gof1[i] = computeF1(goprecision[i], gorecall[i]);
-            ogprecision[i] = this.ogSumPrecision[i]/this.numOfTestedTransactions[i];
-            ogrecall[i] = this.ogSumRecall[i]/this.numOfTestedTransactions[i];
-            ogndcg[i] = this.ogSumNDCG[i]/this.numOfTestedTransactions[i];
+            ogprecision[i] = this.grSumPrecision[i]/this.numOfTestedTransactions[i];
+            ogrecall[i] = this.grSumRecall[i]/this.numOfTestedTransactions[i];
+            ogndcg[i] = this.grSumNDCG[i]/this.numOfTestedTransactions[i];
             ogf1[i] = computeF1(ogprecision[i], ogrecall[i]);
         }
         results.setAllTestedItems(allTestedItems);
@@ -446,8 +440,8 @@ public class RecommendationEvaluator extends AbstractMOAObject{
         results.setPrecisionGO(goprecision);
         results.setPrecisionOG(ogprecision);
         results.setRealRecommendedGGC(ggSumRealRecommended);
-        results.setRealRecommendedGO(goSumRealRecommended);
-        results.setRealRecommendedOG(ogSumRealRecommended);
+        results.setRealRecommendedGO(glSumRealRecommended);
+        results.setRealRecommendedOG(grSumRealRecommended);
         results.setRecallGGC(ggrecall);
         results.setRecallGO(gorecall);
         results.setRecallOG(ogrecall);

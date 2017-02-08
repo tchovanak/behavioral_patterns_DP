@@ -5,13 +5,12 @@
  */
 package moa.tasks;
 
-import moa.core.PPSDM.dto.Parameter;
-import moa.core.PPSDM.utils.OutputManager;
+import moa.core.dto.Parameter;
+import moa.core.utils.OutputManager;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import moa.core.PPSDM.enums.SortStrategiesEnum;
-import moa.core.PPSDM.enums.RecommendStrategiesEnum;
+import moa.core.enums.RecommendStrategiesEnum;
 import moa.core.PPSDM.Configuration;
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,19 +20,19 @@ import java.util.logging.Logger;
 import moa.MOAObject;
 import moa.core.Example;
 import moa.core.ObjectRepository;
-import moa.core.PPSDM.RecommendationGenerator;
-import moa.core.PPSDM.clustering.ClustererClustream;
-import moa.core.PPSDM.clustering.ClusteringComponent;
+import moa.learners.recommendation.RecommendationGenerator;
+import moa.learners.clustering.ClustererClustream;
+import moa.learners.clustering.ClusteringComponent;
 import moa.core.TimingUtils;
 import moa.evaluation.RecommendationEvaluator;
-import moa.learners.PersonalizedPatternsMiner;
+import moa.learners.patternMining.PersonalizedPatternsMiner;
 import moa.streams.SessionsFileStream;
-import moa.core.PPSDM.dto.RecommendationResults;
-import moa.core.PPSDM.dto.SummaryResults;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
-import moa.core.PPSDM.dto.SnapshotResults;
-import moa.core.PPSDM.patternMining.PatternMiningComponent;
-import moa.core.PPSDM.patternMining.PatternMiningIncMine;
+import moa.core.dto.RecommendationResults;
+import moa.core.dto.SummaryResults;
+import moa.core.utils.UtilitiesPPSDM;
+import moa.core.dto.SnapshotResults;
+import moa.learners.patternMining.PatternMiningComponent;
+import moa.learners.patternMining.PatternMiningIncMine;
 
 /**
  * Task to evaluate one from configurations in grid during grid search. 
@@ -63,7 +62,7 @@ public class GridSearchLearnEvaluate implements Task {
         this.pathToOutputFile = pathToOutputFile;
         this.pathToCategoryMappingFile = pathToCategoryMappingFile;
         this.config = new Configuration();
-        this.om = new OutputManager(config, pathToSummaryOutputFile);
+        this.om = new OutputManager(pathToSummaryOutputFile);
     }
 
     
@@ -96,7 +95,7 @@ public class GridSearchLearnEvaluate implements Task {
              learner = new PersonalizedPatternsMiner(config,patternMining,
                         clusteringComponent, recGenerator);
         }
-        boolean valid = configureLearnerWithParams(learner, params);
+        boolean valid = configureParams(params);
         // CHECK IF segment legnth and support is valid:
         if(!valid){ return null; }
         
@@ -108,8 +107,7 @@ public class GridSearchLearnEvaluate implements Task {
         learner.resetLearning();
         stream.prepareForUse();
         TimingUtils.enablePreciseTiming();
-        
-        config.setOutputFile(this.pathToOutputFile + "results_G" + config.getGrouping() + "_id_" + id + ".csv");
+                
         RecommendationEvaluator evaluator = 
                 new RecommendationEvaluator(config);
         
@@ -120,8 +118,9 @@ public class GridSearchLearnEvaluate implements Task {
         while (stream.hasMoreInstances()) {
             config.incrementTransactionCounter();
             // NOW EXTRACT PATTERNS TO FILE
-            double[] speedResults = UtilitiesPPSDM.getActualTransSec(config.getTransactionCounter(),
-                    config.getStreamStartTime());
+            double[] speedResults = UtilitiesPPSDM.getActualTransSec(
+                                                    config.getTransactionCounter(),
+                                                    config.getStreamStartTime());
             if(!config.getEvaluateSpeed()){
                 if(config.getExtractDetails()){
                     SnapshotResults snap = learner.extractSnapshot(evaluator);
@@ -149,8 +148,9 @@ public class GridSearchLearnEvaluate implements Task {
             }
             learner.trainOnInstance(trainInst); // this will start training proces - it means first update clustering and then find frequent patterns
         }
-        double[] speedResults = UtilitiesPPSDM.getActualTransSec(config.getTransactionCounter(),
-                    config.getStreamStartTime());
+        double[] speedResults = UtilitiesPPSDM.getActualTransSec(
+                                                    config.getTransactionCounter(),
+                                                    config.getStreamStartTime());
         if(!config.getEvaluateSpeed()){
             SummaryResults results = evaluator.getResults();
             om.writeResultsToFile(results, speedResults[0], speedResults[1], 
@@ -163,8 +163,8 @@ public class GridSearchLearnEvaluate implements Task {
     }
     
     
-    private boolean configureLearnerWithParams(PersonalizedPatternsMiner learner, 
-            Map<String,Parameter> params){
+    private boolean configureParams(Map<String,Parameter> params){
+        config.setOutputFile(this.pathToOutputFile + "results_G" + config.getGrouping() + "_id_" + id + ".csv");
         // RECOMMEND PARAMETERS
         config.setGrouping((int)params.get("GROUPING").getValue() == 1);
         config.setRecommendationStrategy( 

@@ -21,11 +21,7 @@ package moa.core.PPSDM;
 
 import java.io.Serializable;
 import java.util.*;
-import moa.core.FrequentItemset;
-import moa.core.InvertedFCIIndex;
-import moa.core.SemiFCI;
-import moa.core.SemiFCIid;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.utils.UtilitiesPPSDM;
 
 /*
    Changes > Author: Tomas Chovanak

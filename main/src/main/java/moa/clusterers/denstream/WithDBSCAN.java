@@ -39,8 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import moa.core.AutoExpandVector;
-import moa.core.PPSDM.enums.DistanceMetricsEnum;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.enums.DistanceMetricsEnum;
+import moa.core.utils.UtilitiesPPSDM;
 
 public class WithDBSCAN extends AbstractClusterer {
 	

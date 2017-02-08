@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Observable;
 import com.yahoo.labs.samoa.instances.Instance;
-import moa.core.SemiFCI;
 
 /*
    I Made little change to notifyIncMine method (Tomas Chovanak).

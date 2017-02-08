@@ -43,8 +43,8 @@ import com.yahoo.labs.samoa.instances.DenseInstance;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.Map;
 import moa.core.AutoExpandVector;
-import moa.core.PPSDM.enums.DistanceMetricsEnum;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.enums.DistanceMetricsEnum;
+import moa.core.utils.UtilitiesPPSDM;
 
 /* Changes > Author: Tomas Chovanak
  * Choice of distance metric is now made with parameter from static Configuration 

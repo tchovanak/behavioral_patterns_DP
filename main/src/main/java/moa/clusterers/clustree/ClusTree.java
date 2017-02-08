@@ -30,6 +30,7 @@ import com.github.javacliparser.IntOption;
 import com.yahoo.labs.samoa.instances.Instance;
 
 public class ClusTree extends AbstractClusterer{
+    
     private static final long serialVersionUID = 1L;
 	
     public IntOption horizonOption = new IntOption("horizon",
