@@ -31,9 +31,10 @@ import com.yahoo.labs.samoa.instances.Prediction;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import moa.core.PPSDM.Configuration;
 import moa.core.PPSDM.FCITablePPSDM;
 import moa.core.PPSDM.FixedLengthWindowManagerPPSDM;
+import moa.core.PPSDM.patternMining.PersonalizedIncMineConfiguration;
+import moa.evaluation.EvaluationConfiguration;
 
 
 /*
@@ -43,7 +44,6 @@ import moa.core.PPSDM.FixedLengthWindowManagerPPSDM;
 public class PersonalizedIncMine extends AbstractLearner implements Observer {
     
     private static final long serialVersionUID = 1L;
-
  
     void setRelaxationRate(double d) {
         this.r = d;
@@ -93,37 +93,23 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         }
     }
     
-    private int windowSizeOption;
-    private int maxItemsetLengthOption;
-    private int numberOfGroupsOption; 
-    private double minSupportOption;
-    private double relaxationRateOption;
-    private int fixedSegmentLengthOption;
-    private int groupFixedSegmentLengthOption;
+    private PersonalizedIncMineConfiguration config;
+   // private EvaluationConfiguration evalConfig;
+ 
     
     public double getMinSupport(){
-        return minSupportOption;
+        return config.getMS();
     }
     
     public int getFixedSegmentLength(){
-        return fixedSegmentLengthOption;
+        return config.getFSL();
     }
     
-    public PersonalizedIncMine(int windowSizeOption,int maxItemsetLengthOption,
-            int numberOfGroupsOption, double minSupportOption,
-            double relaxationRateOption, int fixedSegmentLengthOption, 
-            int groupFixedSegmentLengthOption){
-        this.windowSizeOption = windowSizeOption;
-        this.maxItemsetLengthOption = maxItemsetLengthOption;
-        this.numberOfGroupsOption = numberOfGroupsOption; 
-        this.minSupportOption = minSupportOption;
-        this.relaxationRateOption = relaxationRateOption;
-        this.fixedSegmentLengthOption = fixedSegmentLengthOption;
-        this.groupFixedSegmentLengthOption = groupFixedSegmentLengthOption;
-
+    public PersonalizedIncMine(PersonalizedIncMineConfiguration config){
+       this.config = config;
+       //this.evalConfig = evalConfig;
     }
     
-   
     protected double r;
     protected double sigma;
     
@@ -147,40 +133,39 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         this.fciTableGlobal = new FCITablePPSDM();
         this.fciTablesGroups = new ArrayList<>();
         //prepares FCI table foreach group
-        for(int i = 0; i < this.numberOfGroupsOption; i++){ 
+        for(int i = 0; i < config.getGC(); i++){ 
             fciTablesGroups.add(i, new FCITablePPSDM());
         }
-        this.sigma = this.minSupportOption;
-        this.r = this.relaxationRateOption;
+        this.sigma = config.getMS();
+        this.r = config.getRR();
         
         //double sigmaGroup = this.sigma/(double)this.numberOfGroupsOption;
         double min_sup = new BigDecimal(this.r*this.sigma).setScale(8, RoundingMode.DOWN).doubleValue(); //necessary to correct double rounding error
         //double minSupGroup = new BigDecimal(this.r*sigmaGroup).setScale(8, RoundingMode.DOWN).doubleValue(); //necessary to correct double rounding error
         this.swmGlobal = new FixedLengthWindowManagerPPSDM(min_sup, 
-                this.maxItemsetLengthOption, this.fixedSegmentLengthOption, 
-                this.windowSizeOption);
+                config.getMIL(), config.getFSL(), config.getWS());
         this.swmGlobal.deleteObservers();
         this.swmGlobal.addObserver(this);
         this.swmGroups = new ArrayList<>();
         // prepares sliding window for each group
-        for(int i = 0; i < this.numberOfGroupsOption; i++){
-            this.swmGroups.add(i, new FixedLengthWindowManagerPPSDM(min_sup, 
-                    this.maxItemsetLengthOption, this.groupFixedSegmentLengthOption, 
-                    this.windowSizeOption));
+        for(int i = 0; i < config.getGC(); i++){
+            this.swmGroups.add(i, new FixedLengthWindowManagerPPSDM(min_sup,
+                    config.getMIL(), config.getGFSL(),config.getWS()));
             this.swmGroups.get(i).deleteObservers();
             this.swmGroups.get(i).addObserver(this);        
         }
     }
     
+    
     public void addFciTable() {
         double min_sup = new BigDecimal(this.r*this.sigma).setScale(8, RoundingMode.DOWN).doubleValue(); //necessary to correct double rounding error
         this.swmGroups.add(new FixedLengthWindowManagerPPSDM(min_sup, 
-                this.maxItemsetLengthOption, this.groupFixedSegmentLengthOption, 
-                this.windowSizeOption));
+                config.getMIL(), config.getGFSL(),config.getWS()));
         this.swmGroups.get(this.swmGroups.size()-1).addObserver(this);
         fciTablesGroups.add(new FCITablePPSDM());
     }
 
+    
     @Override
     public void trainOnInstanceImpl(Instance inst) {
         this.swmGlobal.addInstance(inst.copy());
@@ -244,6 +229,7 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
     public void update(Observable o, Object arg) {
         SlidingWindowManagerPPSDM swm = (SlidingWindowManagerPPSDM) o;
         ObserverParamWrapper param = (ObserverParamWrapper) arg;
+        
         int groupid = param.getGroupid();
         FCITablePPSDM fciTable = null;
         if(groupid == -1){
@@ -255,13 +241,15 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         fciTable.nAdded = 0;
         fciTable.nRemoved = 0;
         int lastSegmentLenght = param.getSegmentLength();
-        this.minsup = UtilitiesPPSDM.getIncMineMinSupportVector(sigma,r,windowSizeOption,lastSegmentLenght);
+        this.minsup = UtilitiesPPSDM.getIncMineMinSupportVector(sigma,r,config.getWS(),lastSegmentLenght);
         
-        Configuration.START_UPDATE_TIME = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        UtilitiesPPSDM.configureMaxUpdateTime();
+        long startUpdateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
+        double maxUpdateTime = UtilitiesPPSDM.computeMaxUpdateTime(config.getTransactionCounter(),
+                config.getMTS(), config.getStartUpdateTime(), config.getStreamStartTime());
+        
         List<SemiFCI> semiFCIs = null;
         try {
-            semiFCIs = swm.getFCI();
+            semiFCIs = swm.getFCI(startUpdateTime, maxUpdateTime);
         } catch (Exception ex) {
             Logger.getLogger(PersonalizedIncMine.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -271,7 +259,7 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         
         for(SemiFCI fci: semiFCIs) {
             // SPEED REGULATION PART
-            double progress = UtilitiesPPSDM.getUpdateProgress();
+            double progress = UtilitiesPPSDM.getUpdateProgress(startUpdateTime,maxUpdateTime);
             if(progress > 1.0){
                 System.out.println("OUT OF TIME");
                 break;
@@ -342,12 +330,10 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
             System.gc();
         }
         
-        fciTable.computeSemiFcis(this.fixedSegmentLengthOption);
+        fciTable.computeSemiFcis(config.getFSL());
         System.out.println("Update done in " + this.getUpdateTime()/1e6 + " ms.");
         System.out.println(fciTable.size() + " SemiFCIs actually stored\n");
-//        if(Configuration.RECOMMEND_WITH_FI){
-//            fciTable.computeFis(minSupportOption, lastSegmentLenght);
-//        }
+
     }
 
     /**
@@ -450,7 +436,7 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
             int[] supportVector = fciTable.getFCI(sfsId).getSupports();
             supportVector[0] = superFCI.getSupports()[0];
             
-            SemiFCI subFCI = new SemiFCI(subset, 0, this.windowSizeOption);
+            SemiFCI subFCI = new SemiFCI(subset, 0, config.getWS());
             subFCI.setSupports(supportVector);
             
             int k = subFCI.computeK(this.minsup,1);

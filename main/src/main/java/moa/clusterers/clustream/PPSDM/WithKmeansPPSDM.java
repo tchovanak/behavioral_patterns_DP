@@ -43,6 +43,7 @@ import com.yahoo.labs.samoa.instances.DenseInstance;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.Map;
 import moa.core.AutoExpandVector;
+import moa.core.PPSDM.enums.DistanceMetricsEnum;
 import moa.core.PPSDM.utils.UtilitiesPPSDM;
 
 /* Changes > Author: Tomas Chovanak
@@ -76,9 +77,10 @@ public class WithKmeansPPSDM extends AbstractClusterer {
 	private int bufferSize;
 	private double t;
 	private int m;
+        
 	
-	public WithKmeansPPSDM() {
-	
+	public WithKmeansPPSDM(DistanceMetricsEnum distance) {
+            UtilitiesPPSDM.distanceMetric = distance;
 	}
 
 	@Override

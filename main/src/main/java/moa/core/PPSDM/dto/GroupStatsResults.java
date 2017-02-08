@@ -7,7 +7,6 @@ package moa.core.PPSDM.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import moa.core.PPSDM.FciValue;
 
 /**
  *
@@ -18,7 +17,7 @@ public class GroupStatsResults {
     private int[] numRecommendedItems = {1,2,3,4,5,10,15};
     private List<Integer> uids = new ArrayList<>();
     private Integer groupid = -1;
-    private List<FciValue> fcis;
+    private List<FIWrapper> fcis;
     private Double averageSupport = 0.0;
     private Integer numberOfUsers = 0;
     private Integer numOfUniquePatterns = 0;
@@ -37,7 +36,7 @@ public class GroupStatsResults {
     private double[] centre;
     private int clusteringId;
 
-    public List<FciValue> getFcis() {
+    public List<FIWrapper> getFcis() {
         return fcis;
     }
 
@@ -134,7 +133,7 @@ public class GroupStatsResults {
         this.averageSupportOfUniquePatterns = averageSupportOfUniquePatterns;
     }
 
-    public void setFcis(List<FciValue> fcis) {
+    public void setFcis(List<FIWrapper> fcis) {
         this.fcis = fcis;
     }
 

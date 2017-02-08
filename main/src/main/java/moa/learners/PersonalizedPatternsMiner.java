@@ -1,7 +1,7 @@
 package moa.learners;
 
 import moa.core.PPSDM.dto.RecommendationResults;
-import moa.core.PPSDM.FciValue;
+import moa.core.PPSDM.dto.FIWrapper;
 
 import moa.core.PPSDM.UserModelPPSDM;
 import java.util.*;
@@ -22,8 +22,9 @@ import moa.core.PPSDM.clustering.ClusteringComponent;
 import moa.core.PPSDM.dto.GroupStatsResults;
 import moa.core.PPSDM.dto.SnapshotResults;
 import moa.core.PPSDM.patternMining.PatternMiningComponent;
+import moa.core.PPSDM.patternMining.PatternMiningConfiguration;
 import moa.core.PPSDM.patternMining.PatternMiningIncMine;
-import moa.evaluation.PPSDMRecommendationEvaluator;
+import moa.evaluation.RecommendationEvaluator;
 
 /*
     This class defines new AbstractLearner that performs clustering of users to groups and 
@@ -34,21 +35,11 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     
     private static final long serialVersionUID = 1L;
     
-    public Integer numMinNumberOfChangesInUserModel;
-    public Integer numMinNumberOfMicroclustersUpdates;
-    public Integer numOfDimensionsInUserModel;
-    public Integer windowSize;
-    public Integer maxItemsetLength;
-    public Integer numberOfGroups;
-    public Double  minSupport;
-    public Double  relaxationRate;
-    public Integer fixedSegmentLength;
-    public Integer groupFixedSegmentLength;
-    public Integer numberOfRecommendedItems;
-    public Integer evaluationWindowSize;
-    public Integer maxNumKernels;
-    public Integer kernelRadiFactor;
-    public Boolean useGrouping;
+//    private Integer numMinNumberOfChangesInUserModel;
+//    private Integer numMinNumberOfMicroclustersUpdates;
+//    private Integer numOfDimensionsInUserModel;
+//    
+//    private Boolean useGrouping;
 
     
     //private PersonalizedIncMine incMine;
@@ -59,14 +50,25 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     private Map<Integer,Integer> catsToSupercats = new ConcurrentHashMap<>();
     
     private int microclusteringUpdatesCounter = 0;
-    private int snapshotId = 1;
+    private PatternMiningConfiguration config;
     
-    public PersonalizedPatternsMiner(){
+    
+    public PersonalizedPatternsMiner(PatternMiningConfiguration config, 
+            PatternMiningComponent patternsMiner,
+            ClusteringComponent clusteringComponent,
+            RecommendationGenerator recGenerator){
         super();
+        this.config = config;
+        this.patternsMiner = patternsMiner;
+        this.clustererPPSDM = clusteringComponent;
+        this.recommendationGenerator = recGenerator;
+        
     }
     
-    public PersonalizedPatternsMiner(Map<Integer,Integer> map) {
-        this();
+    public PersonalizedPatternsMiner(Map<Integer,Integer> map, Configuration config,
+            PatternMiningComponent patternsMiner,
+            ClusteringComponent clusteringComponent,RecommendationGenerator recGenerator) {
+        this(config,patternsMiner, clusteringComponent, recGenerator);
         this.catsToSupercats = map;    
     }
     
@@ -74,17 +76,12 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     public void resetLearningImpl() {
        
         // Initialize pattern mining component
-        this.patternsMiner = new PatternMiningIncMine(windowSize, maxItemsetLength,
-                numberOfGroups, minSupport, relaxationRate,fixedSegmentLength, 
-                groupFixedSegmentLength);
+        this.patternsMiner.resetLearning();
         
         // Initialize clustering component
-        this.clustererPPSDM = new ClustererClustream(numberOfGroups,
-            maxNumKernels,
-            kernelRadiFactor);
+        this.clustererPPSDM.resetLearning();
         
-        this.recommendationGenerator = new RecommendationGenerator(evaluationWindowSize,
-                patternsMiner,clustererPPSDM,numberOfRecommendedItems);
+        this.recommendationGenerator.resetLearning();
       
         System.gc(); // force garbage collection
     }
@@ -94,16 +91,16 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     public void trainOnInstance(Example e) {
         // A3: USER MODEL UPDATE
         Instance inst = (Instance) e.getData();
-        if(useGrouping){
+        if(config.getGrouping()){
             UserModelPPSDM um = clustererPPSDM.updateUserModel(inst.copy(), 
-                    catsToSupercats, this.numMinNumberOfChangesInUserModel);
-            if(um.getNumOfNewSessions() > this.numMinNumberOfChangesInUserModel){
+                    catsToSupercats, config.getTUC());
+            if(um.getNumOfNewSessions() > config.getTUC()){
                 // A4: NULLING USER MODEL CHANGES NUMBER
-                Instance umInstance = um.getNewSparseInstance(numOfDimensionsInUserModel);
+                Instance umInstance = um.getNewSparseInstance(config.getUserModelDimensions());
                 // A5: UPDATE MICROCLUSTERS AND INCREMENT MICROCLUSTERS CHANGES
                 clustererPPSDM.trainOnInstance(umInstance);
                 this.microclusteringUpdatesCounter++;
-                if(this.microclusteringUpdatesCounter > this.numMinNumberOfMicroclustersUpdates){
+                if(this.microclusteringUpdatesCounter > config.getTCM()){
                     // perform macroclustering
                     // A6: NULLING MICROCLUSTERS UPDATES COUNTER
                     this.microclusteringUpdatesCounter = 0;
@@ -136,14 +133,16 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     
     
     public RecommendationResults getRecommendationsForInstance(Example e) {
-        return recommendationGenerator.generateRecommendations(e, useGrouping);
+        return recommendationGenerator.generateRecommendations(e, config.getGrouping());
         
     }
     
     
-    public SnapshotResults extractSnapshot(PPSDMRecommendationEvaluator evaluator){
-        if(!(((this.microclusteringUpdatesCounter * this.patternsMiner.getSnapshotId()) == 
-                (Configuration.EXTRACT_PATTERNS_AT * clustererPPSDM.getClusteringID())))){
+    public SnapshotResults extractSnapshot(RecommendationEvaluator evaluator){
+        
+        if(!(((this.microclusteringUpdatesCounter * this.patternsMiner.getSnapshotId()) ==
+                (evaluator.getConfiguration().getExtractPatternsAt() 
+                * clustererPPSDM.getClusteringID())))){
             return null;
         }
         SnapshotResults snap = this.patternsMiner.generateSnapshot(clustererPPSDM);
@@ -152,7 +151,7 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     }
     
     
-    public List<FciValue> extractPatterns(){
+    public List<FIWrapper> extractPatterns(){
         return this.patternsMiner.extractPatterns();
     }
     
@@ -215,9 +214,5 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
-    public Boolean getUseGrouping() {
-        return useGrouping;
-    }
 
 }

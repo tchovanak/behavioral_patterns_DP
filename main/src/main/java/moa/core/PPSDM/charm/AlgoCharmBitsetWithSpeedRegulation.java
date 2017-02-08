@@ -45,6 +45,8 @@ public class AlgoCharmBitsetWithSpeedRegulation {
 	private long startTimestamp; // for stats
 	private long endTimestamp; // for stats
 	private int minsupRelative;
+        private long startUpdateTime;
+        private double maxUpdateTime;
 
 	Map<Integer, BitSet> mapItemTIDS = new HashMap<>();
 
@@ -65,7 +67,10 @@ public class AlgoCharmBitsetWithSpeedRegulation {
             * @return
 	 */
 	public Itemsets runAlgorithm(Context context, double minsup,
-			int hashTableSize) {
+			int hashTableSize, long startUpdateTime, 
+                        double maxUpdateTime) {
+                this.startUpdateTime = startUpdateTime;
+                this.maxUpdateTime = maxUpdateTime;
 		this.hash = new HashTable(hashTableSize);
 		startTimestamp = System.currentTimeMillis();
 
@@ -114,7 +119,7 @@ public class AlgoCharmBitsetWithSpeedRegulation {
 
 		while (root.getChildNodes().size() > 0) {
                     // SPEED REGULATION
-                    double progress = UtilitiesPPSDM.getUpdateProgress();
+                    double progress = UtilitiesPPSDM.getUpdateProgress(startUpdateTime, maxUpdateTime);
                     if(progress >= 0.5){
                         System.out.println("OUT OF TIME AND SIZE");
                         break;
@@ -194,10 +199,9 @@ public class AlgoCharmBitsetWithSpeedRegulation {
 
 		while (currNode.getChildNodes().size() > 0) {
                     // SPEED REGULATION
-                    double progress = UtilitiesPPSDM.getUpdateProgress();
-                    if(hash.count > Configuration.MAX_FCI_SET_COUNT 
-                            || progress >= 0.5){
-                        System.out.println("OUT OF TIME AND SIZE");
+                    double progress = UtilitiesPPSDM.getUpdateProgress(startUpdateTime, maxUpdateTime);
+                    if(progress >= 0.5){
+                        System.out.println("OUT OF TIME");
                         break;
                     }
                     ITNode child = currNode.getChildNodes().get(0);

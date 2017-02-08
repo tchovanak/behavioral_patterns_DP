@@ -142,12 +142,6 @@ public class UserModelPPSDM {
                 GroupCounter.groupscounters[groupid.intValue()]++;
             }
         }
-        if(this.groupid != groupid && this.groupid != -1.0){
-            Configuration.GROUP_CHANGED_TIMES += 1;
-        }
-        if(this.groupid != -1.0){
-            Configuration.GROUP_CHANGES += 1;
-        }
         this.groupid = groupid;
     }
 

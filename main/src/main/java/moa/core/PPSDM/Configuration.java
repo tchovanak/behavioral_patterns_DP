@@ -5,128 +5,349 @@
  */
 package moa.core.PPSDM;
 
+import moa.core.PPSDM.clustering.ClusteringComponentConfiguration;
+import moa.core.PPSDM.clustering.ClustreamConfiguration;
+import moa.core.PPSDM.patternMining.PersonalizedIncMineConfiguration;
 import moa.core.PPSDM.enums.ClusteringMethodsEnum;
 import moa.core.PPSDM.enums.DistanceMetricsEnum;
 import moa.core.PPSDM.enums.RecommendStrategiesEnum;
 import moa.core.PPSDM.enums.SortStrategiesEnum;
+import moa.core.PPSDM.patternMining.PatternMiningConfiguration;
+import moa.evaluation.EvaluationConfiguration;
 
 /**
- * Static configuration of PPSDM method with default values
+ * Configuration of PPSDM method with default values
  * @author Tomas Chovanak
  */
-public class Configuration {
-    
-    /*
-        Flag if speed is evaluated or not
-    */
-    public static boolean EVALUATE_SPEED = false;
-    
-    /*
-        Flag if speed is evaluated or not
-    */
-    public static boolean EXTRACT_DETAILS = true;
+public class Configuration implements GeneralConfiguration, 
+        PatternMiningConfiguration, PersonalizedIncMineConfiguration,
+        ClusteringComponentConfiguration,ClustreamConfiguration, 
+        RecommendationConfiguration, EvaluationConfiguration  {
     
     
-    /*
-        At which transaction speed results should be extracted
-    */
-    public static int EXTRACT_SPEED_RESULTS_AT = 15000;
+    //PATTERN MINING 
+    private int TUC;
+    private int TCM;
+    private int userModelDimensions;
+    // INCMINE FIELDS
+    private int WS;
+    private int MIL;
+    private int GC;
+    private double MS;
+    private double RR;
+    private int FSL;
+    private int GFSL;
+    private long StartUpdateTime;
+
+    // CLUSTREAM FIELDS
+    private int maxNumKernels;
+    private int kernelRadiFactor;
     
-    /*
-        Flag determines if personalized mining is turned on 
-    */
-    public static boolean GROUPING = false;
+    // RECOMMENDATION FIELDS
+    private int EWS;
+    private int RC;
+    private RecommendStrategiesEnum recommendationStrategy = RecommendStrategiesEnum.VOTES;
     
-   
+    // CLUSTERING
+    private int tcdiff;
     
-    /*
-        Maximal time of semifci's update after segment of data
-    */
-    public static double MAX_UPDATE_TIME = 20000; 
-    /*
-        Restriction of maximal number of fci items in memory
-    */
-    public static double MAX_FCI_SET_COUNT = 500000; 
-    /*
-        Speed restriction 
-    */
-    public static double MIN_TRANSSEC = 5;
+    // EVALUATION
+    private String outputFile;
+    private Boolean extractDetails = true;
+    private int transactionCounter = 0;
+    private long streamStartTime;
+    private int extractSpeedResultsAt = 15000;
+    private int extractPatternsAt = 795;
+    private int startEvaluatingFrom = 0;
+    private boolean evaluateSpeed = false;
     
-    /*
-        From which transaction should evaluation start 
-    */
-    public static int START_EVALUATING_FROM = 25;
+    // GENERAL 
+    private boolean grouping = true;
+    private int MTS = 15;
+    private DistanceMetricsEnum distanceMetric = DistanceMetricsEnum.EUCLIDEAN;
     
-    /*
-        Recommendation strategy BEST WINS or VOTING
-    */
-    public static RecommendStrategiesEnum RECOMMEND_STRATEGY = RecommendStrategiesEnum.VOTES;
+    @Override
+    public int getWS() {
+        return WS;
+    }
+
+    @Override
+    public void setWS(int WS) {
+        this.WS = WS;
+    }
+
+    @Override
+    public int getMIL() {
+        return MIL;
+    }
+
+    @Override
+    public void setMIL(int MIL) {
+        this.MIL = MIL;
+    }
+
+    @Override
+    public int getGC() {
+        return GC;
+    }
+
+    @Override
+    public void setGC(int GC) {
+        this.GC = GC;
+    }
+
+    @Override
+    public double getMS() {
+        return MS;
+    }
+
+    @Override
+    public void setMS(double MS) {
+        this.MS = MS;
+    }
+
+    @Override
+    public double getRR() {
+        return RR;
+    }
+
+    @Override
+    public void setRR(double RR) {
+        this.RR = RR;
+    }
+
+    @Override
+    public int getFSL() {
+        return FSL;
+    }
+
+    @Override
+    public void setFSL(int FSL) {
+        this.FSL = FSL;
+    }
+
+    @Override
+    public int getGFSL() {
+        return GFSL;
+    }
+
+    @Override
+    public void setGFSL(int GFSL) {
+        this.GFSL = GFSL;
+    }
+
+    @Override
+    public long getStartUpdateTime() {
+        return StartUpdateTime;
+    }
+
+    @Override
+    public void setStartUpdateTime(long StartUpdateTime) {
+        this.StartUpdateTime = StartUpdateTime;
+    }
+
+    @Override
+    public int getMaxNumKernels() {
+        return maxNumKernels;
+    }
+
+    @Override
+    public int getKernelRadiFactor() {
+        return kernelRadiFactor;
+    }
+
+    @Override
+    public void setMaxNumKernels(int gc) {
+        this.maxNumKernels = gc;
+    }
+
+    @Override
+    public void setKernelRadiFactor(int gc) {
+       this.kernelRadiFactor = gc; 
+    }
+
+    @Override
+    public void setEWS(int ews) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getEWS() {
+        return EWS;
+    }
+
+    @Override
+    public int getRC() {
+        return RC;
+    }
+
+    @Override
+    public void setRC(int rc) {
+        this.RC = rc;
+    }
+
+    @Override
+    public void setRecommendationStrategy(RecommendStrategiesEnum strat) {
+        this.recommendationStrategy = strat;
+    }
+
+    @Override
+    public RecommendStrategiesEnum getRecommendationStrategy() {
+        return recommendationStrategy;
+    }
+
+    @Override
+    public int getTcdiff() {
+        return tcdiff;
+    }
+
+    @Override
+    public void setTcdiff(int tcdiff) {
+        this.tcdiff = tcdiff;
+    }
+
+    @Override
+    public String getOutputFile() {
+        return outputFile;
+    }
+
+    @Override
+    public void setOutputFile(String outputFile) {
+        this.outputFile = outputFile;
+    }
+
+    @Override
+    public Boolean getExtractDetails() {
+        return extractDetails;
+    }
+
+    @Override
+    public void setExtractDetails(Boolean extractDetails) {
+        this.extractDetails = extractDetails;
+    }
+
+    @Override
+    public void setTransactionCounter(int count) {
+        this.transactionCounter = count;
+    }
+
+    @Override
+    public void incrementTransactionCounter() {
+       this.transactionCounter++;
+    }
+
+    @Override
+    public int getTransactionCounter() {
+        return transactionCounter;
+    }
+
+    @Override
+    public boolean getGrouping() {
+        return grouping;
+    }
+
+    @Override
+    public void setGrouping(boolean grouping) {
+        this.grouping = grouping;
+    }
+
+    @Override
+    public long getStreamStartTime() {
+        return streamStartTime;
+    }
+
+    @Override
+    public void setStreamStartTime(long streamStartTime) {
+        this.streamStartTime = streamStartTime;
+    }
+
+    @Override
+    public int getExtractSpeedResultsAt() {
+        return extractSpeedResultsAt;
+    }
+
+    @Override
+    public void setExtractSpeedResultsAt(int extractSpeedResultsAt) {
+        this.extractSpeedResultsAt = extractSpeedResultsAt;
+    }
+
+    @Override
+    public int getStartEvaluatingFrom() {
+        return startEvaluatingFrom;
+    }
+
+    @Override
+    public void setStartEvaluatingFrom(int startEvaluatingFrom) {
+        this.startEvaluatingFrom = startEvaluatingFrom;
+    }
+
+    public int getTUC() {
+        return TUC;
+    }
+
+    @Override
+    public void setTUC(int TUC) {
+        this.TUC = TUC;
+    }
+
+    @Override
+    public int getTCM() {
+        return TCM;
+    }
+
+    @Override
+    public void setTCM(int TCM) {
+        this.TCM = TCM;
+    }
+
+    @Override
+    public int getUserModelDimensions() {
+        return userModelDimensions;
+    }
+
+    @Override
+    public void setUserModelDimensions(int userModelDimensions) {
+        this.userModelDimensions = userModelDimensions;
+    }
+
+    @Override
+    public void setMTS(int mts) {
+         this.MTS = mts;
+    }
+
+    @Override
+    public int getMTS() {
+        return MTS;
+    }
+
+    @Override
+    public int getExtractPatternsAt() {
+        return extractPatternsAt;
+    }
+
+    @Override
+    public void setExtractPatternsAt(int ext) {
+        extractPatternsAt = ext;
+    }
+
+    @Override
+    public boolean getEvaluateSpeed() {
+        return evaluateSpeed;
+    }
+
+    @Override
+    public void setEvaluateSpeed(boolean evaluateSpeed) {
+        this.evaluateSpeed = evaluateSpeed;
+    }
+
+    public DistanceMetricsEnum getDistanceMetric() {
+        return distanceMetric;
+    }
+
+    public void setDistanceMetric(DistanceMetricsEnum distanceMetric) {
+        this.distanceMetric = distanceMetric;
+    }
     
-    /*
-        Strategy of sorting fcis 
-    */
-    public static SortStrategiesEnum SORT_STRATEGY = SortStrategiesEnum.LCSANDSUPPORT;
-    
-    /*
-        On which microcluster update shoul be snapshot of patterns and groupings extracted
-    */
-    public static int EXTRACT_PATTERNS_AT = 795;
-    
-    public static int MAX_INSTANCES_IN_MICROCLUSTER = 100;
-    
-    /*
-        Maximum difference in clustering ids of curent clustering and clustering id 
-        in user model. When difference is greater than user model is deleted.
-    */
-    public static int MAX_DIFFERENCE_OF_CLUSTERING_ID = 5;
-    
-    /*
-        Distance metric used with clustering
-    */
-    public static DistanceMetricsEnum DISTANCE_METRIC = DistanceMetricsEnum.EUCLIDEAN;
-    
-    /*
-        Clustering module used 
-    */
-    public static ClusteringMethodsEnum CLUSTERING_METHOD = ClusteringMethodsEnum.CLUSTREAM;
-    
-    /*
-        Number of transactions processed from start 
-    */
-    public static int TRANSACTION_COUNTER = 0;
-    
-    /*
-        Stores time of stream processing start
-    */
-    public static double STREAM_START_TIME = 0;
-    
-    /*
-        Stores start of update time
-    */
-    public static double START_UPDATE_TIME = 0;
-    
-    /*
-        Group counter 
-    */
-    public static int GROUP_COUNTER = 0;
-    
-    /*
-        Group changes counters
-    */
-    public static double GROUP_CHANGES = 0;
-    public static double GROUP_CHANGED_TIMES = 0; 
-    
-    /*
-        (Experimental) FciValue parameters constants 
-    */
-    public static double A = 0.0;
-    public static double B = 0.0;
-    public static double C = 0.0;
-    
-    /*
-        (Experimental) How to compute similarity between evaluation window and existing fcis
-    */
-    public static String INTERSECT_STRATEGY = "LCS";
     
     
 }

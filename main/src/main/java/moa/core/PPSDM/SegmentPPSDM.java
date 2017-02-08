@@ -82,9 +82,9 @@ public class SegmentPPSDM implements Serializable{
      * @param windowSize
      * @return list of FCIs
      */
-    public List<SemiFCI> getFCI(int windowSize) {
+    public List<SemiFCI> getFCI(int windowSize, long startUpdateTime, double maxUpdateTime) {
         AlgoCharmBitsetWithSpeedRegulation charm = new AlgoCharmBitsetWithSpeedRegulation();
-        Itemsets closedItemsets = charm.runAlgorithm(context, minSupport, 1000000);
+        Itemsets closedItemsets = charm.runAlgorithm(context, minSupport, 1000000, startUpdateTime, maxUpdateTime);
         System.out.println("Compute FCIs:" + charm.getExecTime() + "ms\n (CHARM-BITSET)");
         System.out.println(closedItemsets.getItemsetsCount() + " FCIs found in the last segment (CHARM-BITSET)");
         List<SemiFCI> fciSet = new ArrayList<SemiFCI>();

@@ -40,7 +40,7 @@ import moa.core.PPSDM.utils.UtilitiesPPSDM;
  * Pattern mining evaluator that performs basic incremental evaluation. 
  * @author Tomas Chovanak
  */
-public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
+public class RecommendationEvaluator extends AbstractMOAObject{
 
     private final Queue<Double> window = new LinkedList<>();
     private int[] numRecommendedItems = {1,2,3,4,5,10,15};
@@ -79,14 +79,15 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
     
     private int[] numOfTestedTransactions = new int[this.numRecommendedItems.length];
     
-    private String outputFile;
     private FileWriter writer = null;
+    private EvaluationConfiguration config;
 
-    public PPSDMRecommendationEvaluator(String outputFile)  {
-        this.outputFile = outputFile;
-        if(Configuration.EXTRACT_DETAILS){
+    public RecommendationEvaluator(EvaluationConfiguration config)  {
+        this.config = config;
+        
+        if(config.getExtractDetails()){
             try {
-                this.writer = new FileWriter(outputFile);
+                this.writer = new FileWriter(config.getOutputFile());
                 writer.append("TRANSACTION ID");writer.append(',');  // transaction id
                 writer.append("TOTAL LENGTH");writer.append(',');  // transaction length
                 writer.append("TEST LENGTH");writer.append(',');  // evaluation test length
@@ -109,7 +110,7 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
                 writer.append("GROUPS CHANGES DIV");writer.append('\n');
                 writer.flush();
             } catch (IOException ex) {
-                Logger.getLogger(PPSDMRecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -117,7 +118,7 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
     private void writeResultsToFile(Integer counter, Integer testSize, Integer windowSize,Double transsec) {
         try {
             if(this.writer == null)
-                this.writer = new FileWriter(outputFile);
+                this.writer = new FileWriter(config.getOutputFile());
             writer.append(counter.toString());writer.append(',');  // transaction id
             writer.append(((Integer)(testSize + windowSize)).toString());writer.append(',');  // transaction length
             writer.append(testSize.toString());writer.append(',');  // test length
@@ -213,12 +214,12 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
             
             // number of hits from group
             writer.append((transsec).toString());writer.append(',');
-            double pom = Configuration.GROUP_CHANGED_TIMES/Configuration.GROUP_CHANGES;
-            writer.append(((Double)pom).toString());writer.append(',');
-            writer.append(((Integer)Configuration.GROUP_COUNTER).toString());writer.append('\n');
+            //double pom = Configuration.GROUP_CHANGED_TIMES/Configuration.GROUP_CHANGES;
+            //writer.append(((Double)pom).toString());writer.append(',');
+           // writer.append(((Integer)Configuration.GROUP_COUNTER).toString());writer.append('\n');
             writer.flush(); 
         } catch (IOException ex) {
-            Logger.getLogger(PPSDMRecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -247,7 +248,7 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
             }
             i++;
         }
-        if(Configuration.EXTRACT_DETAILS){
+        if(config.getExtractDetails()){
             writeResultsToFile(counter, recs.getTestWindow().size(), windowSize,transsec);
         }
     }
@@ -455,7 +456,7 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
                 writer.close();
             writer = null;
         } catch (IOException ex) {
-            Logger.getLogger(PPSDMRecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
         return results;
     }
@@ -473,6 +474,10 @@ public class PPSDMRecommendationEvaluator extends AbstractMOAObject{
     
     public void addResult(Example testInst, double[] recommendations, int windowSize, int numberOfRecommendedItems, double transsec) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public EvaluationConfiguration getConfiguration() {
+        return config;
     }
 
    

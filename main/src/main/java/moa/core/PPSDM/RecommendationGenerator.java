@@ -5,6 +5,7 @@
  */
 package moa.core.PPSDM;
 
+import moa.core.PPSDM.dto.FIWrapper;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,23 +28,24 @@ import moa.core.SemiFCI;
  * @author Tomas
  */
 public class RecommendationGenerator {
-
-    private int ews;
+    
     private PatternMiningComponent patternsMiner;
     private ClusteringComponent clustererPPSDM;
-    private Integer numberOfRecommendedItems;
     private List<Integer> recsCombined;
     private List<Integer> recsOnlyFromGlobal;
     private List<Integer> recsOnlyFromGroup;
     private int cntAll;
     private int cntOnlyGlobal;
     private int cntOnlyGroup;
+    private RecommendationConfiguration config;
 
-    public RecommendationGenerator(int ews, PatternMiningComponent patternsMiner, ClusteringComponent clustererPPSDM, Integer numberOfRecommendedItems) {
-        this.ews = ews;
+    public RecommendationGenerator(RecommendationConfiguration config, 
+            PatternMiningComponent patternsMiner,
+            ClusteringComponent clustererPPSDM) {
+        this.config = config;
         this.patternsMiner = patternsMiner;
         this.clustererPPSDM = clustererPPSDM;
-        this.numberOfRecommendedItems = numberOfRecommendedItems;
+       
     }
     
     
@@ -62,23 +64,23 @@ public class RecommendationGenerator {
         List<Integer> window = new ArrayList<>(); // items inside window 
         List<Integer> outOfWindow = new ArrayList<>(); // items out of window 
 
-        if((ews >= (sessionArray.size()-2))){ 
+        if((config.getEWS() >= (sessionArray.size()-2))){ 
             return null; // this is when session array is too short - it is ignored.
         }
         
-        for(int i = 2; i <= ews + 1; i++){ // first item is groupid, 2nd uid
+        for(int i = 2; i <= config.getEWS() + 1; i++){ // first item is groupid, 2nd uid
             window.add((int) Math.round(sessionArray.get(i)));
         }
         
         // maximum number of evaluated future items is the same as number of recommended items.
-        for(int i = ews + 2, j = 0; i < sessionArray.size(); i++){
+        for(int i = config.getEWS() + 2, j = 0; i < sessionArray.size(); i++){
             outOfWindow.add((int) Math.round(sessionArray.get(i)));
         }
         
         //to get all fcis found 
-        List<FciValue> mapFciWeight = new LinkedList<>();
-        List<FciValue> mapFciWeightGroup = new LinkedList<>();
-        List<FciValue> mapFciWeightGlobal = new LinkedList<>(); 
+        List<FIWrapper> mapFciWeight = new LinkedList<>();
+        List<FIWrapper> mapFciWeightGroup = new LinkedList<>();
+        List<FIWrapper> mapFciWeightGlobal = new LinkedList<>(); 
         Iterator<FrequentItemset> itFis = null;
         itFis = this.patternsMiner.iteratorGlobalPatterns();
         int groupidSet = -1;
@@ -91,7 +93,7 @@ public class RecommendationGenerator {
                 if(hitsVal == 0.0){
                     continue;
                 }
-                FciValue fciVal = new FciValue();
+                FIWrapper fciVal = new FIWrapper();
                 fciVal.setItems(fi.getItems());
                 fciVal.computeValue(hitsVal, fi.getSupportDouble());
                 mapFciWeight.add(fciVal);
@@ -124,7 +126,7 @@ public class RecommendationGenerator {
                         if(hitsVal == 0.0){
                             continue;
                         }
-                        FciValue fciVal = new FciValue();
+                        FIWrapper fciVal = new FIWrapper();
                         fciVal.setItems(fi.getItems());
                         fciVal.setDistance(distance);
                         fciVal.computeValue(hitsVal, fi.getSupportDouble());
@@ -139,7 +141,7 @@ public class RecommendationGenerator {
         Collections.sort(mapFciWeight);
         Collections.sort(mapFciWeightGroup);
         Collections.sort(mapFciWeightGlobal);
-        switch (Configuration.RECOMMEND_STRATEGY) {
+        switch (config.getRecommendationStrategy()) {
             case VOTES:
                 generateRecsVoteStrategy(mapFciWeightGlobal,
                         mapFciWeightGroup, window);
@@ -151,7 +153,7 @@ public class RecommendationGenerator {
         }        
         RecommendationResults results = new RecommendationResults();
         results.setTestWindow(outOfWindow);
-        results.setNumOfRecommendedItems(numberOfRecommendedItems);
+        results.setNumOfRecommendedItems(config.getRC());
         results.setRecommendationsGGC(recsCombined);
         results.setRecommendationsGO(recsOnlyFromGlobal);
         results.setRecommendationsOG(recsOnlyFromGroup);
@@ -165,18 +167,18 @@ public class RecommendationGenerator {
     }
     
     private void generateRecsVoteStrategy(
-                                    List<FciValue> mapFciWeightGlobal,
-                                    List<FciValue> mapFciWeightGroup, 
+                                    List<FIWrapper> mapFciWeightGlobal,
+                                    List<FIWrapper> mapFciWeightGroup, 
                                     List<Integer> window) {
         Map<Integer, Double> mapItemsVotes = new HashMap<>();
         Map<Integer, Double> mapItemsVotesOnlyGlobal = new HashMap<>();
         Map<Integer, Double> mapItemsVotesOnlyGroup = new HashMap<>();
-        Iterator<FciValue> itGlobal = mapFciWeightGlobal.iterator();
-        Iterator<FciValue> itGroup = mapFciWeightGroup.iterator();
+        Iterator<FIWrapper> itGlobal = mapFciWeightGlobal.iterator();
+        Iterator<FIWrapper> itGroup = mapFciWeightGroup.iterator();
         
         while(itGlobal.hasNext() || itGroup.hasNext()){
             if(itGlobal.hasNext()){
-               FciValue fci = itGlobal.next();
+               FIWrapper fci = itGlobal.next();
                Iterator<Integer> itFciItems = fci.getItems().iterator();
                while(itFciItems.hasNext()){
                    Integer item = itFciItems.next();         
@@ -201,7 +203,7 @@ public class RecommendationGenerator {
                }
             }
             if(itGroup.hasNext()){
-               FciValue fci = itGroup.next();
+               FIWrapper fci = itGroup.next();
                Iterator<Integer> itFciItems = fci.getItems().iterator();
                while(itFciItems.hasNext()){
                    Integer item = itFciItems.next();
@@ -241,7 +243,7 @@ public class RecommendationGenerator {
         recsCombined = new ArrayList<>();
         recsOnlyFromGlobal = new ArrayList<>();
         recsOnlyFromGroup = new ArrayList<>();
-        int numRecommendedItems = this.numberOfRecommendedItems;
+        int numRecommendedItems = config.getRC();
         cntAll = 0;
         cntOnlyGlobal = 0;
         cntOnlyGroup = 0;
@@ -272,9 +274,9 @@ public class RecommendationGenerator {
         }
     }
 
-    private void generateRecsFirstWinsStrategy(List<FciValue> mapFciWeight,
-                                    List<FciValue> mapFciWeightGlobal, 
-                                    List<FciValue> mapFciWeightGroup, 
+    private void generateRecsFirstWinsStrategy(List<FIWrapper> mapFciWeight,
+                                    List<FIWrapper> mapFciWeightGlobal, 
+                                    List<FIWrapper> mapFciWeightGroup, 
                                     List<Integer> window) {
         cntAll = 0;
         cntOnlyGroup = 0; 
@@ -282,9 +284,9 @@ public class RecommendationGenerator {
         recsCombined = new ArrayList<>();
         recsOnlyFromGroup = new ArrayList<>();
         recsOnlyFromGlobal = new ArrayList<>();
-        int numRecommendedItems = this.numberOfRecommendedItems;
+        int numRecommendedItems = config.getRC();
         
-        for(FciValue fciVal : mapFciWeight) {
+        for(FIWrapper fciVal : mapFciWeight) {
             SemiFCI key = fciVal.getFci();
             List<Integer> items = key.getItems();
             Iterator<Integer> itItems = items.iterator();
@@ -304,7 +306,7 @@ public class RecommendationGenerator {
         }
         
         
-        for(FciValue fciVal : mapFciWeightGroup) {
+        for(FIWrapper fciVal : mapFciWeightGroup) {
             SemiFCI key = fciVal.getFci();
             List<Integer> items = key.getItems();
             Iterator<Integer> itItems = items.iterator();
@@ -323,7 +325,7 @@ public class RecommendationGenerator {
             }
         }
         
-        for(FciValue fciVal : mapFciWeightGlobal) {
+        for(FIWrapper fciVal : mapFciWeightGlobal) {
             SemiFCI key = fciVal.getFci();
             List<Integer> items = key.getItems();
             Iterator<Integer> itItems = items.iterator();
@@ -341,6 +343,10 @@ public class RecommendationGenerator {
                  break;
             }
         }
+    }
+
+    public void resetLearning() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

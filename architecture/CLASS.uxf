@@ -4,38 +4,150 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>330</x>
-      <y>160</y>
-      <w>330</w>
-      <h>420</h>
+      <x>0</x>
+      <y>100</y>
+      <w>350</w>
+      <h>90</h>
     </coordinates>
-    <panel_attributes> &lt;&lt;new class&gt;&gt;
- PersonalizedPatternsMiner
+    <panel_attributes>&lt;&lt;MOA Class&gt;&gt;
+/MainTask/
 --
-- PersonalizedIncMine ppIncMine
-- WithKMeans clusterer
-- Map&lt;Integer, UserModel&gt; usermodels
-+ IntOption minNumOfChangesInUserModel
-+ IntOption min NumOfMicroclusterUpdates
-+ IntOption numPages
-+ IntOption windowSize
-+ IntOption evaluationWindowSize
-+ IntOption maxItemsetLength
-+ IntOption numOfGroups
-+ FloatOption minSupport
-+ FloatOption relaxationRate
-+ IntOption fixedSegmentLength
-+ IntOption groupFixedSegmentLength
-+ IntOption numOfRecommendedItems
-+ FlagOption useGrouping
+--
+/+ Object doMainTask(TaskMonitor, ObjectRepository)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>10</x>
+      <y>240</y>
+      <w>340</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>GridSearch
+--
++ StringOption pathToConfigFile
 
 --
-+ void resetLearningImpl()
-+ void trainOnInstance(Example e)
-+ double[] getVotesForInstance(Example e)
-- void updateGroupidsInUserModels()
-- UserModel updateUserModel(Instance i)
-- UserModel getUserModelFromInstance(Instance i)</panel_attributes>
++ Object doMainTask(TaskMonitor,ObjectRepository)
+ </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>160</y>
+      <w>50</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;30;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>440</x>
+      <y>100</y>
+      <w>390</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;MOA Class&gt;&gt;
+/Task/
+--
+--
+/+ Object doMainTask(TaskMonitor tm, ObjectRepository or)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>440</x>
+      <y>240</y>
+      <w>390</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>GridSearchLearnEvaluate
+--
++ ClassOption learnerOption
++ ClassOption streamOption 
+--
++ Object doMainTask(TaskMonitor tm,ObjectRepository or)
+ </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>320</x>
+      <y>270</y>
+      <w>140</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;120;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>600</x>
+      <y>160</y>
+      <w>50</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;30;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>350</x>
+      <y>410</y>
+      <w>290</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;new class&gt;&gt;
+RecommendationEvaluator
+--
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>470</x>
+      <y>320</y>
+      <w>170</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>150;30;30;90</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>670</x>
+      <y>410</y>
+      <w>290</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;new class&gt;&gt;
+SessionsFileStream
+--
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>610</x>
+      <y>320</y>
+      <w>220</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;200;90</additional_attributes>
   </element>
 </diagram>

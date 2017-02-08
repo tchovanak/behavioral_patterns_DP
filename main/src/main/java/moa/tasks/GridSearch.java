@@ -42,7 +42,7 @@ public class GridSearch extends MainTask {
     private String pathToOutputFile = "";
     private String pathToCategoryMappingFile = "";
     // SUBTASK that runs with different configurations of parameters.
-    private GridSearchLearnEvaluateTask gpLearnEvaluateTask = null;
+    private GridSearchLearnEvaluate gpLearnEvaluateTask = null;
     // Manages output tasks, like writing to file.
     private OutputManager om;
     
@@ -50,7 +50,6 @@ public class GridSearch extends MainTask {
         this.fromid = fromid;
     }
     
-
     /**
      * To start grid search from MOA
      * @param tm
@@ -185,7 +184,7 @@ public class GridSearch extends MainTask {
         for(Parameter p : params){
             paramsMap.put(p.getName(), p);
         }
-        gpLearnEvaluateTask = new GridSearchLearnEvaluateTask(id, fromid, paramsMap, pathToStream, 
+        gpLearnEvaluateTask = new GridSearchLearnEvaluate(id, fromid, paramsMap, pathToStream, 
                 pathToSummaryOutputFile, pathToOutputFile, pathToCategoryMappingFile); 
         gpLearnEvaluateTask.doTask(); 
         this.id = this.gpLearnEvaluateTask.getId();

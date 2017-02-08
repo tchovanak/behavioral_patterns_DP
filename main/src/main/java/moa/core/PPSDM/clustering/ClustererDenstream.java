@@ -27,7 +27,9 @@ public class ClustererDenstream extends ClusteringComponent {
     private int clusteringID;
     private PersonalizedIncMine incMine;
     
-    public ClustererDenstream(PersonalizedIncMine incMine) {
+    public ClustererDenstream(ClusteringComponentConfiguration config, 
+            PersonalizedIncMine incMine) {
+        super(config);
         this.incMine = incMine;
     }
     
@@ -46,7 +48,7 @@ public class ClustererDenstream extends ClusteringComponent {
         this.clustering = clusterer.getClusteringResult(this.clustering);
         System.out.println("CLUSTERING-----------------------------------------------" + 
                 this.clustering.getClustering().size());
-        Configuration.GROUP_COUNTER = this.clustering.getClustering().size();
+        //Configuration.GROUP_COUNTER = this.clustering.getClustering().size();
         this.clusteringID++;
         if(this.incMine.fciTablesGroups.size() < clustering.size()){
             for(int i = this.incMine.fciTablesGroups.size(); 

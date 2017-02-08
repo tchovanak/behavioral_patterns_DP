@@ -31,6 +31,7 @@ import moa.cluster.Cluster;
 import moa.cluster.Clustering;
 import moa.clusterers.macro.AbstractMacroClusterer;
 import moa.clusterers.macro.NonConvexCluster;
+import moa.core.PPSDM.enums.DistanceMetricsEnum;
 import moa.core.PPSDM.utils.UtilitiesPPSDM;
 
 public class DBScan extends AbstractMacroClusterer {

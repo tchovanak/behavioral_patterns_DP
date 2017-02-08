@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moa.core.PPSDM;
+package moa.core.PPSDM.dto;
 import java.util.List;
 import moa.core.SemiFCI;
 
@@ -12,7 +12,7 @@ import moa.core.SemiFCI;
  *  intersection with current session window. It is used to sort semi fcis prioritly.
  * @author Tomas Chovanak
  */
-public class FciValue implements Comparable {
+public class FIWrapper implements Comparable {
     
     private double lcsVal = 0.0;
     private double support = 0.0;
@@ -23,10 +23,8 @@ public class FciValue implements Comparable {
     private List<Integer> items;
     
     public void computeValue(double lcsVal, double support){
-        this.value = Configuration.A*lcsVal + Configuration.B*support; //- preference*Configuration.C;
         this.lcsVal = lcsVal;
         this.support = support;
-       
     }
 
     public List<Integer> getItems() {
@@ -71,40 +69,6 @@ public class FciValue implements Comparable {
     public void setGroupid(int groupid) {
         this.groupid = groupid;
     }
-
-    @Override
-    public int compareTo(Object o) {
-        FciValue other = (FciValue)o;
-       if(Configuration.SORT_STRATEGY.equals("PREFER_SUPPORT")){
-            if(this.lcsVal < other.getLcsVal()){
-                return 1;
-            }else if(this.lcsVal == other.getLcsVal()){
-
-                if(this.support < other.getSupport()){
-                    return 1;
-                }else if (this.support == other.getSupport()){
-                    return 0;
-                }else{
-                    return -1;
-                }
-
-            }else{
-                return -1;
-            }
-       }
-       if(Configuration.SORT_STRATEGY.equals("PREFER_VALUE")){
-
-            if(this.value < other.getValue()){
-                return 1;
-            }else if(this.value > other.getValue()){
-                return -1;
-            }else{
-                return 0;
-            }
-       }
-       return 0;
-       
-    }
     
     public void setDistance(double distance) {
        this.distance = distance;
@@ -114,5 +78,27 @@ public class FciValue implements Comparable {
         return this.distance;
     }
 
+
+    @Override
+    public int compareTo(Object o) {
+        FIWrapper other = (FIWrapper)o;
+        if(this.lcsVal < other.getLcsVal()){
+            return 1;
+        }else if(this.lcsVal == other.getLcsVal()){
+
+            if(this.support < other.getSupport()){
+                return 1;
+            }else if (this.support == other.getSupport()){
+                return 0;
+            }else{
+                return -1;
+            }
+
+        }else{
+            return -1;
+        }
+    }
+    
+  
   
 }

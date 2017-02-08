@@ -17,6 +17,10 @@ import moa.core.PPSDM.UserModelPPSDM;
  */
 public class ClustererClustree extends ClusteringComponent{
 
+    public ClustererClustree(ClusteringComponentConfiguration config) {
+        super(config);
+    }
+
     @Override
     public Clusterer getClusterer() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

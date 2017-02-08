@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import moa.core.Example;
 import moa.core.FrequentItemset;
-import moa.core.PPSDM.FciValue;
+import moa.core.PPSDM.dto.FIWrapper;
 import moa.core.PPSDM.clustering.ClusteringComponent;
 import moa.core.PPSDM.dto.SnapshotResults;
 
@@ -29,7 +29,9 @@ public interface PatternMiningComponent {
 
     public SnapshotResults generateSnapshot(ClusteringComponent clusterer);
 
-    public List<FciValue> extractPatterns();
+    public List<FIWrapper> extractPatterns();
 
     public int getSnapshotId();
+
+    public void resetLearning();
 }

@@ -8,8 +8,6 @@ package moa.core.PPSDM.clustering;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import moa.cluster.Cluster;
 import moa.cluster.Clustering;
 import moa.cluster.PPSDM.SphereClusterPPSDM;
@@ -30,15 +28,17 @@ public class ClustererClustream extends ClusteringComponent {
     private Clustering cleanedClustering;
     private int numOfGroups;
     private int clusteringID;
+    private ClustreamConfiguration config;
     
     
-    public ClustererClustream(Integer numberOfGroups, Integer maxNumKernels, Integer kernelRadiFactor) {
-         super() ;
-         this.clusterer = new WithKmeansPPSDM();
-         this.numOfGroups = numberOfGroups;
-         this.clusterer.kOption.setValue(numberOfGroups);
-         this.clusterer.maxNumKernelsOption.setValue(maxNumKernels);
-         this.clusterer.kernelRadiFactorOption.setValue(kernelRadiFactor);
+    public ClustererClustream(ClusteringComponentConfiguration configClust, 
+            ClustreamConfiguration config) {
+         super(configClust) ;
+         this.clusterer = new WithKmeansPPSDM(configClust.getDistanceMetric());
+         this.numOfGroups = config.getGC();
+         this.clusterer.kOption.setValue(config.getGC());
+         this.clusterer.maxNumKernelsOption.setValue(config.getMaxNumKernels());
+         this.clusterer.kernelRadiFactorOption.setValue(config.getKernelRadiFactor());
          this.clusterer.resetLearning();
          this.clusteringID = 0;
          

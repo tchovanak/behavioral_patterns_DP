@@ -21,33 +21,38 @@ import java.util.logging.Logger;
 import moa.MOAObject;
 import moa.core.Example;
 import moa.core.ObjectRepository;
+import moa.core.PPSDM.RecommendationGenerator;
+import moa.core.PPSDM.clustering.ClustererClustream;
+import moa.core.PPSDM.clustering.ClusteringComponent;
 import moa.core.TimingUtils;
-import moa.evaluation.PPSDMRecommendationEvaluator;
+import moa.evaluation.RecommendationEvaluator;
 import moa.learners.PersonalizedPatternsMiner;
 import moa.streams.SessionsFileStream;
 import moa.core.PPSDM.dto.RecommendationResults;
 import moa.core.PPSDM.dto.SummaryResults;
 import moa.core.PPSDM.utils.UtilitiesPPSDM;
 import moa.core.PPSDM.dto.SnapshotResults;
+import moa.core.PPSDM.patternMining.PatternMiningComponent;
+import moa.core.PPSDM.patternMining.PatternMiningIncMine;
 
 /**
  * Task to evaluate one from configurations in grid during grid search. 
  * @author Tomas Chovanak
  */
-public class GridSearchLearnEvaluateTask implements Task {
+public class GridSearchLearnEvaluate implements Task {
     
-    private int id;
-    private int fromid;
+    private int id;  // id of configuration
+    private int fromid; // id to start from (if id < fromid) configuration is ignored
     private Map<String,Parameter> params;
-    private SessionsFileStream stream ;
+    private SessionsFileStream stream;
     private String pathToStream ;
     private String pathToSummaryOutputFile;
     private String pathToOutputFile;
     private String pathToCategoryMappingFile;
     private OutputManager om;
+    private Configuration config;
     
-    
-    public GridSearchLearnEvaluateTask(int id, int fromid, Map<String,Parameter> params,
+    public GridSearchLearnEvaluate(int id, int fromid, Map<String,Parameter> params,
             String pathToStream, String pathToSummaryOutputFile, 
             String pathToOutputFile, String pathToCategoryMappingFile) {
         this.id = id;
@@ -57,85 +62,99 @@ public class GridSearchLearnEvaluateTask implements Task {
         this.pathToSummaryOutputFile = pathToSummaryOutputFile;
         this.pathToOutputFile = pathToOutputFile;
         this.pathToCategoryMappingFile = pathToCategoryMappingFile;
-        this.om = new OutputManager(pathToSummaryOutputFile);
+        this.config = new Configuration();
+        this.om = new OutputManager(config, pathToSummaryOutputFile);
     }
 
+    
     @Override
     public Object doTask() {
         id++; // id is always incremented
+        // fromid is used to allow user restart evaluation from different point anytime
         if(fromid >= id){
             return null;
         }
         // initialize and configure learner
         PersonalizedPatternsMiner learner;
+        // USE INCMINE ,  CLUSTREAM and Recommendation
+        PatternMiningComponent patternMining = new PatternMiningIncMine(config);
+        ClusteringComponent clusteringComponent = new ClustererClustream(config,config);
+        RecommendationGenerator recGenerator = new RecommendationGenerator(config, 
+                patternMining, clusteringComponent);
         if(this.pathToCategoryMappingFile != null){
             Map<Integer,Integer> map;
             try {
                 map = readCategoriesMap();
-                learner = new PersonalizedPatternsMiner(map);
+                learner = new PersonalizedPatternsMiner(map, config,patternMining,
+                        clusteringComponent, recGenerator);
             } catch (IOException ex) {
-                learner = new PersonalizedPatternsMiner();
-                Logger.getLogger(GridSearchLearnEvaluateTask.class.getName()).log(Level.SEVERE, null, ex);
+                learner = new PersonalizedPatternsMiner(config,patternMining,
+                        clusteringComponent, recGenerator);
+                Logger.getLogger(GridSearchLearnEvaluate.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else{
-             learner = new PersonalizedPatternsMiner();
+             learner = new PersonalizedPatternsMiner(config,patternMining,
+                        clusteringComponent, recGenerator);
         }
         boolean valid = configureLearnerWithParams(learner, params);
         // CHECK IF segment legnth and support is valid:
-        if(!valid){
-            return null;
-        }
+        if(!valid){ return null; }
         
-        // fromid is used to allow user restart evaluation from different point anytime
+        // initialize input stream
         this.stream = new SessionsFileStream(this.pathToStream);
-        om.writeConfigurationToFile(id, this.pathToSummaryOutputFile, learner);
+        
+        om.writeConfigurationToFile(id, this.pathToSummaryOutputFile, config);
+        
         learner.resetLearning();
         stream.prepareForUse();
         TimingUtils.enablePreciseTiming();
-        PPSDMRecommendationEvaluator evaluator = 
-                new PPSDMRecommendationEvaluator(
-                        this.pathToOutputFile + "results_G" + learner.getUseGrouping() + 
-                                                "_id_" + id + ".csv");
-        Configuration.TRANSACTION_COUNTER = 0;
-        Configuration.STREAM_START_TIME = TimingUtils.getNanoCPUTimeOfCurrentThread();
+        
+        config.setOutputFile(this.pathToOutputFile + "results_G" + config.getGrouping() + "_id_" + id + ".csv");
+        RecommendationEvaluator evaluator = 
+                new RecommendationEvaluator(config);
+        
+        config.setTransactionCounter(0);
+        config.setStreamStartTime(TimingUtils.getNanoCPUTimeOfCurrentThread());
         
         // STREAM PROCESSING
         while (stream.hasMoreInstances()) {
-            Configuration.TRANSACTION_COUNTER++;
+            config.incrementTransactionCounter();
             // NOW EXTRACT PATTERNS TO FILE
-            double[] speedResults = UtilitiesPPSDM.getActualTransSec();
-            if(!Configuration.EVALUATE_SPEED){
-                if(Configuration.EXTRACT_DETAILS){
+            double[] speedResults = UtilitiesPPSDM.getActualTransSec(config.getTransactionCounter(),
+                    config.getStreamStartTime());
+            if(!config.getEvaluateSpeed()){
+                if(config.getExtractDetails()){
                     SnapshotResults snap = learner.extractSnapshot(evaluator);
                     if(snap != null){
-                        om.extractPatternsToFile(snap, 
+                        om.extractPatternsToFile(snap, config,
                             this.pathToOutputFile + "patterns_" + id + ".csv",
                             this.pathToOutputFile + "snapshots_stats_" + id + ".csv");
                     }
                 }
             }else{
-                if(Configuration.TRANSACTION_COUNTER % Configuration.EXTRACT_SPEED_RESULTS_AT == 0){
+                if(config.getTransactionCounter() % config.getExtractSpeedResultsAt() == 0){
                     om.extractSpeedResultsToFile(speedResults,this.pathToOutputFile + "speed_" + id + ".csv");
                 }
             }
             Example trainInst = stream.nextInstance();
-            if(!Configuration.EVALUATE_SPEED){
+            if(!config.getEvaluateSpeed()){
                 Example testInst = (Example) trainInst.copy();
-                if(Configuration.TRANSACTION_COUNTER > Configuration.START_EVALUATING_FROM){
+                if(config.getTransactionCounter() > config.getStartEvaluatingFrom()){
                     RecommendationResults results = learner.getRecommendationsForInstance(testInst);
                     if(results != null)
                         // evaluator will evaluate recommendations and update metrics with given results     
-                        evaluator.addResult(results, learner.windowSize, 
-                                speedResults[0], Configuration.TRANSACTION_COUNTER); 
+                        evaluator.addResult(results, config.getWS(), 
+                                speedResults[0], config.getTransactionCounter()); 
                 }
             }
             learner.trainOnInstance(trainInst); // this will start training proces - it means first update clustering and then find frequent patterns
         }
-        double[] speedResults = UtilitiesPPSDM.getActualTransSec();
-        if(!Configuration.EVALUATE_SPEED){
+        double[] speedResults = UtilitiesPPSDM.getActualTransSec(config.getTransactionCounter(),
+                    config.getStreamStartTime());
+        if(!config.getEvaluateSpeed()){
             SummaryResults results = evaluator.getResults();
             om.writeResultsToFile(results, speedResults[0], speedResults[1], 
-                Configuration.TRANSACTION_COUNTER);
+                config.getTransactionCounter());
         }else{
             om.writeSpeedResultsToFile(speedResults);
         }
@@ -147,47 +166,45 @@ public class GridSearchLearnEvaluateTask implements Task {
     private boolean configureLearnerWithParams(PersonalizedPatternsMiner learner, 
             Map<String,Parameter> params){
         // RECOMMEND PARAMETERS
-        Configuration.GROUPING = ((int)params.get("GROUPING").getValue() == 1);
-        learner.useGrouping = Configuration.GROUPING;
-        Configuration.RECOMMEND_STRATEGY = 
-                RecommendStrategiesEnum.valueOf((int) params.get("RECOMMEND STRATEGY").getValue());
-        Configuration.SORT_STRATEGY = 
-                SortStrategiesEnum.valueOf((int) params.get("SORT STRATEGY").getValue());
-        Configuration.MAX_DIFFERENCE_OF_CLUSTERING_ID = 
-                (int) params.get("MAXIMAL DIFFERENCE OF CLUSTERING IDS").getValue();
-        learner.evaluationWindowSize = (int) params.get("EVALUATION WINDOW SIZE").getValue();
-        learner.numberOfRecommendedItems = (int) params.get("NUMBER OF RECOMMENDED ITEMS").getValue();
+        config.setGrouping((int)params.get("GROUPING").getValue() == 1);
+        config.setRecommendationStrategy( 
+                RecommendStrategiesEnum.valueOf((int) params.get("RECOMMEND STRATEGY").getValue()));
+        
+        config.setTcdiff((int) params.get("MAXIMAL DIFFERENCE OF CLUSTERING IDS").getValue());
+        config.setEWS((int) params.get("EVALUATION WINDOW SIZE").getValue());
+        config.setRC((int) params.get("NUMBER OF RECOMMENDED ITEMS").getValue());
         //FPM PARAMETERS
-        learner.minSupport = params.get("MIN SUPPORT").getValue();
-        learner.relaxationRate = params.get("RELAXATION RATE").getValue();
-        learner.fixedSegmentLength = (int) (params.get("FIXED SEGMENT LENGTH").getValue());
+        config.setMS(params.get("MIN SUPPORT").getValue());
+        config.setRR(params.get("RELAXATION RATE").getValue());
+        config.setFSL((int) (params.get("FIXED SEGMENT LENGTH").getValue()));
+        
         // CHECK IF MIN SUPPORT AND SEGMENT LENGTH ARE VALID
-        if(learner.minSupport * learner.fixedSegmentLength <= 1){
+        if(config.getMS() * config.getFSL() <= 1){
             return false;
         }
-        learner.maxItemsetLength = (int) params.get("MAX ITEMSET LENGTH").getValue();
-        learner.windowSize = (int) params.get("WINDOW SIZE").getValue();
+        config.setMIL((int) params.get("MAX ITEMSET LENGTH").getValue());
+        config.setWS((int) params.get("WINDOW SIZE").getValue());
+        
         // RESTRICTIONS PARAMETERS
-        learner.numOfDimensionsInUserModel = (int) params.get("NUMBER OF DIMENSIONS IN USER MODEL").getValue();
-        Configuration.MAX_FCI_SET_COUNT = params.get("MAX FCI SET COUNT").getValue();
-        Configuration.MIN_TRANSSEC = params.get("MIN TRANSSEC").getValue();
+        config.setUserModelDimensions((int) params.get("NUMBER OF DIMENSIONS IN USER MODEL").getValue());
+        config.setMTS((int)Math.round(params.get("MIN TRANSSEC").getValue()));
+        
         // CLUSTERING PARAMETERS
-        learner.numMinNumberOfChangesInUserModel = (int) params.get("MINIMAL NUMBER OF CHANGES IN USERMODEL").getValue();
-        learner.numMinNumberOfMicroclustersUpdates = (int) params.get("MINIMAL NUMBER OF CHANGES IN MICROCLUSTERS").getValue();
-        learner.numberOfGroups = (int) params.get("NUMBER OF GROUPS").getValue();
-        learner.maxNumKernels = (int) params.get("MAXIMAL NUMBER OF MICROCLUSTERS").getValue();
-        learner.kernelRadiFactor = (int) params.get("KERNEL RADI FACTOR").getValue();
-        Configuration.START_EVALUATING_FROM = (int) params.get("START EVALUATING FROM").getValue();
-        Configuration.MAX_UPDATE_TIME = 20000;
+        config.setTUC((int) params.get("MINIMAL NUMBER OF CHANGES IN USERMODEL").getValue());
+        config.setTCM((int) params.get("MINIMAL NUMBER OF CHANGES IN MICROCLUSTERS").getValue());
+        config.setGC((int) params.get("NUMBER OF GROUPS").getValue());
+        config.setMaxNumKernels((int) params.get("MAXIMAL NUMBER OF MICROCLUSTERS").getValue());
+        config.setKernelRadiFactor((int) params.get("KERNEL RADI FACTOR").getValue());
+        config.setStartEvaluatingFrom((int) params.get("START EVALUATING FROM").getValue());
+        
         double gfsl = params.get("GROUP FIXED SEGMENT LENGTH").getValue();
         if(gfsl > 0){
-            learner.groupFixedSegmentLength = (int) params.get("GROUP FIXED SEGMENT LENGTH").getValue();
+            config.setGFSL((int) params.get("GROUP FIXED SEGMENT LENGTH").getValue());
         }else if(gfsl == 0){
-            learner.groupFixedSegmentLength = 
-                (int)(((double)learner.fixedSegmentLength)/
-                        ((double)learner.numberOfGroups));
+            config.setGFSL((int)((config.getFSL()/
+                        (config.getGC()))));
         }else{
-            learner.groupFixedSegmentLength = learner.fixedSegmentLength;
+            config.setGFSL(config.getFSL());
         }
         return true;
         

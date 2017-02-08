@@ -13,7 +13,7 @@ import java.util.Map;
 import moa.core.Example;
 import moa.core.FrequentItemset;
 import moa.core.PPSDM.FCITablePPSDM;
-import moa.core.PPSDM.FciValue;
+import moa.core.PPSDM.dto.FIWrapper;
 import moa.core.PPSDM.UserModelPPSDM;
 import moa.core.PPSDM.clustering.ClusteringComponent;
 import moa.core.PPSDM.dto.GroupStatsResults;
@@ -29,13 +29,9 @@ public class PatternMiningIncMine implements PatternMiningComponent{
     private PersonalizedIncMine incMine;
     private int snapshotID = 0;
     
-    public PatternMiningIncMine(Integer windowSize, Integer maxItemsetLength, Integer numberOfGroups, 
-            Double minSupport, Double relaxationRate, Integer fixedSegmentLength,
-            Integer groupFixedSegmentLength) {
+    public PatternMiningIncMine(PersonalizedIncMineConfiguration config) {
         
-        this.incMine = new PersonalizedIncMine(windowSize,maxItemsetLength,
-                            numberOfGroups, minSupport, relaxationRate, 
-                            fixedSegmentLength, groupFixedSegmentLength);
+        this.incMine = new PersonalizedIncMine(config);
          
         this.incMine.resetLearning();
         
@@ -70,7 +66,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
         globRes.setGroupid(-1);
         globRes.setClusteringId(clustererPPSDM.getClusteringID());
         Iterator<FrequentItemset> itGlob = fciTableGlobal.getFcis().iterator();
-        List<FciValue> globPatterns = new ArrayList<>();
+        List<FIWrapper> globPatterns = new ArrayList<>();
         while(itGlob.hasNext()){
             FrequentItemset sfci = itGlob.next();
             if(frequencyOfPatterns.containsKey(sfci.getItems())){
@@ -78,7 +74,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
             }else{
                 frequencyOfPatterns.put(sfci.getItems(),1);
             }
-            FciValue fciVal = new FciValue();
+            FIWrapper fciVal = new FIWrapper();
             fciVal.setItems(sfci.getItems());
             fciVal.setSupport(sfci.getSupportDouble());
             fciVal.setGroupid(-1);
@@ -93,7 +89,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
             gRes.setGroupid(groupid);
             gTable.computeFcis(incMine.getMinSupport(),incMine.getFixedSegmentLength());
             Iterator<FrequentItemset> itGr = gTable.getFcis().iterator();
-            List<FciValue> groupPatterns = new ArrayList<>(); 
+            List<FIWrapper> groupPatterns = new ArrayList<>(); 
             while(itGr.hasNext()){
                 FrequentItemset sfci = itGr.next();
                 if(frequencyOfPatterns.containsKey(sfci.getItems())){
@@ -101,7 +97,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
                 }else{
                     frequencyOfPatterns.put(sfci.getItems(),1);
                 }
-                FciValue fciVal = new FciValue();
+                FIWrapper fciVal = new FIWrapper();
                 fciVal.setItems(sfci.getItems());
                 fciVal.setSupport(sfci.getSupportDouble());
                 fciVal.setGroupid(groupid);
@@ -118,7 +114,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
             int numOfUniquePatterns = 0;
             double sumSupportUniquePatterns = 0;
             double sumSupportAllPatterns = 0;
-            for(FciValue fci : gStat.getFcis()){
+            for(FIWrapper fci : gStat.getFcis()){
                 List<Integer> items = fci.getItems();
                 int freq = frequencyOfPatterns.get(items);
                 if(freq == 1){
@@ -154,10 +150,10 @@ public class PatternMiningIncMine implements PatternMiningComponent{
     }
 
     @Override
-    public List<FciValue> extractPatterns() {
+    public List<FIWrapper> extractPatterns() {
         FCITablePPSDM fciTableGlobal = this.incMine.fciTableGlobal;
         List<FCITablePPSDM> fciTablesGroup = this.incMine.fciTablesGroups;
-        List<FciValue> allPatterns = new ArrayList<>();
+        List<FIWrapper> allPatterns = new ArrayList<>();
         
         fciTableGlobal.computeFcis(this.incMine.getMinSupport(), 
                 this.incMine.getFixedSegmentLength());
@@ -166,7 +162,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
             FrequentItemset sfci = itGlob.next();
             //double support = this.calculateSupport(sfci);
             //if(support >= this.minSupportOption.getValue()){
-                FciValue fciVal = new FciValue();
+                FIWrapper fciVal = new FIWrapper();
                 fciVal.setItems(sfci.getItems());
                 fciVal.setSupport(sfci.getSupportDouble());
                 fciVal.setGroupid(-1);
@@ -182,7 +178,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
                 FrequentItemset sfci = itGr.next();
                 //double support = this.calculateSupport(sfci);
                 //if(support >= this.minSupportOption.getValue()){
-                    FciValue fciVal = new FciValue();
+                    FIWrapper fciVal = new FIWrapper();
                     fciVal.setItems(sfci.getItems());
                     //fciVal.setFci(sfci);
                     fciVal.setSupport(sfci.getSupportDouble());
@@ -198,6 +194,11 @@ public class PatternMiningIncMine implements PatternMiningComponent{
     @Override
     public int getSnapshotId() {
         return snapshotID;
+    }
+
+    @Override
+    public void resetLearning() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

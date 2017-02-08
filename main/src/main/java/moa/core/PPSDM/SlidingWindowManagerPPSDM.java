@@ -58,8 +58,8 @@ public abstract class SlidingWindowManagerPPSDM extends Observable implements Se
      * @return list of FCIs
      * @throws java.lang.Exception
      */
-    public List<SemiFCI> getFCI() throws Exception{
-        return currentSegment.getFCI(windowSize);
+    public List<SemiFCI> getFCI(long startUpdateTime, double maxUpdateTime) throws Exception{
+        return currentSegment.getFCI(windowSize, startUpdateTime, maxUpdateTime);
     }
 
     /**

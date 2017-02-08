@@ -10,13 +10,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import moa.core.PPSDM.Configuration;
-import moa.core.PPSDM.FciValue;
+import moa.core.PPSDM.dto.FIWrapper;
+import moa.core.PPSDM.GeneralConfiguration;
 import moa.core.PPSDM.dto.GroupStatsResults;
 import moa.core.PPSDM.dto.SnapshotResults;
 import moa.core.PPSDM.dto.SummaryResults;
-import moa.learners.PersonalizedPatternsMiner;
+import moa.evaluation.EvaluationConfiguration;
 import moa.tasks.GridSearch;
-import moa.tasks.GridSearchLearnEvaluateTask;
+import moa.tasks.GridSearchLearnEvaluate;
 
 /**
  *
@@ -26,13 +27,15 @@ public class OutputManager {
 
     private FileWriter writer;
     private String pathToSummaryOutputFile;
+    private GeneralConfiguration config;
     
-    public OutputManager(String pathToSummaryOutputFile) {
+    public OutputManager(GeneralConfiguration config, String pathToSummaryOutputFile) {
+        this(config);
         this.pathToSummaryOutputFile = pathToSummaryOutputFile;
     }
 
-    public OutputManager() {
-        
+    public OutputManager(GeneralConfiguration config) {
+        this.config = config;
     }
     
     public static void writeHeader(String path) {
@@ -101,8 +104,9 @@ public class OutputManager {
         }
     }
     
-    public void extractPatternsToFile(SnapshotResults snap, 
-            String pathToFilePatterns, String pathToFileSnapshotStats) {
+    public void extractPatternsToFile(SnapshotResults snap, EvaluationConfiguration config,
+                                        String pathToFilePatterns, 
+                                        String pathToFileSnapshotStats) {
         // CREATING SNAPSHOT OF RESULTS
         try {
             FileWriter pwriter = new FileWriter(pathToFilePatterns, true);
@@ -116,9 +120,9 @@ public class OutputManager {
                 pwriter.append('\n');
             }
             for(GroupStatsResults gsr : snap.getGroupStats()){
-                for(FciValue fci : gsr.getFcis()){
+                for(FIWrapper fci : gsr.getFcis()){
                     pwriter.append(((Integer)snap.getId()).toString());pwriter.append(',');
-                    pwriter.append(((Integer)Configuration.TRANSACTION_COUNTER).toString());pwriter.append(','); 
+                    pwriter.append(((Integer)config.getTransactionCounter()).toString());pwriter.append(','); 
                     pwriter.append(((Integer)fci.getGroupid()).toString());pwriter.append(','); 
                     pwriter.append(((Double)fci.getSupport()).toString());pwriter.append(','); 
                     pwriter.append((fci.getItems()).toString().replaceAll(","," "));pwriter.append(','); 
@@ -150,7 +154,7 @@ public class OutputManager {
             
             for(GroupStatsResults gsr : snap.getGroupStats()){
                 snapwriter.append(((Integer)snap.getId()).toString());snapwriter.append(','); 
-                snapwriter.append(((Integer)Configuration.TRANSACTION_COUNTER).toString());snapwriter.append(','); 
+                snapwriter.append(((Integer)config.getTransactionCounter()).toString());snapwriter.append(','); 
                 snapwriter.append((gsr.getGroupid()).toString());snapwriter.append(','); 
                 snapwriter.append(((Integer)gsr.getClusteringId()).toString());snapwriter.append(','); 
                 snapwriter.append(((Integer)(snap.getGroupStats().size() - 1)).toString());snapwriter.append(','); 
@@ -205,7 +209,7 @@ public class OutputManager {
             pwriter.close();
             snapwriter.close();
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchLearnEvaluateTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearchLearnEvaluate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -219,41 +223,43 @@ public class OutputManager {
             swriter.append(',');
             swriter.close();
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchLearnEvaluateTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearchLearnEvaluate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public void writeConfigurationToFile(int id, String path, PersonalizedPatternsMiner learner){
+    public void writeConfigurationToFile(int id, 
+                                        String path,
+                                        Configuration config){
         try {
             this.writer = new FileWriter(this.pathToSummaryOutputFile, true);
             writer.append(((Integer)id).toString());writer.append(',');
-            writer.append(((Boolean)learner.useGrouping).toString());writer.append(',');
+            writer.append(((Boolean)config.getGrouping()).toString());writer.append(',');
             // RECOMMEND PARAMETERS
-            writer.append(Configuration.RECOMMEND_STRATEGY.toString());writer.append(',');
-            writer.append(((Integer)Configuration.MAX_DIFFERENCE_OF_CLUSTERING_ID).toString());writer.append(',');
-            writer.append((learner.evaluationWindowSize).toString());writer.append(',');
-            writer.append((learner.numberOfRecommendedItems).toString());writer.append(',');
+            writer.append(config.getRecommendationStrategy().toString());writer.append(',');
+            writer.append(((Integer)config.getTcdiff()).toString());writer.append(',');
+            writer.append(((Integer)config.getEWS()).toString());writer.append(',');
+            writer.append(((Integer)config.getRC()).toString());writer.append(',');
             // INCMINE PARAMETERS
-            writer.append((learner.minSupport).toString());writer.append(',');
-            writer.append((learner.relaxationRate).toString());writer.append(',');
-            writer.append((learner.fixedSegmentLength).toString());writer.append(',');
-            writer.append((learner.groupFixedSegmentLength).toString());writer.append(',');
-            writer.append((learner.maxItemsetLength).toString());writer.append(',');
-            writer.append((learner.windowSize).toString());writer.append(',');
+            writer.append(((Double)config.getMS()).toString());writer.append(',');
+            writer.append(((Double)config.getRR()).toString());writer.append(',');
+            writer.append(((Integer)config.getFSL()).toString());writer.append(',');
+            writer.append(((Integer)config.getGFSL()).toString());writer.append(',');
+            writer.append(((Integer)config.getMIL()).toString());writer.append(',');
+            writer.append(((Integer)config.getWS()).toString());writer.append(',');
             
             //UNIVERSAL PARAMETERS
-            writer.append((learner.numOfDimensionsInUserModel).toString());writer.append(',');
-            writer.append(((Double)Configuration.MAX_FCI_SET_COUNT).toString());writer.append(',');
-            writer.append(((Double)Configuration.MIN_TRANSSEC).toString());writer.append(',');
-            writer.append(((Double)Configuration.MAX_UPDATE_TIME).toString());writer.append(',');
-            writer.append(((Integer)Configuration.START_EVALUATING_FROM).toString());writer.append(',');
+            writer.append(((Integer)config.getUserModelDimensions()).toString());writer.append(',');
+            writer.append("");writer.append(',');
+            writer.append(((Integer)config.getMTS()).toString());writer.append(',');
+            writer.append("");writer.append(',');
+            writer.append(((Integer)config.getStartEvaluatingFrom()).toString());writer.append(',');
             // CLUSTERING PARAMETERS
-            if(learner.useGrouping){
-                writer.append(( learner.numMinNumberOfChangesInUserModel).toString());writer.append(',');
-                writer.append(( learner.numMinNumberOfMicroclustersUpdates).toString());writer.append(',');
-                writer.append(( learner.numberOfGroups).toString());writer.append(',');
-                writer.append(( learner.maxNumKernels).toString());writer.append(',');
-                writer.append(( learner.kernelRadiFactor).toString());writer.append(',');
+            if(config.getGrouping()){
+                writer.append(((Integer)config.getTUC()).toString());writer.append(',');
+                writer.append(((Integer)config.getTCM()).toString());writer.append(',');
+                writer.append(((Integer)config.getGC()).toString());writer.append(',');
+                writer.append(((Integer)config.getMaxNumKernels()).toString());writer.append(',');
+                writer.append(((Integer)config.getKernelRadiFactor()).toString());writer.append(',');
             }else{
                 writer.append("NG");writer.append(',');
                 writer.append("NG");writer.append(',');

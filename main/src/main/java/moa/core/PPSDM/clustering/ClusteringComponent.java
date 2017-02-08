@@ -7,13 +7,11 @@ package moa.core.PPSDM.clustering;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import moa.cluster.Clustering;
 import moa.clusterers.Clusterer;
-import moa.core.PPSDM.Configuration;
 import moa.core.PPSDM.UserModelPPSDM;
 import moa.core.PPSDM.dto.GroupStatsResults;
 
@@ -24,10 +22,13 @@ import moa.core.PPSDM.dto.GroupStatsResults;
 public abstract class ClusteringComponent {
     
     protected Map<Integer, UserModelPPSDM> usermodels;
-
-    public ClusteringComponent() {
+    private ClusteringComponentConfiguration config;
+    
+    
+    public ClusteringComponent(ClusteringComponentConfiguration config) {
         this.usermodels = new ConcurrentHashMap<>();
         usermodels.clear();
+        this.config = config;
     }
     
     abstract public Clusterer getClusterer();
@@ -110,11 +111,15 @@ public abstract class ClusteringComponent {
     public void clearUserModels() {
         for(Map.Entry<Integer, UserModelPPSDM> entry : this.usermodels.entrySet()){
             UserModelPPSDM model = entry.getValue();
-            if(getClusteringID() - model.getClusteringId() > Configuration.MAX_DIFFERENCE_OF_CLUSTERING_ID){
+            if(getClusteringID() - model.getClusteringId() > config.getTcdiff()){
                 // delete 
                 this.usermodels.remove(entry.getKey());
             }
         }
+    }
+
+    public void resetLearning() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

@@ -24,6 +24,7 @@ import moa.core.FrequentItemset;
 import moa.core.PPSDM.Configuration;
 import moa.core.PPSDM.enums.DistanceMetricsEnum;
 import moa.core.TimingUtils;
+import moa.evaluation.EvaluationConfiguration;
 import net.sf.javaml.distance.CosineDistance;
 import net.sf.javaml.distance.CosineSimilarity;
 import net.sf.javaml.distance.EuclideanDistance;
@@ -38,9 +39,10 @@ public class UtilitiesPPSDM {
     private static EuclideanDistance ed = new EuclideanDistance();
     private static CosineDistance cd = new CosineDistance();
     private static CosineSimilarity cs = new CosineSimilarity();
+    public static DistanceMetricsEnum distanceMetric = DistanceMetricsEnum.EUCLIDEAN;
     
     public static double distanceBetweenVectors(double[] a, double b[]){
-        switch (Configuration.DISTANCE_METRIC) {
+        switch (distanceMetric) {
             case EUCLIDEAN:
                 return ed.calculateDistance(a,b);
             case PEARSON:
@@ -58,8 +60,8 @@ public class UtilitiesPPSDM {
         }
     }
     
-    public static double distanceBetweenVectors(double[] a, double b[], DistanceMetricsEnum metric){
-        switch (metric) {
+    public static double distanceBetweenVectors(double[] a, double b[], DistanceMetricsEnum dist){
+        switch (dist) {
             case EUCLIDEAN:
                 return ed.calculateDistance(a,b);
             case PEARSON:
@@ -77,8 +79,9 @@ public class UtilitiesPPSDM {
         }
     }
     
-    public static double similarityBetweenVectors(double[] a, double b[]){
-        switch (Configuration.DISTANCE_METRIC) {
+
+    public static double similarityBetweenVectors(double[] a, double b[], DistanceMetricsEnum distance){
+        switch (distance) {
             case EUCLIDEAN:
                 throw new UnsupportedOperationException();
             case PEARSON:
@@ -170,31 +173,30 @@ public class UtilitiesPPSDM {
         }
     }
 
-    public static double[] getActualTransSec() {
+    public static double[] getActualTransSec(int transactionCounter, long streamStartTime) {
         long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        double tp =((double)(end - Configuration.STREAM_START_TIME) / 1e9);
-        double transsec = Configuration.TRANSACTION_COUNTER/tp;
+        double tp =((double)(end - streamStartTime) / 1e9);
+        double transsec = transactionCounter/tp;
         double[] res = new double[2];
         res[0] = transsec; res[1] = tp;
         return res;
     }
     
-    public static void configureMaxUpdateTime() {
-        
-        //long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
-//        double tp = Configuration.START_UPDATE_TIME/1e9 - Configuration.STREAM_START_TIME/1e9;
+    public static double computeMaxUpdateTime(int transactionCounter,int mts, 
+            long startUpdateTime, 
+            long streamStartTime) {
         double update = 
-                (Configuration.TRANSACTION_COUNTER / Configuration.MIN_TRANSSEC ) - Configuration.START_UPDATE_TIME/1e9 + Configuration.STREAM_START_TIME/1e9;
+                (transactionCounter / (double)mts ) - startUpdateTime/1e9 + streamStartTime/1e9;
         if(update < 0){
             update = 0;
         }
-        Configuration.MAX_UPDATE_TIME = update;
+        return update;
     }
     
-    public static double getUpdateProgress(){
+    public static double getUpdateProgress(long startUpdateTime, double maxUpdateTime){
         long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        double tp =((double)(end - Configuration.START_UPDATE_TIME) / 1e9);
-        return tp/Configuration.MAX_UPDATE_TIME;
+        double tp =((double)(end - startUpdateTime) / 1e9);
+        return tp/maxUpdateTime;
     }
     
     private UtilitiesPPSDM(){};
