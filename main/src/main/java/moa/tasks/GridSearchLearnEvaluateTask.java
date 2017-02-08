@@ -34,12 +34,11 @@ import moa.core.PPSDM.dto.SnapshotResults;
  * Task to evaluate one from configurations in grid during grid search. 
  * @author Tomas Chovanak
  */
-public class GridSearchLearnEvaluatePPSDMTask implements Task {
+public class GridSearchLearnEvaluateTask implements Task {
     
     private int id;
     private int fromid;
     private Map<String,Parameter> params;
-    
     private SessionsFileStream stream ;
     private String pathToStream ;
     private String pathToSummaryOutputFile;
@@ -48,7 +47,7 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
     private OutputManager om;
     
     
-    public GridSearchLearnEvaluatePPSDMTask(int id, int fromid, Map<String,Parameter> params,
+    public GridSearchLearnEvaluateTask(int id, int fromid, Map<String,Parameter> params,
             String pathToStream, String pathToSummaryOutputFile, 
             String pathToOutputFile, String pathToCategoryMappingFile) {
         this.id = id;
@@ -76,7 +75,7 @@ public class GridSearchLearnEvaluatePPSDMTask implements Task {
                 learner = new PersonalizedPatternsMiner(map);
             } catch (IOException ex) {
                 learner = new PersonalizedPatternsMiner();
-                Logger.getLogger(GridSearchLearnEvaluatePPSDMTask.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GridSearchLearnEvaluateTask.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else{
              learner = new PersonalizedPatternsMiner();

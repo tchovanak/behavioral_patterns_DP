@@ -15,8 +15,8 @@ import moa.core.PPSDM.dto.GroupStatsResults;
 import moa.core.PPSDM.dto.SnapshotResults;
 import moa.core.PPSDM.dto.SummaryResults;
 import moa.learners.PersonalizedPatternsMiner;
-import moa.tasks.GridSearchEvaluator;
-import moa.tasks.GridSearchLearnEvaluatePPSDMTask;
+import moa.tasks.GridSearch;
+import moa.tasks.GridSearchLearnEvaluateTask;
 
 /**
  *
@@ -97,7 +97,7 @@ public class OutputManager {
                 
             }
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -205,7 +205,7 @@ public class OutputManager {
             pwriter.close();
             snapwriter.close();
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchLearnEvaluatePPSDMTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearchLearnEvaluateTask.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -219,7 +219,7 @@ public class OutputManager {
             swriter.append(',');
             swriter.close();
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchLearnEvaluatePPSDMTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearchLearnEvaluateTask.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -264,7 +264,7 @@ public class OutputManager {
             writer.close();
             writer = null;
          } catch (IOException ex) {
-             Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
          }
     }
 
@@ -301,7 +301,7 @@ public class OutputManager {
             writer.append(((Integer)counter).toString());writer.append('\n');
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -312,7 +312,7 @@ public class OutputManager {
             writer.append(((Double)speed[1]).toString());writer.append(',');
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

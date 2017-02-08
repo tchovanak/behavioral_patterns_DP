@@ -25,39 +25,129 @@ import java.util.Map;
 
 /**
  * Runs and evaluates all experiments from parameters configurations defined in 
- * config file
+ * config file.
  * @author Tomas Chovanak
  */
-public class GridSearchEvaluator extends MainTask {
+public class GridSearch extends MainTask {
 
     private int id = 0;
-    public StringOption pathToConfigFile = new StringOption("pathToConfigFile", 'o',
+    // from config file all needed parameters are read
+    public  StringOption pathToConfigFile = new StringOption("pathToConfigFile", 'o',
             "Path to file where detail of configuration is stored.", "./");
+    
+    // path to stream input file 
     private String pathToStream = null;
-    private int fromid = 0; 
+    private int fromid = 0; // id of configuration to start grid search from.
     private String pathToSummaryOutputFile = "";
     private String pathToOutputFile = "";
     private String pathToCategoryMappingFile = "";
-    private GridSearchLearnEvaluatePPSDMTask gpLearnEvaluateTask = null;
+    // SUBTASK that runs with different configurations of parameters.
+    private GridSearchLearnEvaluateTask gpLearnEvaluateTask = null;
+    // Manages output tasks, like writing to file.
     private OutputManager om;
     
-    public GridSearchEvaluator(int fromid) {
+    public GridSearch(int fromid) {
         this.fromid = fromid;
     }
     
-    private void evaluate(List<Parameter> params){
-        Map<String, Parameter> paramsMap = new HashMap<>();
-        for(Parameter p : params){
-            paramsMap.put(p.getName(), p);
+
+    /**
+     * To start grid search from MOA
+     * @param tm
+     * @param or
+     * @return 
+     */
+    @Override
+    protected Object doMainTask(TaskMonitor tm, ObjectRepository or) {
+        InputStream fileStream;
+        BufferedReader fileReader = null;
+        try {
+            fileStream = new FileInputStream(this.pathToConfigFile.getValue());
+            fileReader = new BufferedReader(new InputStreamReader(fileStream));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
-        gpLearnEvaluateTask = new GridSearchLearnEvaluatePPSDMTask(id, fromid, paramsMap, pathToStream, 
-                pathToSummaryOutputFile, pathToOutputFile, pathToCategoryMappingFile); 
-        gpLearnEvaluateTask.doTask(); 
-        this.id = this.gpLearnEvaluateTask.getId();
-        gpLearnEvaluateTask = null;
-        System.gc();
+        if(fileReader == null){
+            return null;
+        }
+        startEvaluation(fileReader);
+        return null;
     }
     
+       
+    /**
+     * Starts grid search as main class
+     * Arguments:
+     *  1. config file: path to config file where parameters for grid search are declared
+     * @param args 
+     */
+    public static void main(String args[]){
+        InputStream fileStream;
+        BufferedReader fileReader = null;
+        try {
+            if(args.length > 0){
+                fileStream = new FileInputStream(args[0]);
+            }else{
+                fileStream = new FileInputStream("g:\\workspace_DP2\\results_grid\\config\\config_sacbee.csv");
+            }
+            fileReader = new BufferedReader(new InputStreamReader(fileStream));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(fileReader == null){
+            return;
+        }
+        startEvaluation(fileReader);
+    }
+    
+    /**
+     * Starts evaluation of configurations described in config file
+     * @param fileReader 
+     */
+    private static void startEvaluation(BufferedReader fileReader) {
+        List<Parameter> params = new ArrayList<>();
+        try {
+            String inputSessionFile = fileReader.readLine().split(",")[1].trim();
+            String outputToDirectory = fileReader.readLine().split(",")[1].trim();
+            String pathToCategoryMappingFile = fileReader.readLine().split(",")[1].trim();
+            int fromid = Integer.parseInt(fileReader.readLine().split(",")[1].trim());
+            // READ IN PARAMETERS 
+            for(String line = fileReader.readLine(); line != null; line = fileReader.readLine()) {
+                String[] row = line.split(",");
+                double value = Double.parseDouble(row[1].trim());
+                // LIST OF POSSIBLE VALUES
+                Parameter p;
+                if(value == -1){
+                    p = new Parameter(value);
+                    for(int i = 2; i < row.length; i++){
+                        p.addPossibleValue(Double.parseDouble(row[i].trim()));
+                    }
+                }else {
+                    //boundaries
+                    p = new Parameter(0.0, value,Double.parseDouble(row[2].trim()), 
+                            Double.parseDouble(row[3].trim()));   
+                }
+                p.setName(row[0].trim());
+                params.add(p);
+            }
+            OutputManager.writeHeader(outputToDirectory + "summary_results.csv");
+            GridSearch evaluator = new GridSearch(fromid);
+            evaluator.setPathToOutputFile(outputToDirectory);
+            evaluator.setPathToInputFile(inputSessionFile);
+            evaluator.setPathToCategoryMappingFile(pathToCategoryMappingFile);
+            evaluator.setPathToSummaryOutputFile(outputToDirectory + "summary_results.csv");
+            List<Parameter> preparedParams = new ArrayList<>();
+            evaluator.startGridEvaluation(params, preparedParams);  
+        } catch (IOException ex) {
+            Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }
+    
+    /**
+     * Recursively tries all possible configurations of parameters
+     * @param params
+     * @param preparedParameters 
+     */
     private void startGridEvaluation(List<Parameter> params, List<Parameter> preparedParameters){
         if(params.isEmpty()){
             this.evaluate(preparedParameters);
@@ -86,62 +176,24 @@ public class GridSearchEvaluator extends MainTask {
         }
     }
     
-    @Override
-    protected Object doMainTask(TaskMonitor tm, ObjectRepository or) {
-        InputStream fileStream;
-        BufferedReader fileReader = null;
-        try {
-            fileStream = new FileInputStream(this.pathToConfigFile.getValue());
-            fileReader = new BufferedReader(new InputStreamReader(fileStream));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+    /**
+     * Starts evaluation of parameter configuration 
+     * @param params 
+     */
+    private void evaluate(List<Parameter> params){
+        Map<String, Parameter> paramsMap = new HashMap<>();
+        for(Parameter p : params){
+            paramsMap.put(p.getName(), p);
         }
-        if(fileReader == null){
-            return null;
-        }
-        startEvaluation(fileReader);
-        return null;
+        gpLearnEvaluateTask = new GridSearchLearnEvaluateTask(id, fromid, paramsMap, pathToStream, 
+                pathToSummaryOutputFile, pathToOutputFile, pathToCategoryMappingFile); 
+        gpLearnEvaluateTask.doTask(); 
+        this.id = this.gpLearnEvaluateTask.getId();
+        gpLearnEvaluateTask = null;
+        System.gc();
     }
     
-    private static void startEvaluation(BufferedReader fileReader) {
-        List<Parameter> params = new ArrayList<>();
-        try {
-            String inputSessionFile = fileReader.readLine().split(",")[1].trim();
-            String outputToDirectory = fileReader.readLine().split(",")[1].trim();
-            String pathToCategoryMappingFile = fileReader.readLine().split(",")[1].trim();
-            int fromid = Integer.parseInt(fileReader.readLine().split(",")[1].trim());
-            // READ IN PARAMETERS 
-            for(String line = fileReader.readLine(); line != null; line = fileReader.readLine()) {
-                String[] row = line.split(",");
-                double value = Double.parseDouble(row[1].trim());
-                // LIST OF POSSIBLE VALUES
-                Parameter p;
-                if(value == -1){
-                    p = new Parameter(value);
-                    for(int i = 2; i < row.length; i++){
-                        p.addPossibleValue(Double.parseDouble(row[i].trim()));
-                    }
-                }else {
-                    //boundaries
-                    p = new Parameter(0.0, value,Double.parseDouble(row[2].trim()), 
-                            Double.parseDouble(row[3].trim()));   
-                }
-                p.setName(row[0].trim());
-                params.add(p);
-            }
-            OutputManager.writeHeader(outputToDirectory + "summary_results.csv");
-            GridSearchEvaluator evaluator = new GridSearchEvaluator(fromid);
-            evaluator.setPathToOutputFile(outputToDirectory);
-            evaluator.setPathToInputFile(inputSessionFile);
-            evaluator.setPathToCategoryMappingFile(pathToCategoryMappingFile);
-            evaluator.setPathToSummaryOutputFile(outputToDirectory + "summary_results.csv");
-            List<Parameter> preparedParams = new ArrayList<>();
-            evaluator.startGridEvaluation(params, preparedParams);  
-        } catch (IOException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    }
-    
+    // HELPER
     private List<Parameter> deepCopy(List<Parameter> orig){
         List<Parameter> copy = new ArrayList<>(); 
         Iterator<Parameter> iterator = orig.iterator(); 
@@ -149,12 +201,13 @@ public class GridSearchEvaluator extends MainTask {
             try { 
                 copy.add(iterator.next().clone());
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GridSearch.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return copy;
     }
     
+    // GETTERS AND SETTERS
     public void setPathToInputFile(String path) {
         this.pathToStream = path;
     }
@@ -182,32 +235,6 @@ public class GridSearchEvaluator extends MainTask {
     @Override
     public Class<?> getTaskResultType() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    /**
-     * Arguments:
-     *  1. config file: path to config file where parameters for grid search are declared
-    * @param args 
-     */
-    public static void main(String args[]){
-        InputStream fileStream;
-        BufferedReader fileReader = null;
-        try {
-            if(args.length > 0){
-                fileStream = new FileInputStream(args[0]);
-            }else{
-                fileStream = new FileInputStream("g:\\workspace_DP2\\results_grid\\config\\config_sacbee.csv");
-            }
-            fileReader = new BufferedReader(new InputStreamReader(fileStream));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GridSearchEvaluator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if(fileReader == null){
-            return;
-        }
-        
-        startEvaluation(fileReader);
-        
     }
     
 }

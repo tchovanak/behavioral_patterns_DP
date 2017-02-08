@@ -30,4 +30,6 @@ public interface PatternMiningComponent {
     public SnapshotResults generateSnapshot(ClusteringComponent clusterer);
 
     public List<FciValue> extractPatterns();
+
+    public int getSnapshotId();
 }

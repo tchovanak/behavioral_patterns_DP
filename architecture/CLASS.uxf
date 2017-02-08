@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>330</x>
+      <y>160</y>
+      <w>330</w>
+      <h>420</h>
+    </coordinates>
+    <panel_attributes> &lt;&lt;new class&gt;&gt;
+ PersonalizedPatternsMiner
+--
+- PersonalizedIncMine ppIncMine
+- WithKMeans clusterer
+- Map&lt;Integer, UserModel&gt; usermodels
++ IntOption minNumOfChangesInUserModel
++ IntOption min NumOfMicroclusterUpdates
++ IntOption numPages
++ IntOption windowSize
++ IntOption evaluationWindowSize
++ IntOption maxItemsetLength
++ IntOption numOfGroups
++ FloatOption minSupport
++ FloatOption relaxationRate
++ IntOption fixedSegmentLength
++ IntOption groupFixedSegmentLength
++ IntOption numOfRecommendedItems
++ FlagOption useGrouping
+
+--
++ void resetLearningImpl()
++ void trainOnInstance(Example e)
++ double[] getVotesForInstance(Example e)
+- void updateGroupidsInUserModels()
+- UserModel updateUserModel(Instance i)
+- UserModel getUserModelFromInstance(Instance i)</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
