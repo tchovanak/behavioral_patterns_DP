@@ -10,9 +10,9 @@ import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
 import moa.cluster.Cluster;
 import moa.cluster.Clustering;
-import moa.cluster.PPSDM.SphereClusterPPSDM;
+import moa.cluster.SphereCluster;
 import moa.clusterers.Clusterer;
-import moa.clusterers.clustream.PPSDM.WithKmeansPPSDM;
+import moa.clusterers.clustream.WithKmeansPPSDM;
 import moa.core.AutoExpandVector;
 import moa.core.enums.DistanceMetricsEnum;
 
@@ -110,7 +110,7 @@ public class ClustererClustream extends ClusteringComponent {
             Cluster bestCluster;
             double minDist = Double.MAX_VALUE;
             for(Cluster c : clusters){
-                SphereClusterPPSDM cs = (SphereClusterPPSDM) c; // kmeans produce sphere clusters
+                SphereCluster cs = (SphereCluster) c; // kmeans produce sphere clusters
                 double dist = cs.getCenterDistance(umInstance, DistanceMetricsEnum.PEARSON);///cs.getRadius();
                 //double dist = cs.getDistanceToRadius(umInstance);
                 if(dist < 1.0 && dist < minDist){

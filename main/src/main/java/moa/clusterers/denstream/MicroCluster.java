@@ -24,7 +24,7 @@ import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import moa.core.PPSDM.Configuration;
+import moa.core.Configuration;
 import moa.core.enums.DistanceMetricsEnum;
 import moa.core.utils.UtilitiesPPSDM;
 

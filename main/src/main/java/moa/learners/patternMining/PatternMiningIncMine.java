@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import moa.core.Example;
 import moa.core.PPSDM.FrequentItemset;
-import moa.core.PPSDM.FCITablePPSDM;
+import moa.core.FCITablePPSDM;
 import moa.core.dto.FIWrapper;
 import moa.learners.clustering.UserModelPPSDM;
 import moa.learners.clustering.ClusteringComponent;

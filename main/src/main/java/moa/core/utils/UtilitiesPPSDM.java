@@ -21,7 +21,7 @@ package moa.core.utils;
 
 import java.util.*;
 import moa.core.PPSDM.FrequentItemset;
-import moa.core.PPSDM.Configuration;
+import moa.core.Configuration;
 import moa.core.enums.DistanceMetricsEnum;
 import moa.core.TimingUtils;
 import moa.evaluation.EvaluationConfiguration;

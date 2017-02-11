@@ -10,7 +10,7 @@ import com.yahoo.labs.samoa.instances.Instance;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import moa.core.PPSDM.InstanceValue;
+import moa.core.InstanceValue;
 
 /**
  *

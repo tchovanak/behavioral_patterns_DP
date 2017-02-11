@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import moa.core.FrequentItemset;
+import core.FrequentItemset;
 import org.apache.storm.Testing;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.tuple.Tuple;
@@ -95,7 +95,7 @@ public class RecommendationBoltTest {
         // verify interactions
         verify(jedis, times(1)).get("SFCIS_GID=1.0".getBytes());
         verify(jedis, times(1)).get("SFCIS_GLOBAL".getBytes());
-        verify(collector, times(1)).emit(eq("streamEval"),Matchers.any(Values.class));
+        verify(collector, times(1)).emit(eq("streamEvalFromRec"),Matchers.any(Values.class));
         verify(bolt, times(1)).generateRecommendations(eq(1.0), Matchers.anyList(), Matchers.anyList(), Matchers.anyList(), Matchers.anyInt());
         
     }

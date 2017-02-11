@@ -12,7 +12,7 @@ import moa.cluster.Clustering;
 import moa.clusterers.Clusterer;
 import moa.clusterers.denstream.WithDBSCAN;
 import moa.clusterers.macro.NonConvexCluster;
-import moa.core.PPSDM.Configuration;
+import moa.core.Configuration;
 import moa.learners.patternMining.PersonalizedIncMine;
 
 /**

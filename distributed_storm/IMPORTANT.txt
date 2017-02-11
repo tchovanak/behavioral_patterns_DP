@@ -1,0 +1,16 @@
+http://stackoverflow.com/questions/21808529/apache-kafka-vs-apache-storm
+
+to deploy on AZURE
+
+create cluster with https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-apache-storm-tutorial-get-started-linux
+
+ssh password must contain lowcase, uppercase and number
+
+create storage for input files and categories mappings
+
+create redis cache
+
+update code -> access keys to redis and storage
+
+upload with winscp jar topology and start with storm start
+

@@ -5,6 +5,7 @@
  */
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author Tomas
  */
-public class RecommendationResults {
+public class RecommendationResults implements Serializable {
     
     private List<Integer> recommendations = new ArrayList<>();
     private List<Integer> testWindow = new ArrayList<>();

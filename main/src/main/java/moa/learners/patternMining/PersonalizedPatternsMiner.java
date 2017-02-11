@@ -14,7 +14,7 @@ import moa.core.InstanceExample;
 import com.yahoo.labs.samoa.instances.SparseInstance;
 import java.util.concurrent.ConcurrentHashMap;
 
-import moa.core.PPSDM.Configuration;
+import moa.core.Configuration;
 import moa.learners.recommendation.RecommendationGenerator;
 
 import moa.learners.clustering.ClustererClustream;

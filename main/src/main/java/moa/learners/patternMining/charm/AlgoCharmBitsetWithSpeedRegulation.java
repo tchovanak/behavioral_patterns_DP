@@ -3,7 +3,7 @@ package moa.learners.patternMining.charm;
 import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.*;
-import moa.core.PPSDM.Configuration;
+import moa.core.Configuration;
 import moa.core.utils.UtilitiesPPSDM;
 
 /**

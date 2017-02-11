@@ -1,0 +1,7 @@
+247069 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy - User: ubuntu
+247070 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy - Started:
+247070 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy -   52.59.210.97    [ZK, WORKER, MASTER, U
+247070 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy -   52.59.208.4     [WORKER]
+247070 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy -   54.93.101.224   [WORKER]
+247071 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy - Storm UI: http://52.59.210.97:8080
+247071 [main] INFO dk.kaspergsm.stormdeploy.commands.Deploy - Ganglia UI: http://52.59.210.97/ganglia

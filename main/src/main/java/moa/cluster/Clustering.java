@@ -25,7 +25,6 @@
 
 package moa.cluster;
 
-import moa.cluster.PPSDM.SphereClusterPPSDM;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +76,7 @@ public class Clustering extends AbstractMOAObject{
         this.clusters = new AutoExpandVector<Cluster>();
         for (int i = 0; i < numClasses; i++) {
             if(sorted_points[i].size()>0){
-                SphereClusterPPSDM s = new SphereClusterPPSDM(sorted_points[i],dim);
+                SphereCluster s = new SphereCluster(sorted_points[i],dim);
                 s.setId(sorted_points[i].get(0).classValue());
                 s.setGroundTruth(sorted_points[i].get(0).classValue());
                 clusters.add(s);
@@ -106,7 +105,7 @@ public class Clustering extends AbstractMOAObject{
         clusters = new AutoExpandVector<Cluster>();
         int microID = 0;
         for (int i = 0; i < numClasses; i++) {
-            ArrayList<SphereClusterPPSDM> microByClass = new ArrayList<SphereClusterPPSDM>();
+            ArrayList<SphereCluster> microByClass = new ArrayList<SphereCluster>();
             ArrayList<DataPoint> pointInCluster = new ArrayList<DataPoint>();
             ArrayList<ArrayList<Instance>> pointInMicroClusters = new ArrayList();
 
@@ -118,11 +117,11 @@ public class Clustering extends AbstractMOAObject{
                     pointInCluster.remove(0);
                 }
                 if(micro_points.size() > 0){
-                    SphereClusterPPSDM s = new SphereClusterPPSDM(micro_points,dim);
+                    SphereCluster s = new SphereCluster(micro_points,dim);
                     for (int c = 0; c < microByClass.size(); c++) {
-                        if(((SphereClusterPPSDM)microByClass.get(c)).overlapRadiusDegree(s) > overlapThreshold ){
+                        if(((SphereCluster)microByClass.get(c)).overlapRadiusDegree(s) > overlapThreshold ){
                             micro_points.addAll(pointInMicroClusters.get(c));
-                            s = new SphereClusterPPSDM(micro_points,dim);
+                            s = new SphereCluster(micro_points,dim);
                             pointInMicroClusters.remove(c);
                             microByClass.remove(c);
                             //System.out.println("Removing redundant cluster based on radius overlap"+c);
@@ -151,7 +150,7 @@ public class Clustering extends AbstractMOAObject{
 //                        System.out.println("Overlap C"+(clustering.size()+c)+" ->C"+(clustering.size()+c1)+": "+overlap);
                         if(overlap > overlapThreshold){
                             pointInMicroClusters.get(c).addAll(pointInMicroClusters.get(c1));
-                            SphereClusterPPSDM s = new SphereClusterPPSDM(pointInMicroClusters.get(c),dim);
+                            SphereCluster s = new SphereCluster(pointInMicroClusters.get(c),dim);
                             microByClass.set(c, s);
                             pointInMicroClusters.remove(c1);
                             microByClass.remove(c1);

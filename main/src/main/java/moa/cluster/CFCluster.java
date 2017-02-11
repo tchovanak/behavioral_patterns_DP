@@ -19,7 +19,6 @@
  */
 
 package moa.cluster;
-import moa.cluster.PPSDM.SphereClusterPPSDM;
 import java.util.Arrays;
 import com.yahoo.labs.samoa.instances.Instance;
 
@@ -53,7 +52,7 @@ o The sum of the time stamps Ti, . . .Tin maintained in CFlt.
 o The number of data points is maintained in n.
 
  */
-public abstract class CFCluster extends SphereClusterPPSDM {
+public abstract class CFCluster extends SphereCluster {
 
 	private static final long serialVersionUID = 1L;
 	protected double radiusFactor = 1.8;

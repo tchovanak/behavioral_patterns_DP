@@ -11,7 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import moa.core.enums.RecommendStrategiesEnum;
-import moa.core.PPSDM.Configuration;
+import moa.core.Configuration;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
