@@ -18,10 +18,10 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package moa.core;
+package moa.core.PPSDM;
 import java.io.Serializable;
 import java.util.*;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.utils.UtilitiesPPSDM;
 
 /*
     (Tomas Chovanak) no change

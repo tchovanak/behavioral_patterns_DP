@@ -27,12 +27,13 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
     private OutputCollector collector;
     
     private Map<Integer,List<Integer>> SessionRecsMap = new HashMap<>();
+    private int ews = 2;
     
     /**
      * 
      */
-    public RecommendationEvaluationBolt() {
-      
+    public RecommendationEvaluationBolt(int ews) {
+      this.ews = ews;
     }
 
     
@@ -48,12 +49,18 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
         String task = tuple.getString(2);
         int sid = tuple.getInteger(1);
         double gid = tuple.getDouble(0);
+        
         List<Integer> items = (List<Integer>)tuple.getValue(3);
         if(task.equals("REC_EVAL")){
+            // get test window 
+            if(items.size() <= ews){
+                return;
+            }
+            List<Integer> test = items.subList(ews, items.size());
             // find corresponding recs
             List<Integer> recs = this.SessionRecsMap.get(sid);
             if(recs != null){
-               double prec = this.calculatePrecision(recs, items);
+               double prec = this.calculatePrecision(recs, test);
                this.storeResults(sid,gid,prec);
             }
             

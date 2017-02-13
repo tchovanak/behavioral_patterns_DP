@@ -17,9 +17,9 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package moa.core;
+package moa.core.PPSDM;
 
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.utils.UtilitiesPPSDM;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

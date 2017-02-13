@@ -1,0 +1,16 @@
+#
+# Amazon EC2 example cluster configuration
+#
+ectwo:
+    - image "eu-central-1/ami-3b3af354"		# Ubuntu 14.04 LTS AMI
+    - region "eu-central-1"					# Region
+    - remote-exec-preconfig {}
+    - remote-exec-postconfig {}
+    - ssh-key-name "ec2"           # Optional. defaults to "id_rsa"
+    - storm-deploy-alternative-cloud-jar-url "https://s3-us-west-2.amazonaws.com/your-bucket/storm-deploy-alternative-cloud.jar"
+    - storm-tar-gz-url "http://mirror.yannic-bonenberger.com/apache/storm/apache-storm-0.9.3/apache-storm-0.9.3.tar.gz"
+    - zk-tar-gz-url "http://apache.lauf-forum.at/zookeeper/zookeeper-3.4.7/zookeeper-3.4.7.tar.gz"
+    - memory-monitor "false"
+    - t2.micro {ZK, WORKER, MASTER, UI, LOGVIEWER}      # Request service
+    - t2.micro {WORKER}      # Request service
+    - t2.micro {WORKER}      # Request service

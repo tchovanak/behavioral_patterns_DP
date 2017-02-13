@@ -1,8 +1,0 @@
-#surefire
-#Tue Jan 31 16:36:34 CET 2017
-maven.ext.class.path=C\:\\Users\\Tomas\\AppData\\Roaming\\NetBeans\\8.0.2\\maven-nblib\\netbeans-eventspy.jar
-user.dir=G\:\\workspace_DP3\\distributed_storm
-file.encoding=UTF-8
-localRepository=C\:\\Users\\Tomas\\.m2\\repository
-basedir=G\:\\workspace_DP3\\distributed_storm
-test=RecommendationEvaluationBoltTest

@@ -39,7 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import moa.core.AutoExpandVector;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.enums.DistanceMetricsEnum;
+import moa.core.utils.UtilitiesPPSDM;
 
 public class WithDBSCAN extends AbstractClusterer {
 	
@@ -335,7 +336,7 @@ public class WithDBSCAN extends AbstractClusterer {
                         if(couples.containsValue(previd)){
                             continue; 
                         }
-                        double dist = UtilitiesPPSDM.distanceBetweenVectors(curClusters.get(curid).getCenter(), 
+                        double dist = UtilitiesPPSDM.distanceBetweenVectors(curClusters.get(curid).getCenter(),
                             prevClusters.get(previd).getCenter());
                         if(dist < mindist){
                             mindist = dist;

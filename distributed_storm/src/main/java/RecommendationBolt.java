@@ -11,10 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import moa.core.FrequentItemset;
-import moa.core.PPSDM.FciValue;
-import moa.core.PPSDM.utils.MapUtil;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import core.FrequentItemset;
+import core.PPSDM.FciValue;
+import ppsdm.core.PPSDM.utils.MapUtil;
+import ppsdm.core.PPSDM.utils.UtilitiesPPSDM;
+import ppsdm.learners.StormIncMine;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -33,9 +34,9 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public class RecommendationBolt  implements IRichBolt  {
     
-    private  JedisPool pool;
+    private transient JedisPool pool;
     
-    private  Jedis jedis;
+    private transient  Jedis jedis;
     
     private  OutputCollector collector;
     
@@ -60,14 +61,27 @@ public class RecommendationBolt  implements IRichBolt  {
      */
     public RecommendationBolt(int ews) {
         this.ews = ews;
+//        JedisPoolConfig config = new JedisPoolConfig();
+//         pool = new JedisPool(new JedisPoolConfig(), 
+//                "ppsdmcache.redis.cache.windows.net", 
+//                6379,
+//                1000, 
+//                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
         pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
-        jedis = pool.getResource(); 
+        jedis = pool.getResource();
     }
     
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
         this.collector = oc;
-        
+//        JedisPoolConfig config = new JedisPoolConfig();
+//         pool = new JedisPool(new JedisPoolConfig(), 
+//                "ppsdmcache.redis.cache.windows.net", 
+//                6379,
+//                1000, 
+//                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
+        pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
+         jedis = pool.getResource();
     }
 
     
@@ -106,7 +120,7 @@ public class RecommendationBolt  implements IRichBolt  {
         RecommendationResults recs = generateRecommendations(gid,ew,globItemsets,groupItemsets, 5);
         
         // send recommendations to evaluation bolt
-        collector.emit("streamEval",new Values(recs, sid));
+        collector.emit("streamEvalFromRec",new Values(gid, sid, "REC_CACHE", recs.getRecommendations()));
         
     }
     
@@ -135,7 +149,7 @@ public class RecommendationBolt  implements IRichBolt  {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declareStream("streamEval", new Fields("recs"));
+        ofd.declareStream("streamEvalFromRec", new Fields("gid", "sid","task", "recs"));
        
     }
 
@@ -151,21 +165,23 @@ public class RecommendationBolt  implements IRichBolt  {
             int rc) {
         //to get all fcis found 
         List<FciValue> mapFciWeightGlobal = new LinkedList<>();
-        Iterator<FrequentItemset> itFis = globalPatternsDES.iterator();
-        while(itFis.hasNext()){
-            FrequentItemset fi = itFis.next();
-            if(fi.getSize() > 1){
-                List<Integer> items = fi.getItems();
-                double hitsVal = this.computeSimilarity(items,ew);
-                if(hitsVal == 0.0){ continue; }
-                FciValue fciVal = new FciValue();
-                fciVal.setItems(fi.getItems());
-                fciVal.computeValue(hitsVal, fi.getSupportDouble());
-                mapFciWeightGlobal.add(fciVal);
+        if(globalPatternsDES != null){
+            Iterator<FrequentItemset> itFis = globalPatternsDES.iterator();
+            while(itFis.hasNext()){
+                FrequentItemset fi = itFis.next();
+                if(fi.getSize() > 1){
+                    List<Integer> items = fi.getItems();
+                    double hitsVal = this.computeSimilarity(items,ew);
+                    if(hitsVal == 0.0){ continue; }
+                    FciValue fciVal = new FciValue();
+                    fciVal.setItems(fi.getItems());
+                    fciVal.computeValue(hitsVal, fi.getSupportDouble());
+                    mapFciWeightGlobal.add(fciVal);
+                }
             }
         }
         List<FciValue> mapFciWeightGroup = new LinkedList<>();
-        if(gid >= 0.0){
+        if(groupPatternsDES != null && gid >= 0.0){
             Iterator<FrequentItemset> itFisG = groupPatternsDES.iterator();
             while(itFisG.hasNext()){
                 FrequentItemset fi = itFisG.next();

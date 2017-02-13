@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import moa.core.FrequentItemset;
-import moa.core.PPSDM.SegmentPPSDM;
-import moa.core.PPSDM.charm.Itemset;
-import moa.learners.StormIncMine;
+import core.FrequentItemset;
+import core.PPSDM.SegmentPPSDM;
+import ppsdm.core.PPSDM.charm.Itemset;
+import ppsdm.learners.StormIncMine;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -68,6 +68,12 @@ public class GlobalPatternsBolt  implements IRichBolt  {
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
         this.collector = oc;
+//        JedisPoolConfig config = new JedisPoolConfig();
+//         pool = new JedisPool(new JedisPoolConfig(), 
+//                "ppsdmcache.redis.cache.windows.net", 
+//                6379,
+//                1000, 
+//                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
         pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
         this.sincmine = new StormIncMine(15,10,0.05, 0.1, 25);
         jedis = pool.getResource();

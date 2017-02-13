@@ -1,10 +1,18 @@
 
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.file.CloudFile;
+import com.microsoft.azure.storage.file.CloudFileClient;
+import com.microsoft.azure.storage.file.CloudFileDirectory;
+import com.microsoft.azure.storage.file.CloudFileShare;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +43,7 @@ public class SessionsInputSpout implements IRichSpout {
     private boolean completed = false;
     private int ews = 1;
     private int id = 0;
+    private transient CloudStorageAccount storageAccount; 
     
      //Create instance for TopologyContext which contains topology data.
     private TopologyContext context;
@@ -42,6 +51,8 @@ public class SessionsInputSpout implements IRichSpout {
     public SessionsInputSpout(int ews) {
        ews = 2;
        id = 0;
+       
+       
     }
     
     @Override
@@ -55,14 +66,42 @@ public class SessionsInputSpout implements IRichSpout {
     public void nextTuple() {
         // session id - in future unique value generated 
         id++;
+        // Use the CloudStorageAccount object to connect to your storage account
+        
         BufferedReader fileReader = null;
+        InputStream fileStream = null;
         try {
-            InputStream fileStream = new FileInputStream("g:\\workspace_DP2\\Preprocessing\\alef\\alef_sessions_aggregated.csv");
-            fileReader = new BufferedReader(new InputStreamReader(
-                    fileStream));
+            fileStream = new FileInputStream("g:\\workspace_DP2\\Preprocessing\\alef\\alef_sessions_aggregated.csv");
         } catch (FileNotFoundException ex) {
-           Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fileReader = new BufferedReader(new InputStreamReader(fileStream));
+//        try {
+//            storageAccount = CloudStorageAccount.parse(
+//                    PPSDMStormTopology.storageConnectionString);
+//        } catch (URISyntaxException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InvalidKeyException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        CloudFileClient fileClient = storageAccount.createCloudFileClient();
+//        try {
+//            // Get a reference to the file share
+//            CloudFileShare share = fileClient.getShareReference("input");
+//            //Get a reference to the root directory for the share.
+//            CloudFileDirectory rootDir = share.getRootDirectoryReference();
+//            //Get a reference to the file you want to download
+//            CloudFile file = rootDir.getFileReference("alef_sessions_aggregated.csv");
+//            
+//            //InputStream fileStream = file.openRead();//new URL("https://ppsdmclusterstore.file.core.windows.net/input/alef_sessions_aggregated.csv").openStream();
+//
+//            fileReader = new BufferedReader(new InputStreamReader(fileStream));
+//        } catch (URISyntaxException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (StorageException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
         if(fileReader == null){return;}
         try {
             String line;

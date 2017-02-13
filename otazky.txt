@@ -3,3 +3,11 @@
 3. Preco sme vybrali reprezentaciu vzorov ako uzavrete frekventovane mnoziny ?
 4. Preco sa jedna o odporúčanie a nie predikciu ? 
 5. Preco sme odstranili kratke sedenia ? 
+
+6. Preco sme nepouzili napriklad ClusTREE ?
+	Pretoze jeho specifikom je schopnost prisposobit sa rychlosti prudu dat. 
+	Nase experimenty boli ale nastavene tak ze prud dat sme simulovali z datoveho suboru.
+	Nesimulovali sme nejake vykyvy rychlosti rozdiely  medzi instanciami ale datove instancie sme dodavali metode 
+	instantne rychlo aby sme zistili aka je maximalna rychlost spracovania v transakciach za sekundu.
+
+	Preto pouzitie ClusTREE by si vyzadovalo zmenu formy experimentu.

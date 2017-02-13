@@ -66,6 +66,7 @@ public class SessionsFileStream extends AbstractOptionHandler
         return null;
     }
 
+    @Override
     public long estimatedRemainingInstances() {
         double progressFraction = this.fileProgressMonitor.getProgressFraction();
         if ((progressFraction > 0.0) && (this.numInstancesRead > 0)) {
@@ -103,7 +104,7 @@ public class SessionsFileStream extends AbstractOptionHandler
             this.lastInstanceRead = null;
             this.hitEndOfFile = !readNextInstanceFromFile();
         } catch (IOException ioe) {
-            throw new RuntimeException("sessionFileStream restart failed.", ioe);
+            throw new RuntimeException("SessionFileStream restart failed.", ioe);
         }
     }
 

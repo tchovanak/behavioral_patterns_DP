@@ -24,8 +24,9 @@ import com.yahoo.labs.samoa.instances.Instance;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import moa.core.PPSDM.Configuration;
-import moa.core.PPSDM.utils.UtilitiesPPSDM;
+import moa.core.Configuration;
+import moa.core.enums.DistanceMetricsEnum;
+import moa.core.utils.UtilitiesPPSDM;
 
 public class MicroCluster extends CFCluster {
 
@@ -37,9 +38,7 @@ public class MicroCluster extends CFCluster {
         public InstanceInside(Instance inside, long timestamp) {
             this.inside = inside;
             this.timestamp = timestamp;
-        }
-        
-        
+        } 
 
         public Instance getInside() {
             return inside;
@@ -57,7 +56,6 @@ public class MicroCluster extends CFCluster {
             this.timestamp = timestamp;
         }
         
-        
     }
     
     private long lastEditT = -1;
@@ -65,10 +63,11 @@ public class MicroCluster extends CFCluster {
     private double lambda;
     private Timestamp currentTimestamp;
     private BlockingQueue<InstanceInside> instances = 
-            new ArrayBlockingQueue<>(Configuration.MAX_INSTANCES_IN_MICROCLUSTER); // queue of last n user sessions
+            new ArrayBlockingQueue<>(100); // queue of last n user sessions
 
     
-    public MicroCluster(double[] center, int dimensions, long creationTimestamp, double lambda, Timestamp currentTimestamp) {
+    public MicroCluster(double[] center, int dimensions, long creationTimestamp, 
+            double lambda, Timestamp currentTimestamp) {
         super(center, dimensions);
         this.creationTimestamp = creationTimestamp;
         this.lastEditT = creationTimestamp;

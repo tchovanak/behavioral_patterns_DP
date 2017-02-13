@@ -1,23 +1,37 @@
 
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.file.CloudFile;
+import com.microsoft.azure.storage.file.CloudFileClient;
+import com.microsoft.azure.storage.file.CloudFileDirectory;
+import com.microsoft.azure.storage.file.CloudFileShare;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import moa.cluster.Cluster;
-import moa.cluster.Clustering;
-import moa.cluster.PPSDM.SphereClusterPPSDM;
-import moa.clusterers.clustream.PPSDM.WithKmeansPPSDM;
+import ppsdm.cluster.Cluster;
+import ppsdm.cluster.Clustering;
+import ppsdm.cluster.PPSDM.SphereClusterPPSDM;
+import ppsdm.clusterers.clustream.PPSDM.WithKmeansPPSDM;
 import moa.core.AutoExpandVector;
-import moa.core.PPSDM.Configuration;
-import moa.core.PPSDM.UserModelPPSDM;
-import moa.core.PPSDM.enums.DistanceMetricsEnum;
+import core.PPSDM.Configuration;
+import core.PPSDM.UserModelPPSDM;
+import java.io.File;
+import ppsdm.core.PPSDM.enums.DistanceMetricsEnum;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
@@ -44,14 +58,50 @@ public class PreprocessingBolt implements IRichBolt {
     private int numOfDimensionsInUserModel = 18;
     private int microclusteringUpdatesCounter = 0;
     private int numMinNumberOfMicroclustersUpdates;
-    private String pathToCategoryMappingFile = "g:\\workspace_DP2\\results_grid\\alef\\categories_mapping.csv";
-
+    private transient String categoryMappingFile = null;
+    private  String categoryMappingCloudFile = null;
+    private transient CloudStorageAccount storageAccount = null; 
+    
     public PreprocessingBolt(int numMinNumberOfChangesInUserModel, int numOfDimensionsInUserModel, 
             int numMinNumberOfMicroclustersUpdates, int numOfGroups, String pathToCategoryMappingFile) {
         this.numOfDimensionsInUserModel = numOfDimensionsInUserModel;
         this.numMinNumberOfChangesInUserModel = numMinNumberOfChangesInUserModel;
         this.numMinNumberOfMicroclustersUpdates = numMinNumberOfMicroclustersUpdates;
-        this.pathToCategoryMappingFile  = pathToCategoryMappingFile;
+        
+        this.categoryMappingFile  = pathToCategoryMappingFile;
+     
+        this.numberOfGroups = numOfGroups;
+    }
+    
+    public PreprocessingBolt(int numMinNumberOfChangesInUserModel, int numOfDimensionsInUserModel, 
+            int numMinNumberOfMicroclustersUpdates, int numOfGroups, URL pathToCategoryMappingFile) {
+        this.numOfDimensionsInUserModel = numOfDimensionsInUserModel;
+        this.numMinNumberOfChangesInUserModel = numMinNumberOfChangesInUserModel;
+        this.numMinNumberOfMicroclustersUpdates = numMinNumberOfMicroclustersUpdates;
+        
+        // Use the CloudStorageAccount object to connect to your storage account
+        try {
+            storageAccount = CloudStorageAccount.parse(
+                    PPSDMStormTopology.storageConnectionString);
+                        // Create the file storage client.
+            CloudFileClient fileClient = storageAccount.createCloudFileClient();
+            // Get a reference to the file share
+            CloudFileShare share = fileClient.getShareReference("input");
+            //Get a reference to the root directory for the share.
+            CloudFileDirectory rootDir = share.getRootDirectoryReference();
+            //Get a reference to the file you want to download
+            CloudFile file = rootDir.getFileReference("categories_mapping.csv");
+            this.categoryMappingCloudFile = file.downloadText();
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (StorageException ex) {
+            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         this.numberOfGroups = numOfGroups;
     }
     
@@ -77,7 +127,8 @@ public class PreprocessingBolt implements IRichBolt {
             
         }else{
             // send tuple to recommendation evaluation bolt
-            collector.emit("streamEval",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1), tuple.getValue(3)));
+            // GID, SID, TASK, TEST WINDOW
+            collector.emit("streamEval",new Values(-1.0, tuple.getValue(3),"REC_EVAL",tuple.getValue(1)));
             // first send tuple to global method
             collector.emit("streamGlobal",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1)));
             // then resolve group uid belongs to
@@ -100,16 +151,21 @@ public class PreprocessingBolt implements IRichBolt {
     }
     
      private Map<Integer,Integer> readCategoriesMap() throws FileNotFoundException, IOException {
-        BufferedReader br = new BufferedReader(new FileReader(this.pathToCategoryMappingFile));
+        BufferedReader br;
+        if(categoryMappingCloudFile != null)
+            br = new BufferedReader(new StringReader(categoryMappingCloudFile));
+        else
+            br = new BufferedReader(new FileReader(new File(categoryMappingFile)));
         Map<Integer,Integer> map = new HashMap<>();
         String line = "";
         while ((line = br.readLine()) != null) {
-                // use comma as separator
-                String[] words = line.split(",");
-                map.put(Integer.parseInt(words[1].trim()), Integer.parseInt(words[0].trim()));
+            // use comma as separator
+            String[] words = line.split(",");
+            map.put(Integer.parseInt(words[1].trim()), Integer.parseInt(words[0].trim()));
         }
         return map;
-    }
+       
+     }
     
     private void performMacroclusteringClustream(){
         // B7: PERFORM MACROCLUSTERING
@@ -166,13 +222,15 @@ public class PreprocessingBolt implements IRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declareStream("streamEval", new Fields("gid","uid","items","sid"));
+        ofd.declareStream("streamEval", new Fields("gid","sid","task","test"));
         ofd.declareStream("streamRec", new Fields("gid","uid","items", "sid"));
         ofd.declareStream("streamGlobal", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup0", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup1", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup2", new Fields("gid","uid","items"));
         ofd.declareStream("streamGroup3", new Fields("gid","uid","items"));
+        ofd.declareStream("streamGroup4", new Fields("gid","uid","items"));
+        ofd.declareStream("streamGroup5", new Fields("gid","uid","items"));
    
     }
 
