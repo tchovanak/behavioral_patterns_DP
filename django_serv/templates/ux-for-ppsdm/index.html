@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPSDM - dashboard</title>
 
-    <link rel="stylesheet" type="text/css" href="{% static "templates/ux-for-ppsdm/bootstrap/css/bootstrap.min.css" %}" />
-    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/local.css" />
-    <link rel="stylesheet" type="text/css" href="css/heatmap.css">
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/heatmap.css" %}">
 
   </head>
 
-    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
 
     <!-- you need to include the shieldui css and js assets in order for the charts to work -->
     <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css" />
@@ -29,7 +29,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" charset="utf-8"></script>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <!--<script src="js/heatmap.js"></script>-->
-     <script src="js/heatmap2.js"></script>
+     <script src="../../django_server/static/js/heatmap2.js"></script>
 
     <div id="wrapper">
           <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -111,6 +111,41 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>TOP Global patterns</h3>
+                        </div>
+                        <div class="panel-body">
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>TOP Group 1 patterns</h3>
+                        </div>
+                        <div class="panel-body">
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>TOP Group 2 patterns</h3>
+                        </div>
+                        <div class="panel-body">
+
+                        </div>
+                        <
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">

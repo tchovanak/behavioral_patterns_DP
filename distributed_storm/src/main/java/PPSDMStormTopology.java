@@ -40,15 +40,15 @@ public class PPSDMStormTopology {
       TopologyBuilder builder = new TopologyBuilder();
       builder.setSpout("sessions-spout", new SessionsInputSpout(2)).setMaxTaskParallelism(1);
 
-//      builder.setBolt("preprocessing-bolt", new PreprocessingBolt(5,18,100,6,"g:\\workspace_DP2\\results_grid\\alef\\categories_mapping.csv"))
-//            .setMaxTaskParallelism(1)
-//            .shuffleGrouping("sessions-spout")
-//            .setNumTasks(1);
-      
-       builder.setBolt("preprocessing-bolt", new PreprocessingBolt(5,18,100,6,new URL("https://ppsdmclusterstore.file.core.windows.net/input/categories_mapping.csv")))
+      builder.setBolt("preprocessing-bolt", new PreprocessingBolt(5,18,100,6,"g:\\workspace_DP2\\results_grid\\alef\\categories_mapping.csv"))
             .setMaxTaskParallelism(1)
-            .fieldsGrouping("sessions-spout",new Fields("gid") )
+            .shuffleGrouping("sessions-spout")
             .setNumTasks(1);
+      
+//       builder.setBolt("preprocessing-bolt", new PreprocessingBolt(5,18,100,6,new URL("https://ppsdmclusterstore.file.core.windows.net/input/categories_mapping.csv")))
+//            .setMaxTaskParallelism(1)
+//            .fieldsGrouping("sessions-spout",new Fields("gid") )
+//            .setNumTasks(1);
       
       builder.setBolt("recommendation-bolt", new RecommendationBolt(2)).setMaxTaskParallelism(1)
             .fieldsGrouping("preprocessing-bolt", "streamRec", new Fields("gid"))
@@ -77,26 +77,26 @@ public class PPSDMStormTopology {
       //If there are arguments, we are running on a cluster
       //if (args != null && args.length > 0) {
         //parallelism hint to set the number of workers
-        System.out.println("RUNNING CLOUD\n");
-        conf.setNumWorkers(3);
-        //submit the topology
-        //StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
-        StormSubmitter.submitTopology("topology-ppsdm", conf, builder.createTopology());
+//        System.out.println("RUNNING CLOUD\n");
+//        conf.setNumWorkers(3);
+//        //submit the topology
+//        //StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+//        StormSubmitter.submitTopology("topology-ppsdm", conf, builder.createTopology());
       //}
       //Otherwise, we are running locally
 //      else {
         //Cap the maximum number of executors that can be spawned
         //for a component to 3
-//        System.out.println("RUNNING LOCAL\n");
-//        conf.setMaxTaskParallelism(1);
-//        //LocalCluster is used to run locally
-//        LocalCluster cluster = new LocalCluster();
-//        //submit the topology
-//        cluster.submitTopology("PPSDMStormTopology", conf, builder.createTopology());
-//        //sleep
-//        Thread.sleep(1000000);
-//        //shut down the cluster
-//        cluster.shutdown();
+        System.out.println("RUNNING LOCAL\n");
+        conf.setMaxTaskParallelism(1);
+        //LocalCluster is used to run locally
+        LocalCluster cluster = new LocalCluster();
+        //submit the topology
+        cluster.submitTopology("PPSDMStormTopology", conf, builder.createTopology());
+        //sleep
+        Thread.sleep(1000000);
+        //shut down the cluster
+        cluster.shutdown();
 //      }
       
    }

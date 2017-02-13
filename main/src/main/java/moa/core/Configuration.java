@@ -169,7 +169,7 @@ public class Configuration implements GeneralConfiguration,
 
     @Override
     public void setEWS(int ews) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.EWS = ews;
     }
 
     @Override

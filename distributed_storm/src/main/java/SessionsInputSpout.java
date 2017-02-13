@@ -6,6 +6,8 @@ import com.microsoft.azure.storage.file.CloudFileClient;
 import com.microsoft.azure.storage.file.CloudFileDirectory;
 import com.microsoft.azure.storage.file.CloudFileShare;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,32 +69,39 @@ public class SessionsInputSpout implements IRichSpout {
         // Use the CloudStorageAccount object to connect to your storage account
         
         BufferedReader fileReader = null;
+        InputStream fileStream = null;
         try {
-            storageAccount = CloudStorageAccount.parse(
-                    PPSDMStormTopology.storageConnectionString);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
+            fileStream = new FileInputStream("g:\\workspace_DP2\\Preprocessing\\alef\\alef_sessions_aggregated.csv");
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
         }
-        CloudFileClient fileClient = storageAccount.createCloudFileClient();
-        try {
-            // Get a reference to the file share
-            CloudFileShare share = fileClient.getShareReference("input");
-            //Get a reference to the root directory for the share.
-            CloudFileDirectory rootDir = share.getRootDirectoryReference();
-            //Get a reference to the file you want to download
-            CloudFile file = rootDir.getFileReference("alef_sessions_aggregated.csv");
-            //InputStream fileStream = new FileInputStream("g:\\workspace_DP2\\Preprocessing\\alef\\alef_sessions_aggregated.csv");
-            InputStream fileStream = file.openRead();//new URL("https://ppsdmclusterstore.file.core.windows.net/input/alef_sessions_aggregated.csv").openStream();
-        
-            fileReader = new BufferedReader(new InputStreamReader(
-                fileStream));
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (StorageException ex) {
-            Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        fileReader = new BufferedReader(new InputStreamReader(fileStream));
+//        try {
+//            storageAccount = CloudStorageAccount.parse(
+//                    PPSDMStormTopology.storageConnectionString);
+//        } catch (URISyntaxException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InvalidKeyException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        CloudFileClient fileClient = storageAccount.createCloudFileClient();
+//        try {
+//            // Get a reference to the file share
+//            CloudFileShare share = fileClient.getShareReference("input");
+//            //Get a reference to the root directory for the share.
+//            CloudFileDirectory rootDir = share.getRootDirectoryReference();
+//            //Get a reference to the file you want to download
+//            CloudFile file = rootDir.getFileReference("alef_sessions_aggregated.csv");
+//            
+//            //InputStream fileStream = file.openRead();//new URL("https://ppsdmclusterstore.file.core.windows.net/input/alef_sessions_aggregated.csv").openStream();
+//
+//            fileReader = new BufferedReader(new InputStreamReader(fileStream));
+//        } catch (URISyntaxException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (StorageException ex) {
+//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
         if(fileReader == null){return;}
         try {
             String line;

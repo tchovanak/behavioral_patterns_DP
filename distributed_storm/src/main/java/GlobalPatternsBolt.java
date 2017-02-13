@@ -68,13 +68,13 @@ public class GlobalPatternsBolt  implements IRichBolt  {
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
         this.collector = oc;
-        JedisPoolConfig config = new JedisPoolConfig();
-         pool = new JedisPool(new JedisPoolConfig(), 
-                "ppsdmcache.redis.cache.windows.net", 
-                6379,
-                1000, 
-                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
-        
+//        JedisPoolConfig config = new JedisPoolConfig();
+//         pool = new JedisPool(new JedisPoolConfig(), 
+//                "ppsdmcache.redis.cache.windows.net", 
+//                6379,
+//                1000, 
+//                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
+        pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
         this.sincmine = new StormIncMine(15,10,0.05, 0.1, 25);
         jedis = pool.getResource();
     }

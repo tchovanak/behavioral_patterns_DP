@@ -73,6 +73,9 @@ public class GridSearchLearnEvaluate implements Task {
         if(fromid >= id){
             return null;
         }
+        boolean valid = configureParams(params);
+        // CHECK IF segment legnth and support is valid:
+        if(!valid){ return null; }
         // initialize and configure learner
         PersonalizedPatternsMiner learner;
         // USE INCMINE ,  CLUSTREAM and Recommendation
@@ -80,7 +83,7 @@ public class GridSearchLearnEvaluate implements Task {
         ClusteringComponent clusteringComponent = new ClustererClustream(config,config);
         RecommendationGenerator recGenerator = new RecommendationGenerator(config, 
                 patternMining, clusteringComponent);
-        if(this.pathToCategoryMappingFile != null){
+        if(this.pathToCategoryMappingFile != null && !this.pathToCategoryMappingFile.equals("")){
             Map<Integer,Integer> map;
             try {
                 map = readCategoriesMap();
@@ -95,9 +98,7 @@ public class GridSearchLearnEvaluate implements Task {
              learner = new PersonalizedPatternsMiner(config,patternMining,
                         clusteringComponent, recGenerator);
         }
-        boolean valid = configureParams(params);
-        // CHECK IF segment legnth and support is valid:
-        if(!valid){ return null; }
+        
         
         // initialize input stream
         this.stream = new SessionsFileStream(this.pathToStream);

@@ -30,6 +30,7 @@ import ppsdm.clusterers.clustream.PPSDM.WithKmeansPPSDM;
 import moa.core.AutoExpandVector;
 import core.PPSDM.Configuration;
 import core.PPSDM.UserModelPPSDM;
+import java.io.File;
 import ppsdm.core.PPSDM.enums.DistanceMetricsEnum;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -57,20 +58,18 @@ public class PreprocessingBolt implements IRichBolt {
     private int numOfDimensionsInUserModel = 18;
     private int microclusteringUpdatesCounter = 0;
     private int numMinNumberOfMicroclustersUpdates;
-    private transient InputStream categoryMappingFile;
-    private  String categoryMappingCloudFile;
-    private transient CloudStorageAccount storageAccount; 
+    private transient String categoryMappingFile = null;
+    private  String categoryMappingCloudFile = null;
+    private transient CloudStorageAccount storageAccount = null; 
     
     public PreprocessingBolt(int numMinNumberOfChangesInUserModel, int numOfDimensionsInUserModel, 
             int numMinNumberOfMicroclustersUpdates, int numOfGroups, String pathToCategoryMappingFile) {
         this.numOfDimensionsInUserModel = numOfDimensionsInUserModel;
         this.numMinNumberOfChangesInUserModel = numMinNumberOfChangesInUserModel;
         this.numMinNumberOfMicroclustersUpdates = numMinNumberOfMicroclustersUpdates;
-        try {
-            this.categoryMappingFile  = new FileInputStream(pathToCategoryMappingFile);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        this.categoryMappingFile  = pathToCategoryMappingFile;
+     
         this.numberOfGroups = numOfGroups;
     }
     
@@ -102,11 +101,7 @@ public class PreprocessingBolt implements IRichBolt {
         } catch (InvalidKeyException ex) {
             Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        try {
-//            this.categoryMappingFile = pathToCategoryMappingFile.openStream();
-//        } catch (IOException ex) {
-//            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+
         this.numberOfGroups = numOfGroups;
     }
     
@@ -157,7 +152,10 @@ public class PreprocessingBolt implements IRichBolt {
     
      private Map<Integer,Integer> readCategoriesMap() throws FileNotFoundException, IOException {
         BufferedReader br;
-        br = new BufferedReader(new StringReader(categoryMappingCloudFile));
+        if(categoryMappingCloudFile != null)
+            br = new BufferedReader(new StringReader(categoryMappingCloudFile));
+        else
+            br = new BufferedReader(new FileReader(new File(categoryMappingFile)));
         Map<Integer,Integer> map = new HashMap<>();
         String line = "";
         while ((line = br.readLine()) != null) {
