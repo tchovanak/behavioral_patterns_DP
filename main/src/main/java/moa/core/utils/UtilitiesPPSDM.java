@@ -20,7 +20,7 @@
 package moa.core.utils;
 
 import java.util.*;
-import moa.core.PPSDM.FrequentItemset;
+import moa.core.FrequentItemset;
 import moa.core.Configuration;
 import moa.core.enums.DistanceMetricsEnum;
 import moa.core.TimingUtils;
@@ -177,6 +177,7 @@ public class UtilitiesPPSDM {
         long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
         double tp =((double)(end - streamStartTime) / 1e9);
         double transsec = transactionCounter/tp;
+        System.out.println(transsec);
         double[] res = new double[2];
         res[0] = transsec; res[1] = tp;
         return res;
@@ -194,6 +195,7 @@ public class UtilitiesPPSDM {
     }
     
     public static double getUpdateProgress(long startUpdateTime, double maxUpdateTime){
+        TimingUtils.enablePreciseTiming();
         long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
         double tp =((double)(end - startUpdateTime) / 1e9);
         return tp/maxUpdateTime;

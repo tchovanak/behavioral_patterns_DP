@@ -21,7 +21,6 @@ package moa.core;
 
 import java.io.Serializable;
 import java.util.*;
-import moa.core.PPSDM.FrequentItemset;
 import moa.core.PPSDM.InvertedFCIIndex;
 import moa.core.PPSDM.SemiFCI;
 import moa.core.PPSDM.SemiFCIid;

@@ -121,8 +121,8 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         
     protected boolean preciseCPUTiming;
     protected long evaluateStartTime;
-    private long startUpadateTime;
     private long endUpdateTime;
+    private long startUpdateTime;
     
     @Override
     public void resetLearningImpl() {
@@ -242,9 +242,13 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         int lastSegmentLenght = param.getSegmentLength();
         this.minsup = UtilitiesPPSDM.getIncMineMinSupportVector(sigma,r,config.getWS(),lastSegmentLenght);
         
-        long startUpdateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
+        TimingUtils.enablePreciseTiming();
+        this.startUpdateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
         double maxUpdateTime = UtilitiesPPSDM.computeMaxUpdateTime(config.getTransactionCounter(),
-                config.getMTS(), config.getStartUpdateTime(), config.getStreamStartTime());
+                config.getMTS(), startUpdateTime, config.getStreamStartTime());
+        if(maxUpdateTime == 0.0){
+            return;
+        }
         
         List<SemiFCI> semiFCIs = null;
         try {
@@ -254,8 +258,6 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
         }
         
         //for each FCI in the last segment in size ascending order
-        this.startUpadateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        
         for(SemiFCI fci: semiFCIs) {
             // SPEED REGULATION PART
             double progress = UtilitiesPPSDM.getUpdateProgress(startUpdateTime,maxUpdateTime);
@@ -466,7 +468,7 @@ public class PersonalizedIncMine extends AbstractLearner implements Observer {
     
     public long getUpdateTime(){
         this.endUpdateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        return this.endUpdateTime - this.startUpadateTime;
+        return this.endUpdateTime - this.startUpdateTime;
     }
     
     public int getNAdded(FCITablePPSDM fciTable){

@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import moa.core.Example;
-import moa.core.PPSDM.FrequentItemset;
+import moa.core.FrequentItemset;
 import moa.learners.clustering.UserModelPPSDM;
 import moa.learners.clustering.ClusteringComponent;
 import moa.core.dto.RecommendationResults;

@@ -17,11 +17,12 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package moa.core.PPSDM;
+package moa.core;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import moa.core.PPSDM.SemiFCI;
 
 /*
     (Tomas Chovanak) Added support relative to segment length and k representation.
