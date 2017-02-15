@@ -37,14 +37,6 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
     
     private static final long serialVersionUID = 1L;
     
-//    private Integer numMinNumberOfChangesInUserModel;
-//    private Integer numMinNumberOfMicroclustersUpdates;
-//    private Integer numOfDimensionsInUserModel;
-//    
-//    private Boolean useGrouping;
-
-    
-    //private PersonalizedIncMine incMine;
     private PatternMiningComponent patternsMiner;
     private ClusteringComponent clustererPPSDM;
     private RecommendationGenerator recommendationGenerator;

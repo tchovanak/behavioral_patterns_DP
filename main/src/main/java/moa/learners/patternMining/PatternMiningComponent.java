@@ -8,7 +8,7 @@ package moa.learners.patternMining;
 import java.util.Iterator;
 import java.util.List;
 import moa.core.Example;
-import moa.core.PPSDM.FrequentItemset;
+import moa.core.FrequentItemset;
 import moa.core.dto.FIWrapper;
 import moa.learners.clustering.ClusteringComponent;
 import moa.core.dto.SnapshotResults;

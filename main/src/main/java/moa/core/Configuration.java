@@ -9,10 +9,8 @@ import moa.learners.recommendation.RecommendationConfiguration;
 import moa.learners.clustering.ClusteringComponentConfiguration;
 import moa.learners.clustering.ClustreamConfiguration;
 import moa.learners.patternMining.PersonalizedIncMineConfiguration;
-import moa.core.enums.ClusteringMethodsEnum;
 import moa.core.enums.DistanceMetricsEnum;
 import moa.core.enums.RecommendStrategiesEnum;
-import moa.core.enums.SortStrategiesEnum;
 import moa.learners.patternMining.PatternMiningConfiguration;
 import moa.evaluation.EvaluationConfiguration;
 
@@ -54,10 +52,10 @@ public class Configuration implements GeneralConfiguration,
     
     // EVALUATION
     private String outputFile;
-    private Boolean extractDetails = true;
+    private Boolean extractDetails = false;
     private int transactionCounter = 0;
     private long streamStartTime;
-    private int extractSpeedResultsAt = 15000;
+    private int extractSpeedResultsAt = 2000;
     private int extractPatternsAt = 795;
     private int startEvaluatingFrom = 0;
     private boolean evaluateSpeed = false;
@@ -348,7 +346,4 @@ public class Configuration implements GeneralConfiguration,
     public void setDistanceMetric(DistanceMetricsEnum distanceMetric) {
         this.distanceMetric = distanceMetric;
     }
-    
-    
-    
 }
