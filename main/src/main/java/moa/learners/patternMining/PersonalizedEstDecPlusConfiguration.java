@@ -13,6 +13,7 @@ public interface PersonalizedEstDecPlusConfiguration {
     
     public int getGC();
     public double getMS();
+    public int getMTS();
     
     public void setD(double d);
     public double getD();

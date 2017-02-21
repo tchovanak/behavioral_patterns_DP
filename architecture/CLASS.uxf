@@ -37,8 +37,8 @@
     <coordinates>
       <x>144</x>
       <y>117</y>
-      <w>36</w>
-      <h>81</h>
+      <w>44</w>
+      <h>89</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>27;27;27;72</additional_attributes>
@@ -156,8 +156,8 @@ SessionsFileStream
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>720</x>
-      <y>54</y>
+      <x>747</x>
+      <y>72</y>
       <w>261</w>
       <h>126</h>
     </coordinates>
@@ -167,8 +167,8 @@ PatternMiningComponent
 --
 +trainOnInstance(Instance)
 +resetLearning()
-+getGlobalPatterns():List&lt;FrequentItemset&gt;
-+getGroupPatterns():List&lt;FrequentItemset&gt;
++getGlobalPatterns():List&lt;BehavioralPattern&gt;
++getGroupPatterns():List&lt;BehavioralPattern&gt;
 +generateSnapshot():SnapshotResults
 </panel_attributes>
     <additional_attributes/>
@@ -235,12 +235,12 @@ RecommendationResults</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>639</x>
-      <y>153</y>
-      <w>143</w>
-      <h>98</h>
+      <y>171</y>
+      <w>170</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>126;27;27;81</additional_attributes>
+    <additional_attributes>153;27;27;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
@@ -263,8 +263,8 @@ RecommendationResults</panel_attributes>
     <coordinates>
       <x>135</x>
       <y>477</y>
-      <w>36</w>
-      <h>81</h>
+      <w>44</w>
+      <h>89</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>27;27;27;72</additional_attributes>
@@ -316,13 +316,13 @@ RecommendationResults</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>783</x>
-      <y>153</y>
-      <w>71</w>
-      <h>98</h>
+      <x>810</x>
+      <y>171</y>
+      <w>44</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>27;27;54;81</additional_attributes>
+    <additional_attributes>27;27;27;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
@@ -356,7 +356,7 @@ RecommendationResults</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>486</x>
-      <y>72</y>
+      <y>63</y>
       <w>180</w>
       <h>81</h>
     </coordinates>
@@ -367,44 +367,89 @@ RecommendationResults</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>540</x>
-      <y>126</y>
+      <y>117</y>
       <w>44</w>
-      <h>80</h>
+      <h>89</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;63;27;27</additional_attributes>
+    <additional_attributes>27;72;27;27</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>639</x>
-      <y>72</y>
-      <w>98</w>
-      <h>44</h>
+      <y>63</y>
+      <w>125</w>
+      <h>71</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;81;27</additional_attributes>
+    <additional_attributes>27;27;108;54</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>639</x>
-      <y>99</y>
+      <y>90</y>
       <w>206</w>
-      <h>341</h>
+      <h>350</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;189;324</additional_attributes>
+    <additional_attributes>27;27;189;333</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>630</x>
-      <y>126</y>
+      <y>117</y>
       <w>143</w>
-      <h>431</h>
+      <h>440</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;126;414</additional_attributes>
+    <additional_attributes>27;27;126;423</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1053</x>
+      <y>9</y>
+      <w>207</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+BehavioralPattern</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1062</x>
+      <y>153</y>
+      <w>198</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>FrequentItemset</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1116</x>
+      <y>81</y>
+      <w>53</w>
+      <h>89</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>27;27;36;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>981</x>
+      <y>36</y>
+      <w>89</w>
+      <h>107</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>72;27;27;90</additional_attributes>
   </element>
 </diagram>

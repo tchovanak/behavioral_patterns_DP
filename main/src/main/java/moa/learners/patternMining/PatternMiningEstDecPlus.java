@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import moa.core.BehavioralPattern;
 
 import moa.core.Example;
 import moa.core.FrequentItemset;
@@ -47,7 +48,7 @@ public class PatternMiningEstDecPlus implements PatternMiningComponent{
     }
 
     @Override
-    public Iterator<FrequentItemset> iteratorGlobalPatterns() {
+    public Iterator<BehavioralPattern> iteratorGlobalPatterns() {
         try {
             return this.estDec.getGlobalFis().iterator();
         } catch (IOException ex) {
@@ -57,7 +58,7 @@ public class PatternMiningEstDecPlus implements PatternMiningComponent{
     }
 
     @Override
-    public Iterator<FrequentItemset> iteratorGroupPatterns(int i) {
+    public Iterator<BehavioralPattern> iteratorGroupPatterns(int i) {
         try {
             return this.estDec.getGroupFis(i).iterator();
         } catch (IOException ex) {

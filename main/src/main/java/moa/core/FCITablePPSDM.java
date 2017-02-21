@@ -166,9 +166,9 @@ public class FCITablePPSDM implements Iterable<SemiFCI>, Serializable  {
     private int maxFCISize;
     public int nAdded = 0;
     public int nRemoved = 0;
-    private List<FrequentItemset> fis = new ArrayList<>();
-    private List<FrequentItemset> fcis = new ArrayList<>();
-    private List<FrequentItemset> semifcis = new ArrayList<>();
+    private List<BehavioralPattern> fis = new ArrayList<>();
+    private List<BehavioralPattern> fcis = new ArrayList<>();
+    private List<BehavioralPattern> semifcis = new ArrayList<>();
     
 
     /**
@@ -195,15 +195,15 @@ public class FCITablePPSDM implements Iterable<SemiFCI>, Serializable  {
         this.counter = counter;
     }
 
-    public List<FrequentItemset> getFis() {
+    public List<BehavioralPattern> getFis() {
         return fis;
     }
 
-    public List<FrequentItemset> getFcis() {
+    public List<BehavioralPattern> getFcis() {
         return fcis;
     }
     
-    public List<FrequentItemset> getSemiFcis() {
+    public List<BehavioralPattern> getSemiFcis() {
         return semifcis;
     }
     

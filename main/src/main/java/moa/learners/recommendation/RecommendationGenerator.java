@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import moa.core.BehavioralPattern;
 import moa.core.Example;
 import moa.core.FrequentItemset;
 import moa.learners.clustering.UserModel;
@@ -85,26 +86,22 @@ public class RecommendationGenerator {
         }
         
         //to get all fcis found 
-        List<FIWrapper> mapFciWeight = new LinkedList<>();
-        List<FIWrapper> mapFciWeightGroup = new LinkedList<>();
-        List<FIWrapper> mapFciWeightGlobal = new LinkedList<>(); 
-        Iterator<FrequentItemset> itFis = null;
+        Map<BehavioralPattern, Double> mapFciWeight = new HashMap<>();
+        Map<BehavioralPattern, Double> mapFciWeightGroup = new HashMap<>();
+        Map<BehavioralPattern, Double> mapFciWeightGlobal = new HashMap<>(); 
+        Iterator<BehavioralPattern> itFis = null;
         itFis = this.patternsMiner.iteratorGlobalPatterns();
         int groupidSet = -1;
         
         while(itFis.hasNext()){
-            FrequentItemset fi = itFis.next();
+            BehavioralPattern fi = itFis.next();
             if(fi.getSize() > 1){
-                List<Integer> items = fi.getItems();
-                double hitsVal = this.computeSimilarity(items,window);
+                double hitsVal = fi.computeSimilarityTo(window);
                 if(hitsVal == 0.0){
                     continue;
                 }
-                FIWrapper fciVal = new FIWrapper();
-                fciVal.setItems(fi.getItems());
-                fciVal.computeValue(hitsVal, fi.getSupportDouble());
-                mapFciWeight.add(fciVal);
-                mapFciWeightGlobal.add(fciVal);
+                mapFciWeight.put(fi,hitsVal);
+                mapFciWeightGlobal.put(fi,hitsVal);
             }
         }
         
@@ -122,41 +119,38 @@ public class RecommendationGenerator {
             }            
             //         This next block performs the same with group fcis. 
             if(groupid != -1.0){
-                Iterator<FrequentItemset> itFisG = null;
+                Iterator<BehavioralPattern> itFisG = null;
                 itFisG = this.patternsMiner.iteratorGroupPatterns((int) Math.round(groupid));
                 
                 while(itFisG.hasNext()){
-                    FrequentItemset fi = itFisG.next();
+                    BehavioralPattern fi = itFisG.next();
                     if(fi.getSize() > 1){
-                        List<Integer> items = fi.getItems();
-                        double hitsVal = this.computeSimilarity(items,window);
+                        double hitsVal = fi.computeSimilarityTo(window);
                         if(hitsVal == 0.0){
                             continue;
                         }
-                        FIWrapper fciVal = new FIWrapper();
-                        fciVal.setItems(fi.getItems());
-                        fciVal.setDistance(distance);
-                        fciVal.computeValue(hitsVal, fi.getSupportDouble());
-                        mapFciWeight.add(fciVal);
-                        mapFciWeightGroup.add(fciVal);
+                        fi.setWeightFactor(distance);
+                        mapFciWeight.put(fi,hitsVal);
+                        mapFciWeightGroup.put(fi,hitsVal);
                    }
                 }
             }
         }
         
         // all fcis found have to be sorted descending by its support and similarity.
-        Collections.sort(mapFciWeight);
-        Collections.sort(mapFciWeightGroup);
-        Collections.sort(mapFciWeightGlobal);
+//        mapFciWeight = MapUtil.sortByValue(mapFciWeight);
+//        mapFciWeightGroup = MapUtil.sortByValue(mapFciWeightGroup);
+//        mapFciWeightGlobal = MapUtil.sortByValueThenKey(mapFciWeightGlobal);
+//        
         switch (config.getRecommendationStrategy()) {
             case VOTES:
                 generateRecsVoteStrategy(mapFciWeightGlobal,
                         mapFciWeightGroup, window);
                 break;
-            case FIRST_WINS:
-                generateRecsFirstWinsStrategy(mapFciWeight, mapFciWeightGlobal,
-                        mapFciWeightGroup, window);
-                break;
+//            case FIRST_WINS:
+//                generateRecsFirstWinsStrategy(mapFciWeight, mapFciWeightGlobal,
+//                        mapFciWeightGroup, window);
+//                break;
         }        
         RecommendationResults results = new RecommendationResults();
         results.setTestWindow(outOfWindow);
@@ -168,53 +162,46 @@ public class RecommendationGenerator {
         return results;
     }
     
-    private double computeSimilarity(List<Integer> items, List<Integer> window) {
-        return ((double)UtilitiesPPSDM.computeLongestCommonSubset(items,window)) / 
-                ((double)window.size());
-    }
+   
     
     private void generateRecsVoteStrategy(
-                                    List<FIWrapper> mapFciWeightGlobal,
-                                    List<FIWrapper> mapFciWeightGroup, 
+                                    Map<BehavioralPattern,Double> mapFciWeightGlobal,
+                                    Map<BehavioralPattern,Double> mapFciWeightGroup, 
                                     List<Integer> window) {
         Map<Integer, Double> mapItemsVotes = new HashMap<>();
         Map<Integer, Double> mapItemsVotesOnlyGlobal = new HashMap<>();
         Map<Integer, Double> mapItemsVotesOnlyGroup = new HashMap<>();
-        Iterator<FIWrapper> itGlobal = mapFciWeightGlobal.iterator();
-        Iterator<FIWrapper> itGroup = mapFciWeightGroup.iterator();
+        Iterator<Map.Entry<BehavioralPattern,Double>> itGlobal = mapFciWeightGlobal.entrySet().iterator();
+        Iterator<Map.Entry<BehavioralPattern,Double>> itGroup = mapFciWeightGroup.entrySet().iterator();
         
         while(itGlobal.hasNext() || itGroup.hasNext()){
             if(itGlobal.hasNext()){
-               FIWrapper fci = itGlobal.next();
-               Iterator<Integer> itFciItems = fci.getItems().iterator();
+               Map.Entry<BehavioralPattern,Double> fci = itGlobal.next();
+               Iterator<Integer> itFciItems = fci.getKey().getConsequenceOf(window).iterator();
                while(itFciItems.hasNext()){
                    Integer item = itFciItems.next();         
                    if(mapItemsVotes.containsKey(item)){   
-                       Double newVal = mapItemsVotes.get(item) + fci.getLcsVal()*fci.getSupport();
+                       Double newVal = mapItemsVotes.get(item) + fci.getValue()*fci.getKey().getWeight();
                        mapItemsVotes.put(item, newVal);
                    }else{
-                       if(!window.contains(item)){
-                           Double newVal =  fci.getLcsVal()*fci.getSupport();
-                           mapItemsVotes.put(item, newVal);
-                       }
+                        Double newVal =  fci.getValue()*fci.getKey().getWeight();
+                        mapItemsVotes.put(item, newVal);
                    }
                    if(mapItemsVotesOnlyGlobal.containsKey(item)){
-                        Double newVal = mapItemsVotesOnlyGlobal.get(item) + fci.getLcsVal()*fci.getSupport();
+                        Double newVal = mapItemsVotesOnlyGlobal.get(item) + fci.getValue()*fci.getKey().getWeight();
                         mapItemsVotesOnlyGlobal.put(item, newVal);
                    }else{
-                        if(!window.contains(item)){
-                            Double newVal =  fci.getLcsVal()*fci.getSupport();
-                            mapItemsVotesOnlyGlobal.put(item, newVal);
-                        }
+                        Double newVal =   fci.getValue()*fci.getKey().getWeight();
+                        mapItemsVotesOnlyGlobal.put(item, newVal);
                    }
                }
             }
             if(itGroup.hasNext()){
-               FIWrapper fci = itGroup.next();
-               Iterator<Integer> itFciItems = fci.getItems().iterator();
+               Map.Entry<BehavioralPattern, Double> fci = itGroup.next();
+               Iterator<Integer> itFciItems = fci.getKey().getConsequenceOf(window).iterator();
                while(itFciItems.hasNext()){
                    Integer item = itFciItems.next();
-                    double dist = fci.getDistance();
+                    double dist = fci.getKey().getWeightFactor();
                     if(dist == 0.0){
                         dist = 1.0;
                     }else{
@@ -224,22 +211,18 @@ public class RecommendationGenerator {
                         dist = 1.0-dist;
                     }
                    if(mapItemsVotes.containsKey(item)){
-                       Double newVal = mapItemsVotes.get(item) + fci.getLcsVal()*fci.getSupport()*(dist);
+                       Double newVal = mapItemsVotes.get(item) + fci.getValue()*fci.getKey().getWeight()*(dist);
                        mapItemsVotes.put(item, newVal);
                    }else{
-                       if(!window.contains(item)){
-                           Double newVal =  fci.getLcsVal()*fci.getSupport()*(dist);
-                           mapItemsVotes.put(item, newVal);
-                       }
+                        Double newVal =  fci.getValue()*fci.getKey().getWeight()*(dist);
+                        mapItemsVotes.put(item, newVal);
                    }  
                    if(mapItemsVotesOnlyGroup.containsKey(item)){
-                       Double newVal = mapItemsVotesOnlyGroup.get(item) + fci.getLcsVal()*fci.getSupport()*dist;
+                       Double newVal = mapItemsVotesOnlyGroup.get(item) +fci.getValue()*fci.getKey().getWeight()*dist;
                        mapItemsVotesOnlyGroup.put(item, newVal);
                    }else{
-                       if(!window.contains(item)){
-                           Double newVal =  fci.getLcsVal()*fci.getSupport()*dist;
-                           mapItemsVotesOnlyGroup.put(item, newVal);
-                       }
+                        Double newVal =  fci.getValue()*fci.getKey().getWeight()*dist;
+                        mapItemsVotesOnlyGroup.put(item, newVal);
                    }   
                }
             }

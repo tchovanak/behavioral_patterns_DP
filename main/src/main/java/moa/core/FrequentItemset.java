@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import moa.core.PPSDM.SemiFCI;
+import moa.core.utils.UtilitiesPPSDM;
 
 /*
     (Tomas Chovanak) Added support relative to segment length and k representation.
@@ -33,6 +34,7 @@ public class FrequentItemset implements BehavioralPattern {
     protected int support;
     protected double supportDouble;
     protected int size;
+    private double weightFactor = 1;
     
     /***
      * Constructs a Frequent Itemset given a list of items and their support
@@ -80,6 +82,7 @@ public class FrequentItemset implements BehavioralPattern {
         this.support = support;
     }
 
+    @Override
     public int getSize() {
         return size;
     }
@@ -132,7 +135,7 @@ public class FrequentItemset implements BehavioralPattern {
      * @return The list of frequent itemsets
      */
     
-    public static List<FrequentItemset> getFCIset(Iterator<SemiFCI> iter, double minSupport, int segmentLength) {
+    public static List<BehavioralPattern> getFCIset(Iterator<SemiFCI> iter, double minSupport, int segmentLength) {
         List<ArrayList<FrequentItemset>> levels = new ArrayList<>();
         int last_size = -1;
         
@@ -152,7 +155,7 @@ public class FrequentItemset implements BehavioralPattern {
                 levels.get(levels.size()-1).add(fi);
             }                               
         }
-        List<FrequentItemset> ret = new ArrayList<>();
+        List<BehavioralPattern> ret = new ArrayList<>();
         for(List<FrequentItemset> level:levels)
             ret.addAll(level);
         
@@ -160,7 +163,7 @@ public class FrequentItemset implements BehavioralPattern {
     }
     
     
-    public static List<FrequentItemset> getFIset(Iterator<SemiFCI> iter, double minSupport, int segmentLength){
+    public static List<BehavioralPattern> getFIset(Iterator<SemiFCI> iter, double minSupport, int segmentLength){
         
         List<ArrayList<FrequentItemset>> levels = new ArrayList<>();
         int last_size = -1;
@@ -198,11 +201,51 @@ public class FrequentItemset implements BehavioralPattern {
             }
         }
         
-        List<FrequentItemset> ret = new ArrayList<>();
+        List<BehavioralPattern> ret = new ArrayList<>();
         for(List<FrequentItemset> level:levels)
             ret.addAll(level);
         
         return ret;
+    }
+
+    @Override
+    public double computeSimilarityTo(List<Integer> window) {
+        return ((double)UtilitiesPPSDM.computeLongestCommonSubset(items,window)) / 
+            ((double)window.size());
+    }
+
+    @Override
+    public List<Integer> getConsequenceOf(List<Integer> window) {
+        List<Integer> toReturn = new ArrayList<>(this.items);
+        toReturn.removeAll(window);
+        return toReturn;
+    }
+
+    @Override
+    public Double getWeight() {
+        return this.getSupportDouble();
+    }
+
+    @Override
+    public void setWeightFactor(double distance) {
+        this.weightFactor = distance;
+    }
+
+    @Override
+    public double getWeightFactor() {
+        return weightFactor;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        FrequentItemset other = (FrequentItemset) o;
+        if(other.getWeight() < this.getWeight()){
+           return 1; 
+        }else if(other.getWeight() > this.getWeight()){
+            return -1;
+        }else{
+            return 0;
+        }
     }
     
 

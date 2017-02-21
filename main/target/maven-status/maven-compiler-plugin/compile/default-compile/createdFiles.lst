@@ -88,6 +88,7 @@ moa\core\FCITablePPSDM$FCIArray$FCIArrayIterator.class
 net\sf\javaml\distance\NormDistance.class
 moa\clusterers\denstream\Timestamp.class
 moa\core\PPSDM\InvertedFCIIndex$IDArrayList.class
+moa\core\utils\MapUtil$2.class
 moa\clusterers\clustree\util\Budget.class
 moa\cluster\Miniball.class
 ca\pfv\spmf\tools\MemoryLogger.class
@@ -105,6 +106,7 @@ moa\evaluation\RecommendationEvaluator.class
 moa\clusterers\clustree\util\AuxiliaryFunctions.class
 ca\pfv\spmf\algorithms\frequentpatterns\estDec\estNode.class
 moa\clusterers\macro\dbscan\DBScan.class
+moa\core\BehavioralPattern.class
 moa\clusterers\macro\ColorObject.class
 net\sf\javaml\distance\CosineSimilarity.class
 ca\pfv\spmf\algorithms\ItemNameConverter.class

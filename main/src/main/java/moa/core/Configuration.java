@@ -349,10 +349,12 @@ public class Configuration implements GeneralConfiguration,
         this.evaluateSpeed = evaluateSpeed;
     }
 
+    @Override
     public DistanceMetricsEnum getDistanceMetric() {
         return distanceMetric;
     }
 
+    @Override
     public void setDistanceMetric(DistanceMetricsEnum distanceMetric) {
         this.distanceMetric = distanceMetric;
     }

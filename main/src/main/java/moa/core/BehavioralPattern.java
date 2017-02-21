@@ -5,10 +5,27 @@
  */
 package moa.core;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author Tomas
  */
-public interface BehavioralPattern {
+public interface BehavioralPattern extends Comparable{
+    
+    public double computeSimilarityTo(List<Integer> window);
+    
+    public int getSize();
+
+    public List<Integer> getConsequenceOf(List<Integer> window);
+
+    public Double getWeight();
+
+    public void setWeightFactor(double distance);
+    
+    public double getWeightFactor();
+
+    public List<Integer> getItems();
     
 }

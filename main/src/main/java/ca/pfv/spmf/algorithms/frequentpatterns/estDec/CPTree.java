@@ -111,9 +111,9 @@ public class CPTree {
 	 *            the new transaction m
 	 *********************************/
 
-	public void insertItemset(int[] transaction, int transactionCount, long streamStartTime) {
+	public void insertItemset(int[] transaction, int transactionCount, long streamStartTime, int mts) {
 		// create a new transaction
-		List<Integer> transaction2 = new ArrayList<Integer>();
+		List<Integer> transaction2 = new ArrayList<>();
 		
 		// add each item from the given transaction that has enough support to
 		// the new transaction
@@ -133,7 +133,7 @@ public class CPTree {
 			CPTreeNode child = root.getChildWithID(item, -1);
 			if (child != null) {
 				itemsetBuffer[0]=item;
-				insert_n_itemsets(child, (short) 0, transaction2, ind + 1, itemsetBuffer,1,transactionCount, streamStartTime);
+				insert_n_itemsets(child, (short) 0, transaction2, ind + 1, itemsetBuffer,1,transactionCount, streamStartTime, mts);
 			}
 		}
 	}
@@ -187,7 +187,7 @@ public class CPTree {
 	 * @param currentNode
 	 *            , transaction, index
 	 ********************************************************************/
-	public double estimateCount(int[] itemset,int length) {
+	public double estimateCount(int[] itemset, int length) {
 		double min = Double.MAX_VALUE;
 		// We will consider each subset of length n-1 of the itemset "itemset" to
 		// find the minimum count of its n-1 subsets.
@@ -233,13 +233,13 @@ public class CPTree {
 
 	public void insert_n_itemsets(CPTreeNode currentNode, short PI,
 			List<Integer> transaction, int ind, int[] itemset, int length,
-                        int transactionCounter, long streamStartTime) {
+                        int transactionCounter, long streamStartTime, int mts) {
 		// stop recursion
 		if (ind >= transaction.size())
 			return;
                 double[] time = UtilitiesPPSDM.getActualTransSec(transactionCounter, streamStartTime);
                 System.out.println(time[0] + " " + time[1]);
-                if(time[1] > 10 && time[0] < 15){
+                if(time[1] > 10 && time[0] < mts){
                     return;
                 }
 
@@ -250,11 +250,11 @@ public class CPTree {
 		PI2 = currentNode.getInnerIndexWithID(item, currentNode, PI);
 
 		if (PI2 != -1) {
-			insert_n_itemsets(currentNode, PI2, transaction, ind + 1, itemset,length+1, transactionCounter, streamStartTime);
+			insert_n_itemsets(currentNode, PI2, transaction, ind + 1, itemset,length+1, transactionCounter, streamStartTime, mts);
 		} else {
 			CPTreeNode child = currentNode.getChildWithID(item, PI);
 			if (child != null)
-				insert_n_itemsets(child, (short) 0, transaction, ind + 1, itemset,length+1, transactionCounter, streamStartTime);
+				insert_n_itemsets(child, (short) 0, transaction, ind + 1, itemset,length+1, transactionCounter, streamStartTime, mts);
 			else {
 				if (currentNode.counter1 / N >= minsig) {
 					double c = estimateCount(itemsetBuffer,length+1);
@@ -269,7 +269,7 @@ public class CPTree {
 			}
 		}
 
-		insert_n_itemsets(currentNode, PI, transaction, ind + 1, itemset,length,transactionCounter, streamStartTime);
+		insert_n_itemsets(currentNode, PI, transaction, ind + 1, itemset,length,transactionCounter, streamStartTime, mts);
 	}
 
 	/********************************************************************

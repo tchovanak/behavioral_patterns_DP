@@ -16,7 +16,6 @@ package moa.learners.patternMining;
 * SPMF. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import ca.pfv.spmf.algorithms.frequentpatterns.clostream.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,8 +25,8 @@ import java.util.Set;
 
 import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemset;
 import com.yahoo.labs.samoa.instances.Instance;
-import java.util.Arrays;
 import java.util.Iterator;
+import moa.core.BehavioralPattern;
 import moa.core.Example;
 import moa.core.FrequentItemset;
 
@@ -237,8 +236,8 @@ public class PersonalizedCloStream {
         }
     }
     
-    public List<FrequentItemset> getGlobalFis() {
-        List<FrequentItemset> fis = new ArrayList<>();
+    public List<BehavioralPattern> getGlobalFis() {
+        List<BehavioralPattern> fis = new ArrayList<>();
         for(Itemset it : this.tableGlobal){
             if(it.size() == 0){
                 continue;
@@ -251,8 +250,8 @@ public class PersonalizedCloStream {
         return fis;
     }
 
-    public List<FrequentItemset> getGroupFis(int i) {
-        List<FrequentItemset> fis = new ArrayList<>();
+    public List<BehavioralPattern> getGroupFis(int i) {
+        List<BehavioralPattern> fis = new ArrayList<>();
         for(Itemset it : this.tablesGroups.get(i)){
             if(it.size() == 0){
                 continue;

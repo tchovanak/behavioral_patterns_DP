@@ -7,6 +7,7 @@ package moa.learners.patternMining;
 
 import java.util.Iterator;
 import java.util.List;
+import moa.core.BehavioralPattern;
 import moa.core.Example;
 import moa.core.FrequentItemset;
 import moa.core.dto.FIWrapper;
@@ -23,9 +24,9 @@ public interface PatternMiningComponent {
 
     public void trainOnInstance(Example copy);
     
-    public Iterator<FrequentItemset> iteratorGlobalPatterns();
+    public Iterator<BehavioralPattern> iteratorGlobalPatterns();
 
-    public Iterator<FrequentItemset> iteratorGroupPatterns(int i);
+    public Iterator<BehavioralPattern> iteratorGroupPatterns(int i);
 
     public SnapshotResults generateSnapshot(ClusteringComponent clusterer);
 

@@ -16,10 +16,8 @@ package moa.learners.patternMining;
 * SPMF. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import ca.pfv.spmf.algorithms.frequentpatterns.clostream.*;
 import ca.pfv.spmf.algorithms.frequentpatterns.estDec.CPTree;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -32,6 +30,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import java.util.Iterator;
+import moa.core.BehavioralPattern;
 import moa.core.Example;
 import moa.core.FrequentItemset;
 import moa.core.utils.UtilitiesPPSDM;
@@ -107,7 +106,7 @@ public class PersonalizedEstDecPlus {
             
             int transactionCount = (group < 0)? ++transactionCountGlobal : ++transactionsCountGroup[group];
             // phase 3) Itemset Insertion
-            tree.insertItemset(transaction, transactionCountGlobal, this.config.getStreamStartTime());
+            tree.insertItemset(transaction, transactionCountGlobal, this.config.getStreamStartTime(), this.config.getMTS());
             if(transactionCount % 1000 == 0){
                 tree.forcePruning(tree.root);
                 tree.N = 0;
@@ -122,7 +121,7 @@ public class PersonalizedEstDecPlus {
         double[] time = UtilitiesPPSDM.getActualTransSec(this.transactionCounter,
                 config.getStreamStartTime());
         System.out.println(time[0] + " " + time[1]);
-        if(time[1] > 10 && time[0] < 15){
+        if(time[1] > 10 && time[0] < config.getMTS()){
             return;
         }
         Instance inst = (Instance)e.getData();
@@ -161,14 +160,14 @@ public class PersonalizedEstDecPlus {
         }
     }
     
-    public List<FrequentItemset> getGlobalFis() throws IOException {
-        List<FrequentItemset> fis = new ArrayList<>();
+    public List<BehavioralPattern> getGlobalFis() throws IOException {
+        List<BehavioralPattern> fis = new ArrayList<>();
         // Perform mining
         // SPEED REGULATION PART
         double[] time = UtilitiesPPSDM.getActualTransSec(this.transactionCountGlobal,
                 config.getStreamStartTime());
         Hashtable<int[], Double> patterns;
-        if(time[0] < 15){
+        if(time[0] < config.getMTS()){
             patterns = treeGlobal.getPatterns();
         }else{
             patterns = treeGlobal.patternMining_saveToMemory();
@@ -187,14 +186,14 @@ public class PersonalizedEstDecPlus {
         return fis;
     }
 
-    public List<FrequentItemset> getGroupFis(int i) throws IOException {
-       List<FrequentItemset> fis = new ArrayList<>();
+    public List<BehavioralPattern> getGroupFis(int i) throws IOException {
+       List<BehavioralPattern> fis = new ArrayList<>();
        // Perform mining
         // SPEED REGULATION PART
         double[] time = UtilitiesPPSDM.getActualTransSec(this.transactionCountGlobal,
                 config.getStreamStartTime());
         Hashtable<int[], Double> patterns;
-        if(time[0] < 15){
+        if(time[0] < config.getMTS()){
             patterns = treesGroups.get(i).getPatterns();
         }else{
             patterns = treesGroups.get(i).patternMining_saveToMemory();
