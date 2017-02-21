@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fiit</groupId>
     <artifactId>PPSDM</artifactId>
-    <version>3.0</version>
+    <version>4.0</version>
     <packaging>jar</packaging>
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
-    <mainClass>moa.tasks.GridSearchEvaluator</mainClass>
+    <mainClass>moa.tasks.GridSearch</mainClass>
 </properties>
     <dependencies>
         <!-- http://mvnrepository.com/artifact/nz.ac.waikato.cms.moa/moa -->
@@ -24,7 +24,10 @@
             <artifactId>commons-math3</artifactId>
             <version>3.2</version>
         </dependency>
+   
+
     </dependencies>
+    
     <build>
         <plugins>
             <plugin>

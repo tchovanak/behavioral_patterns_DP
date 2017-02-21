@@ -51,7 +51,7 @@ public class ClustererClustree extends ClusteringComponent{
     }
 
     @Override
-    public void updateGroupingInUserModel(UserModelPPSDM um) {
+    public void updateGroupingInUserModel(UserModel um) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

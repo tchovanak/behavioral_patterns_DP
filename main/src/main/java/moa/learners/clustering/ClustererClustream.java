@@ -39,7 +39,7 @@ public class ClustererClustream extends ClusteringComponent {
          this.clusterer.maxNumKernelsOption.setValue(config.getMaxNumKernels());
          this.clusterer.kernelRadiFactorOption.setValue(config.getKernelRadiFactor());
          this.clusterer.resetLearning();
-         this.clusteringID = 0;
+         this.clusteringID = 1;
          
     }
 
@@ -96,7 +96,7 @@ public class ClustererClustream extends ClusteringComponent {
     }
 
     @Override
-    public void updateGroupingInUserModel(UserModelPPSDM um) {
+    public void updateGroupingInUserModel(UserModel um) {
         if(this.clusteringID > um.getClusteringId()){
             // in um there is not set group for actual clustering so we need to set it now
             Instance umInstance = um.getInstance();   

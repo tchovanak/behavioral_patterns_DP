@@ -43,12 +43,19 @@ public class OutputManager {
                 writer.append("REC:EVALUATION WINDOW SIZE");writer.append(',');
                 writer.append("REC:NUM OF RECOMMENDED ITEMS");writer.append(',');
                 // INCMINE PARAMETERS
+//                writer.append("FPM:MIN SUPPORT");writer.append(',');
+//                writer.append("FPM:RELAXATION RATE");writer.append(','); 
+//                writer.append("FPM:FIXED SEGMENT LENGTH");writer.append(',');
+//                writer.append("FPM:GROUP FIXED SEGMENT LENGTH");writer.append(',');
+//                writer.append("FPM:MAX ITEMSET LENGTH");writer.append(',');
+//                writer.append("FPM:WINDOW SIZE");writer.append(',');
+                // ESTDEC PARAMETERS
                 writer.append("FPM:MIN SUPPORT");writer.append(',');
-                writer.append("FPM:RELAXATION RATE");writer.append(','); 
-                writer.append("FPM:FIXED SEGMENT LENGTH");writer.append(',');
-                writer.append("FPM:GROUP FIXED SEGMENT LENGTH");writer.append(',');
-                writer.append("FPM:MAX ITEMSET LENGTH");writer.append(',');
-                writer.append("FPM:WINDOW SIZE");writer.append(',');
+                writer.append("FPM:DECAY RATE");writer.append(','); 
+                writer.append("FPM:DELTA VALUE");writer.append(',');
+                writer.append("FPM:MIN SIG VALUE");writer.append(',');
+                writer.append("FPM:MIN MERGE VALUE");writer.append(',');
+                writer.append("");writer.append(',');
                 // UNIVERSAL PARAMETERS - RESTRICTIONS
                 writer.append("RES:NUM OF DIMENSTIONS IN USER MODEL");writer.append(',');
                 writer.append("RES:MAX FCI SET COUNT");writer.append(',');
@@ -234,11 +241,18 @@ public class OutputManager {
             writer.append(((Integer)config.getEWS()).toString());writer.append(',');
             writer.append(((Integer)config.getRC()).toString());writer.append(',');
             // INCMINE PARAMETERS
+//            writer.append(((Double)config.getMS()).toString());writer.append(',');
+//            writer.append(((Double)config.getRR()).toString());writer.append(',');
+//            writer.append(((Integer)config.getFSL()).toString());writer.append(',');
+//            writer.append(((Integer)config.getGFSL()).toString());writer.append(',');
+//            writer.append(((Integer)config.getMIL()).toString());writer.append(',');
+//            writer.append(((Integer)config.getWS()).toString());writer.append(',');
+            // EST DEC PARAMS
             writer.append(((Double)config.getMS()).toString());writer.append(',');
-            writer.append(((Double)config.getRR()).toString());writer.append(',');
-            writer.append(((Integer)config.getFSL()).toString());writer.append(',');
-            writer.append(((Integer)config.getGFSL()).toString());writer.append(',');
-            writer.append(((Integer)config.getMIL()).toString());writer.append(',');
+            writer.append(((Double)config.getD()).toString());writer.append(',');
+            writer.append(((Double)config.getDeltaValue()).toString());writer.append(',');
+            writer.append(((Double)config.getMinSigValue()).toString());writer.append(',');
+            writer.append(((Double)config.getMinMergeValue()).toString());writer.append(',');
             writer.append(((Integer)config.getWS()).toString());writer.append(',');
             
             //UNIVERSAL PARAMETERS

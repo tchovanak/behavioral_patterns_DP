@@ -30,9 +30,9 @@ import moa.streams.SessionsFileStream;
 import moa.core.dto.RecommendationResults;
 import moa.core.dto.SummaryResults;
 import moa.core.utils.UtilitiesPPSDM;
-import moa.core.dto.SnapshotResults;
 import moa.learners.patternMining.PatternMiningComponent;
-import moa.learners.patternMining.PatternMiningIncMine;
+import moa.learners.patternMining.PatternMiningEstDecPlus;
+
 
 /**
  * Task to evaluate one from configurations in grid during grid search. 
@@ -79,7 +79,11 @@ public class GridSearchLearnEvaluate implements Task {
         // initialize and configure learner
         PersonalizedPatternsMiner learner;
         // USE INCMINE ,  CLUSTREAM and Recommendation
-        PatternMiningComponent patternMining = new PatternMiningIncMine(config);
+        
+        //PatternMiningComponent patternMining = new PatternMiningIncMine(config);
+        //PatternMiningComponent patternMining = new PatternMiningCloStream(config);
+        PatternMiningComponent patternMining = new PatternMiningEstDecPlus(config);
+        
         ClusteringComponent clusteringComponent = new ClustererClustream(config,config);
         RecommendationGenerator recGenerator = new RecommendationGenerator(config, 
                 patternMining, clusteringComponent);
@@ -122,15 +126,16 @@ public class GridSearchLearnEvaluate implements Task {
             double[] speedResults = UtilitiesPPSDM.getActualTransSec(
                                                     config.getTransactionCounter(),
                                                     config.getStreamStartTime());
+            
             if(!config.getEvaluateSpeed()){
-                if(config.getExtractDetails()){
-                    SnapshotResults snap = learner.extractSnapshot(evaluator);
-                    if(snap != null){
-                        om.extractPatternsToFile(snap, config,
-                            this.pathToOutputFile + "patterns_" + id + ".csv",
-                            this.pathToOutputFile + "snapshots_stats_" + id + ".csv");
-                    }
-                }
+//                if(config.getExtractDetails()){
+//                    SnapshotResults snap = learner.extractSnapshot(evaluator);
+//                    if(snap != null){
+//                        om.extractPatternsToFile(snap, config,
+//                            this.pathToOutputFile + "patterns_" + id + ".csv",
+//                            this.pathToOutputFile + "snapshots_stats_" + id + ".csv");
+//                    }
+//                }
             }else{
                 if(config.getTransactionCounter() % config.getExtractSpeedResultsAt() == 0){
                     om.extractSpeedResultsToFile(speedResults,this.pathToOutputFile + "speed_" + id + ".csv");
@@ -143,7 +148,7 @@ public class GridSearchLearnEvaluate implements Task {
                     RecommendationResults results = learner.getRecommendationsForInstance(testInst);
                     if(results != null)
                         // evaluator will evaluate recommendations and update metrics with given results     
-                        evaluator.addResult(results, config.getWS(), 
+                        evaluator.addResult(results, config.getEWS(), 
                                 speedResults[0], config.getTransactionCounter()); 
                 }
             }
@@ -174,15 +179,16 @@ public class GridSearchLearnEvaluate implements Task {
         config.setTcdiff((int) params.get("MAXIMAL DIFFERENCE OF CLUSTERING IDS").getValue());
         config.setEWS((int) params.get("EVALUATION WINDOW SIZE").getValue());
         config.setRC((int) params.get("NUMBER OF RECOMMENDED ITEMS").getValue());
+        
         //FPM PARAMETERS
         config.setMS(params.get("MIN SUPPORT").getValue());
         config.setRR(params.get("RELAXATION RATE").getValue());
         config.setFSL((int) (params.get("FIXED SEGMENT LENGTH").getValue()));
         
         // CHECK IF MIN SUPPORT AND SEGMENT LENGTH ARE VALID
-        if(config.getMS() * config.getFSL() <= 1){
-            return false;
-        }
+//        if(config.getMS() * config.getFSL() <= 1){
+//            return false;
+//        }
         config.setMIL((int) params.get("MAX ITEMSET LENGTH").getValue());
         config.setWS((int) params.get("WINDOW SIZE").getValue());
         
@@ -207,6 +213,12 @@ public class GridSearchLearnEvaluate implements Task {
         }else{
             config.setGFSL(config.getFSL());
         }
+        
+        // estDEC params 
+        config.setD((double) params.get("DECAY RATE").getValue());
+        config.setDeltaValue((double) params.get("DELTA VALUE").getValue());
+        config.setMinSigValue((double) params.get("MIN SIG VALUE").getValue()*config.getMS());
+        config.setMinMergeValue((double) params.get("MIN MERGE VALUE").getValue());
         return true;
         
     }

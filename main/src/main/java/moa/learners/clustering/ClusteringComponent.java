@@ -20,7 +20,7 @@ import moa.core.dto.GroupStatsResults;
  */
 public abstract class ClusteringComponent {
     
-    protected Map<Integer, UserModelPPSDM> usermodels;
+    protected Map<Integer, UserModel> usermodels;
     private ClusteringComponentConfiguration config;
     
     
@@ -40,9 +40,9 @@ public abstract class ClusteringComponent {
     abstract public boolean isClustering();
     abstract public int getClusteringID();
     abstract public void trainOnInstance(Instance umInstance);
-    abstract public void updateGroupingInUserModel(UserModelPPSDM um);
+    abstract public void updateGroupingInUserModel(UserModel um);
     
-    public Map<Integer,UserModelPPSDM>  getUserModels(){
+    public Map<Integer,UserModel>  getUserModels(){
         return usermodels;
     }
     
@@ -62,7 +62,7 @@ public abstract class ClusteringComponent {
                 //res.setUids();
             }
         }
-        for(UserModelPPSDM um : this.usermodels.values()){
+        for(UserModel um : this.usermodels.values()){
             if(this.getClusteringID() - um.getClusteringId() <= 1){
                 results.get((int)um.getGroupid() + 1).addUid(um.getId());
             }else{
@@ -73,12 +73,12 @@ public abstract class ClusteringComponent {
     }
     
     
-    public UserModelPPSDM updateUserModel(Instance inst, Map<Integer, Integer> catsToSupercats,
+    public UserModel updateUserModel(Instance inst, Map<Integer, Integer> catsToSupercats,
             Integer numMinNumberOfChangesInUserModel) {
         
         int uid = (int)inst.value(1);
         if(usermodels.containsKey(uid)){
-            UserModelPPSDM um = usermodels.get(uid);
+            UserModel um = usermodels.get(uid);
             if(catsToSupercats != null && catsToSupercats.size() > 0){
                 um.updateWithInstance(inst,catsToSupercats);
             }else{
@@ -86,7 +86,7 @@ public abstract class ClusteringComponent {
             }
             return um;
         }else{
-            UserModelPPSDM um = new UserModelPPSDM((int)inst.value(1), 
+            UserModel um = new UserModel((int)inst.value(1), 
                     numMinNumberOfChangesInUserModel);
             if(catsToSupercats != null && catsToSupercats.size() > 0){
                 um.updateWithInstance(inst,catsToSupercats);
@@ -98,10 +98,10 @@ public abstract class ClusteringComponent {
         }
     }
     
-    public UserModelPPSDM getUserModelFromInstance(Instance inst) {
+    public UserModel getUserModelFromInstance(Instance inst) {
         int uid = (int)inst.value(1);
          if(usermodels.containsKey(uid)){
-            UserModelPPSDM um = usermodels.get(uid);
+            UserModel um = usermodels.get(uid);
             return um;
         }else{
             return null;
@@ -112,8 +112,8 @@ public abstract class ClusteringComponent {
      * Removes old user models - if it has clustering id older than minimal user model updates
      */
     public void clearUserModels() {
-        for(Map.Entry<Integer, UserModelPPSDM> entry : this.usermodels.entrySet()){
-            UserModelPPSDM model = entry.getValue();
+        for(Map.Entry<Integer, UserModel> entry : this.usermodels.entrySet()){
+            UserModel model = entry.getValue();
             if(getClusteringID() - model.getClusteringId() > config.getTcdiff()){
                 // delete 
                 this.usermodels.remove(entry.getKey());

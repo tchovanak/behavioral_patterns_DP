@@ -73,7 +73,7 @@ public class ClustererDenstream extends ClusteringComponent {
     }
 
     @Override
-    public void updateGroupingInUserModel(UserModelPPSDM um) {
+    public void updateGroupingInUserModel(UserModel um) {
         if(this.clusteringID > um.getClusteringId()){
             // in um there is not set group for actual clustering so we need to set it now
             Instance umInstance = um.getInstance();   

@@ -13,6 +13,9 @@ import moa.core.enums.DistanceMetricsEnum;
 import moa.core.enums.RecommendStrategiesEnum;
 import moa.learners.patternMining.PatternMiningConfiguration;
 import moa.evaluation.EvaluationConfiguration;
+import moa.learners.patternMining.PersonalizedCloStreamConfiguration;
+import moa.learners.patternMining.PersonalizedEstDecPlusConfiguration;
+
 
 /**
  * Configuration of PPSDM method with default values
@@ -21,23 +24,30 @@ import moa.evaluation.EvaluationConfiguration;
 public class Configuration implements GeneralConfiguration, 
         PatternMiningConfiguration, PersonalizedIncMineConfiguration,
         ClusteringComponentConfiguration,ClustreamConfiguration, 
-        RecommendationConfiguration, EvaluationConfiguration  {
-    
-    
+        RecommendationConfiguration, EvaluationConfiguration , 
+        PersonalizedCloStreamConfiguration, PersonalizedEstDecPlusConfiguration {
+        
     //PATTERN MINING 
     private int TUC;
     private int TCM;
     private int userModelDimensions;
+    
     // INCMINE FIELDS
     private int WS;
     private int MIL;
-    private int GC;
-    private double MS;
+    private int GC = 6;
+    private double MS = 0.05;
     private double RR;
     private int FSL;
     private int GFSL;
     private long StartUpdateTime;
-
+    
+    //ESTDECPLUS
+    private double d = 1;
+    private double minSigValue = 0.4 * MS;
+    private double deltaValue = 0.03;
+    private double minMergeValue = 0.001;
+    
     // CLUSTREAM FIELDS
     private int maxNumKernels;
     private int kernelRadiFactor;
@@ -346,4 +356,47 @@ public class Configuration implements GeneralConfiguration,
     public void setDistanceMetric(DistanceMetricsEnum distanceMetric) {
         this.distanceMetric = distanceMetric;
     }
+
+   
+    @Override
+    public void setD(double d) {
+        this.d = d;
+    }
+
+    @Override
+    public double getD() {
+        return d;
+    }
+
+    @Override
+    public void setMinSigValue(double v) {
+        this.minSigValue = v;
+    }
+
+    @Override
+    public double getMinSigValue() {
+        return minSigValue;
+    }
+
+    @Override
+    public void setDeltaValue(double v) {
+        this.deltaValue = v;
+    }
+
+    @Override
+    public double getDeltaValue() {
+        return deltaValue;
+    }
+
+    @Override
+    public void setMinMergeValue(double v) {
+        this.minMergeValue = v;
+    }
+
+    @Override
+    public double getMinMergeValue() {
+        return minMergeValue;
+    }
+
+  
 }

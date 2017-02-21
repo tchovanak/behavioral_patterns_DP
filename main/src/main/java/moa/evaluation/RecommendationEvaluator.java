@@ -212,6 +212,7 @@ public class RecommendationEvaluator extends AbstractMOAObject{
             //double pom = Configuration.GROUP_CHANGED_TIMES/Configuration.GROUP_CHANGES;
             //writer.append(((Double)pom).toString());writer.append(',');
            // writer.append(((Integer)Configuration.GROUP_COUNTER).toString());writer.append('\n');
+            writer.append("\n");
             writer.flush(); 
         } catch (IOException ex) {
             Logger.getLogger(RecommendationEvaluator.class.getName()).log(Level.SEVERE, null, ex);

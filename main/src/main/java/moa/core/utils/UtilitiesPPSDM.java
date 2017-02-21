@@ -177,7 +177,6 @@ public class UtilitiesPPSDM {
         long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
         double tp =((double)(end - streamStartTime) / 1e9);
         double transsec = transactionCounter/tp;
-        System.out.println(transsec);
         double[] res = new double[2];
         res[0] = transsec; res[1] = tp;
         return res;

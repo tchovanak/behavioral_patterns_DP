@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import moa.core.Example;
 import moa.core.FrequentItemset;
-import moa.learners.clustering.UserModelPPSDM;
+import moa.learners.clustering.UserModel;
 import moa.learners.clustering.ClusteringComponent;
 import moa.core.dto.RecommendationResults;
 import moa.learners.patternMining.PatternMiningComponent;
@@ -111,7 +111,7 @@ public class RecommendationGenerator {
         if(useGrouping && clustererPPSDM.isClustering()){
             // if already clustering was performed
             Double groupid = -1.0;
-            UserModelPPSDM um = clustererPPSDM.getUserModelFromInstance(session);
+            UserModel um = clustererPPSDM.getUserModelFromInstance(session);
             double distance = 0;
             if(um != null){
                 groupidSet = (int)um.getGroupid();

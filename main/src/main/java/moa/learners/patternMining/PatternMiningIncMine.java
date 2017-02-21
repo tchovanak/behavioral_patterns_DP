@@ -14,7 +14,7 @@ import moa.core.Example;
 import moa.core.FrequentItemset;
 import moa.core.FCITablePPSDM;
 import moa.core.dto.FIWrapper;
-import moa.learners.clustering.UserModelPPSDM;
+import moa.learners.clustering.UserModel;
 import moa.learners.clustering.ClusteringComponent;
 import moa.core.dto.GroupStatsResults;
 import moa.core.dto.SnapshotResults;
@@ -141,7 +141,7 @@ public class PatternMiningIncMine implements PatternMiningComponent{
                 res.setCentre(clustererPPSDM.getClustering().getClustering().get(i).getCenter());
             }
         }
-        for(UserModelPPSDM um : clustererPPSDM.getUserModels().values()){
+        for(UserModel um : clustererPPSDM.getUserModels().values()){
             if(clustererPPSDM.getClusteringID() - um.getClusteringId() == 0){
                 results.get((int)um.getGroupid() + 1).addUid(um.getId());
             }else{

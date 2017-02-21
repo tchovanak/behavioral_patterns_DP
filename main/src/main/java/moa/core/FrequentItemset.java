@@ -27,9 +27,7 @@ import moa.core.PPSDM.SemiFCI;
 /*
     (Tomas Chovanak) Added support relative to segment length and k representation.
 */
-public class FrequentItemset {
-
-   
+public class FrequentItemset implements BehavioralPattern {
     
     protected List<Integer> items = new ArrayList<Integer>();
     protected int support;
@@ -43,6 +41,24 @@ public class FrequentItemset {
      */
     public FrequentItemset(List items, int support, double supportDouble){
         this.items = items;
+        this.support = support;
+        this.size = this.items.size();
+        this.supportDouble = supportDouble;
+    }
+    
+    public FrequentItemset(int[] itemset, int support, double supportDouble) {
+        for (int index = 0; index < itemset.length; index++){
+            items.add(itemset[index]);
+        }
+        this.support = support;
+        this.size = this.items.size();
+        this.supportDouble = supportDouble;
+    }
+    
+    public FrequentItemset(int[] itemset, double supportDouble) {
+        for (int index = 0; index < itemset.length; index++){
+            items.add(itemset[index]);
+        }
         this.support = support;
         this.size = this.items.size();
         this.supportDouble = supportDouble;

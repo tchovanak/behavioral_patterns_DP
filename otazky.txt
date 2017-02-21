@@ -1,4 +1,6 @@
 1. Preco sme vybrali algoritmus Clustream na zhlukovanie ?
+
+
 2. Preco sme vybrali algoritmus IncMine na hladanie vzorov spravania ?
 3. Preco sme vybrali reprezentaciu vzorov ako uzavrete frekventovane mnoziny ?
 4. Preco sa jedna o odporúčanie a nie predikciu ? 

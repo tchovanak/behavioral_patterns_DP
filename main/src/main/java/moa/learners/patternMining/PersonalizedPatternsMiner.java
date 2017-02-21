@@ -3,7 +3,7 @@ package moa.learners.patternMining;
 import moa.core.dto.RecommendationResults;
 import moa.core.dto.FIWrapper;
 
-import moa.learners.clustering.UserModelPPSDM;
+import moa.learners.clustering.UserModel;
 import java.util.*;
 import moa.MOAObject;
 import moa.core.*;
@@ -17,13 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import moa.core.Configuration;
 import moa.learners.recommendation.RecommendationGenerator;
 
-import moa.learners.clustering.ClustererClustream;
 import moa.learners.clustering.ClusteringComponent;
 import moa.core.dto.GroupStatsResults;
 import moa.core.dto.SnapshotResults;
 import moa.learners.patternMining.PatternMiningComponent;
 import moa.learners.patternMining.PatternMiningConfiguration;
-import moa.learners.patternMining.PatternMiningIncMine;
 import moa.evaluation.RecommendationEvaluator;
 import moa.learners.AbstractLearner;
 import moa.learners.Learner;
@@ -86,7 +84,7 @@ public class PersonalizedPatternsMiner extends AbstractLearner implements Observ
         // A3: USER MODEL UPDATE
         Instance inst = (Instance) e.getData();
         if(config.getGrouping()){
-            UserModelPPSDM um = clustererPPSDM.updateUserModel(inst.copy(), 
+            UserModel um = clustererPPSDM.updateUserModel(inst.copy(), 
                     catsToSupercats, config.getTUC());
             if(um.getNumOfNewSessions() > config.getTUC()){
                 // A4: NULLING USER MODEL CHANGES NUMBER

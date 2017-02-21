@@ -5,6 +5,8 @@
  */
 package moa.learners.patternMining;
 
+
+
 /**
  *
  * @author Tomas
@@ -19,8 +21,7 @@ public interface PersonalizedIncMineConfiguration {
     public void setFSL(int fsl);
     public void setGFSL(int gfsl);
     public void setStartUpdateTime(long start);
-    
-    
+  
     public int getWS();
     public int getMIL();
     public int getGC();

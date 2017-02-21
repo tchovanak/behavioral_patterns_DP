@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>9</zoom_level>
+  <zoom_level>6</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1485</x>
-      <y>441</y>
-      <w>297</w>
-      <h>378</h>
+      <x>990</x>
+      <y>366</y>
+      <w>198</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes> &lt;&lt;new class&gt;&gt;
  PersonalizedPatternsMiner
@@ -41,10 +41,10 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1674</x>
-      <y>234</y>
-      <w>225</w>
-      <h>117</h>
+      <x>1116</x>
+      <y>228</y>
+      <w>150</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>&lt;&lt;MOA class&gt;&gt;
 /AbstractLearner/
@@ -60,21 +60,21 @@
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1566</x>
-      <y>324</y>
-      <w>215</w>
-      <h>134</h>
+      <x>1044</x>
+      <y>288</y>
+      <w>144</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>198;27;27;117</additional_attributes>
+    <additional_attributes>132;18;18;78</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2025</x>
-      <y>423</y>
-      <w>261</w>
-      <h>171</h>
+      <x>1350</x>
+      <y>354</y>
+      <w>174</w>
+      <h>114</h>
     </coordinates>
     <panel_attributes>&lt;&lt;changed class&gt;&gt;
 PersonalizedIncMine
@@ -97,10 +97,10 @@ PersonalizedIncMine
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>2295</x>
-      <y>648</y>
-      <w>162</w>
-      <h>108</h>
+      <x>1530</x>
+      <y>504</y>
+      <w>108</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>arranged from 
 IncMine class
@@ -110,44 +110,44 @@ bg=blue</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2232</x>
-      <y>567</y>
-      <w>72</w>
-      <h>144</h>
+      <x>1488</x>
+      <y>450</y>
+      <w>54</w>
+      <h>102</h>
     </coordinates>
     <panel_attributes>lt=:</panel_attributes>
-    <additional_attributes>27;27;63;135</additional_attributes>
+    <additional_attributes>18;18;42;90</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1755</x>
-      <y>324</y>
-      <w>422</w>
-      <h>116</h>
+      <x>1170</x>
+      <y>288</y>
+      <w>282</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;405;99</additional_attributes>
+    <additional_attributes>18;18;270;66</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1755</x>
-      <y>468</y>
-      <w>107</w>
-      <h>71</h>
+      <x>1170</x>
+      <y>384</y>
+      <w>72</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 m2=1</panel_attributes>
-    <additional_attributes>27;54;90;27</additional_attributes>
+    <additional_attributes>18;36;60;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1179</x>
-      <y>288</y>
-      <w>243</w>
-      <h>180</h>
+      <x>786</x>
+      <y>264</y>
+      <w>162</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>&lt;&lt;new class&gt;&gt;
 UserModel
@@ -168,34 +168,34 @@ UserModel
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1395</x>
-      <y>333</y>
-      <w>107</w>
-      <h>197</h>
+      <x>930</x>
+      <y>294</y>
+      <w>72</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 m2=*
 </panel_attributes>
-    <additional_attributes>90;180;27;27</additional_attributes>
+    <additional_attributes>60;120;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1755</x>
-      <y>738</y>
-      <w>161</w>
-      <h>44</h>
+      <x>1170</x>
+      <y>564</y>
+      <w>108</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>144;27;27;27</additional_attributes>
+    <additional_attributes>96;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1899</x>
-      <y>711</y>
-      <w>189</w>
-      <h>144</h>
+      <x>1266</x>
+      <y>546</y>
+      <w>126</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>&lt;&lt;new class&gt;&gt;
 FciValue
@@ -212,10 +212,10 @@ FciValue
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>1350</x>
-      <y>90</y>
-      <w>342</w>
-      <h>108</h>
+      <x>900</x>
+      <y>132</y>
+      <w>228</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>This class diagram shows 
 all new classes and their connections #
@@ -226,21 +226,21 @@ bg=blue</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1980</x>
-      <y>657</y>
-      <w>44</w>
-      <h>71</h>
+      <x>1320</x>
+      <y>510</y>
+      <w>30</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>27;27;27;54</additional_attributes>
+    <additional_attributes>18;18;18;36</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1899</x>
-      <y>621</y>
-      <w>189</w>
-      <h>63</h>
+      <x>1266</x>
+      <y>486</y>
+      <w>126</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 Comparable
@@ -252,10 +252,10 @@ Comparable
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>567</x>
-      <y>450</y>
-      <w>387</w>
-      <h>207</h>
+      <x>378</x>
+      <y>372</y>
+      <w>258</w>
+      <h>138</h>
     </coordinates>
     <panel_attributes>&lt;&lt;new class&gt;&gt;
 SessionsFileStream 
@@ -276,10 +276,10 @@ SessionsFileStream
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>531</x>
-      <y>261</y>
-      <w>171</w>
-      <h>108</h>
+      <x>354</x>
+      <y>246</y>
+      <w>114</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>&lt;&lt;MOA class&gt;&gt;
 /AbstractOptionHandler/
@@ -292,10 +292,10 @@ SessionsFileStream
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>774</x>
-      <y>261</y>
-      <w>171</w>
-      <h>108</h>
+      <x>516</x>
+      <y>246</y>
+      <w>114</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 &lt;&lt;MOA class&gt;&gt;
@@ -307,32 +307,32 @@ InstanceStream
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>747</x>
-      <y>342</y>
-      <w>126</w>
-      <h>117</h>
+      <x>498</x>
+      <y>300</y>
+      <w>90</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>117;27;27;108</additional_attributes>
+    <additional_attributes>78;18;18;72</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>594</x>
-      <y>342</y>
-      <w>108</w>
-      <h>117</h>
+      <x>396</x>
+      <y>300</y>
+      <w>78</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;99;108</additional_attributes>
+    <additional_attributes>18;18;66;72</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2340</x>
-      <y>441</y>
-      <w>243</w>
-      <h>72</h>
+      <x>1560</x>
+      <y>366</y>
+      <w>162</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>&lt;&lt;changed class&gt;&gt;
 PPSDMFixedWindowManager
@@ -345,10 +345,10 @@ PPSDMFixedWindowManager
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2331</x>
-      <y>261</y>
-      <w>243</w>
-      <h>126</h>
+      <x>1560</x>
+      <y>234</y>
+      <w>162</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>&lt;&lt;changed class&gt;&gt;
 /PPSDMWindowManager/
@@ -364,21 +364,21 @@ PPSDMFixedWindowManager
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2430</x>
-      <y>360</y>
-      <w>45</w>
-      <h>90</h>
+      <x>1626</x>
+      <y>300</y>
+      <w>30</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;36;81</additional_attributes>
+    <additional_attributes>18;18;18;66</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2619</x>
-      <y>279</y>
-      <w>180</w>
-      <h>72</h>
+      <x>1746</x>
+      <y>258</y>
+      <w>120</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>PPSDMSegment
 --
@@ -389,10 +389,10 @@ PPSDMFixedWindowManager
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2844</x>
-      <y>270</y>
-      <w>180</w>
-      <h>90</h>
+      <x>1896</x>
+      <y>252</y>
+      <w>120</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>&lt;&lt;changed class&gt;&gt;
 PPSDMCharmBitset
@@ -402,10 +402,10 @@ PPSDMCharmBitset
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>2466</x>
-      <y>0</y>
-      <w>180</w>
-      <h>108</h>
+      <x>1644</x>
+      <y>72</y>
+      <w>120</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>PPSDM stands for 
 Personalized patterns 
@@ -416,33 +416,33 @@ bg=blue</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2547</x>
-      <y>135</y>
-      <w>72</w>
-      <h>207</h>
+      <x>1704</x>
+      <y>162</y>
+      <w>48</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 m2=1</panel_attributes>
-    <additional_attributes>27;198;63;27</additional_attributes>
+    <additional_attributes>18;120;36;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2331</x>
-      <y>162</y>
-      <w>135</w>
-      <h>108</h>
+      <x>1554</x>
+      <y>180</y>
+      <w>102</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;126;99</additional_attributes>
+    <additional_attributes>18;18;90;54</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2259</x>
-      <y>108</y>
-      <w>180</w>
-      <h>81</h>
+      <x>1506</x>
+      <y>144</y>
+      <w>120</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 Observable
@@ -452,10 +452,10 @@ Observable
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1989</x>
-      <y>243</y>
-      <w>180</w>
-      <h>81</h>
+      <x>1326</x>
+      <y>234</y>
+      <w>120</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 Observer
@@ -465,44 +465,44 @@ Observer
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2079</x>
-      <y>297</y>
-      <w>90</w>
-      <h>135</h>
+      <x>1386</x>
+      <y>270</y>
+      <w>66</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>27;27;81;126</additional_attributes>
+    <additional_attributes>18;18;54;84</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2772</x>
-      <y>288</y>
-      <w>81</w>
-      <h>36</h>
+      <x>1848</x>
+      <y>264</y>
+      <w>60</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>72;27;27;27</additional_attributes>
+    <additional_attributes>48;18;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2259</x>
-      <y>297</y>
-      <w>81</w>
-      <h>207</h>
+      <x>1506</x>
+      <y>258</y>
+      <w>66</w>
+      <h>156</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 m2=*</panel_attributes>
-    <additional_attributes>27;198;72;27</additional_attributes>
+    <additional_attributes>18;144;54;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2475</x>
-      <y>549</y>
-      <w>171</w>
-      <h>81</h>
+      <x>1650</x>
+      <y>438</y>
+      <w>114</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;new class&gt;&gt;
 PPSDMParamWrapper
@@ -515,21 +515,21 @@ PPSDMParamWrapper
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2484</x>
-      <y>486</y>
-      <w>36</w>
-      <h>72</h>
+      <x>1656</x>
+      <y>396</y>
+      <w>30</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>27;63;27;27</additional_attributes>
+    <additional_attributes>18;42;18;18</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>2610</x>
-      <y>126</y>
-      <w>180</w>
-      <h>99</h>
+      <x>1740</x>
+      <y>156</y>
+      <w>120</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>&lt;&lt;MOA class&gt;&gt;
 Segment
@@ -539,21 +539,21 @@ Segment
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2682</x>
-      <y>198</y>
-      <w>36</w>
-      <h>90</h>
+      <x>1788</x>
+      <y>204</y>
+      <w>30</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;27;81</additional_attributes>
+    <additional_attributes>18;18;18;54</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>837</x>
-      <y>801</y>
-      <w>630</w>
-      <h>207</h>
+      <x>558</x>
+      <y>606</y>
+      <w>420</w>
+      <h>138</h>
     </coordinates>
     <panel_attributes>&lt;&lt;new class&gt;&gt;
 PPSDMRecommendationEvaluator
@@ -574,10 +574,10 @@ PPSDMRecommendationEvaluator
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1008</x>
-      <y>684</y>
-      <w>243</w>
-      <h>63</h>
+      <x>672</x>
+      <y>528</y>
+      <w>162</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>&lt;&lt;MOA Class&gt;&gt;
 /AbstractMoaObject/</panel_attributes>
@@ -586,21 +586,21 @@ PPSDMRecommendationEvaluator
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1098</x>
-      <y>720</y>
-      <w>44</w>
-      <h>98</h>
+      <x>732</x>
+      <y>552</y>
+      <w>30</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;27;81</additional_attributes>
+    <additional_attributes>18;18;18;54</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>414</x>
-      <y>792</y>
-      <w>351</w>
-      <h>99</h>
+      <x>276</x>
+      <y>600</y>
+      <w>234</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>PPSDMLearnEvaluate
 --
@@ -614,10 +614,10 @@ PPSDMRecommendationEvaluator
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>198</x>
-      <y>675</y>
-      <w>351</w>
-      <h>81</h>
+      <x>132</x>
+      <y>522</y>
+      <w>234</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;MOA Class&gt;&gt;
 /MainTask/
@@ -629,21 +629,21 @@ PPSDMRecommendationEvaluator
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>342</x>
-      <y>729</y>
-      <w>252</w>
-      <h>72</h>
+      <x>228</x>
+      <y>558</y>
+      <w>174</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;243;63</additional_attributes>
+    <additional_attributes>18;18;162;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>0</x>
-      <y>792</y>
-      <w>351</w>
-      <h>99</h>
+      <y>600</y>
+      <w>234</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>PPSDMGridSearchEvaluate
 --
@@ -657,21 +657,21 @@ PPSDMRecommendationEvaluator
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>135</x>
-      <y>729</y>
-      <w>198</w>
-      <h>72</h>
+      <x>90</x>
+      <y>558</y>
+      <w>138</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>189;27;27;63</additional_attributes>
+    <additional_attributes>126;18;18;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1620</x>
-      <y>855</y>
-      <w>270</w>
-      <h>117</h>
+      <x>1080</x>
+      <y>642</y>
+      <w>180</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 ClusteringComponentPPSDM
@@ -687,10 +687,10 @@ ClusteringComponentPPSDM
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1521</x>
-      <y>1035</y>
-      <w>135</w>
-      <h>45</h>
+      <x>1014</x>
+      <y>762</y>
+      <w>90</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>ClustreamClusterer
 --</panel_attributes>
@@ -699,10 +699,10 @@ ClusteringComponentPPSDM
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1683</x>
-      <y>1035</y>
-      <w>135</w>
-      <h>45</h>
+      <x>1122</x>
+      <y>762</y>
+      <w>90</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>ClustreeClusterer
 --</panel_attributes>
@@ -711,10 +711,10 @@ ClusteringComponentPPSDM
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1836</x>
-      <y>1035</y>
-      <w>135</w>
-      <h>45</h>
+      <x>1224</x>
+      <y>762</y>
+      <w>90</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>DenstreamClusterer
 --</panel_attributes>
@@ -723,54 +723,54 @@ ClusteringComponentPPSDM
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1557</x>
-      <y>945</y>
-      <w>144</w>
-      <h>99</h>
+      <x>1038</x>
+      <y>702</y>
+      <w>102</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>135;27;27;90</additional_attributes>
+    <additional_attributes>90;18;18;60</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1719</x>
-      <y>945</y>
-      <w>36</w>
-      <h>99</h>
+      <x>1146</x>
+      <y>702</y>
+      <w>30</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>27;27;27;90</additional_attributes>
+    <additional_attributes>18;18;18;60</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1791</x>
-      <y>945</y>
-      <w>108</w>
-      <h>99</h>
+      <x>1194</x>
+      <y>702</y>
+      <w>78</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>27;27;99;90</additional_attributes>
+    <additional_attributes>18;18;66;60</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1647</x>
-      <y>792</y>
-      <w>98</w>
-      <h>80</h>
+      <x>1098</x>
+      <y>600</y>
+      <w>66</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;81;63</additional_attributes>
+    <additional_attributes>18;18;54;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1224</x>
-      <y>504</y>
-      <w>243</w>
-      <h>180</h>
+      <x>816</x>
+      <y>408</y>
+      <w>162</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>&lt;&lt;new class&gt;&gt;
 RecommendationApplication
@@ -783,10 +783,10 @@ generateRecommendations()
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1845</x>
-      <y>486</y>
-      <w>108</w>
-      <h>72</h>
+      <x>1230</x>
+      <y>396</y>
+      <w>72</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>PatternsMiningComponentPPSDM</panel_attributes>
     <additional_attributes/>
