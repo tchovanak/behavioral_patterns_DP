@@ -19,8 +19,8 @@ public class UserModelPPSDM {
     private int id = -1; // user id 
     private int numOfNewSessions = 0; // number of sessions after microcluster update was performed
     private Instance currentInstance = null;
-    private BlockingQueue<List<Integer>> lastSessions = 
-            new ArrayBlockingQueue<>(Configuration.MAX_USER_SESSIONS_HISTORY_IN_USER_MODEL); // queue of last n user sessions
+    private BlockingQueue<List<Integer>> lastSessions;
+            
     private double groupid = -1; // actual group user is part of
     //private double groupid = 0.0;
     private double distance = 1.0; // distance to his group center
@@ -61,10 +61,10 @@ public class UserModelPPSDM {
         this.numOfNewSessions++;
     }
     
-    public void updateWithTuple(List<Double> inst) {
+    public void updateWithTuple(List<Integer> inst) {
         List<Integer> session = new LinkedList<>();
         for(int i = 0; i < inst.size(); i++){
-            session.add((int)Math.round(inst.get(i)));
+            session.add(inst.get(i));
         }
         if(!lastSessions.offer(session)){
             lastSessions.poll();
@@ -76,10 +76,10 @@ public class UserModelPPSDM {
     /*
         Updates user model with new instance representing one session
     */
-    public void updateWithTuple(List<Double> inst, Map<Integer, Integer> catMap) {
+    public void updateWithTuple(List<Integer> inst, Map<Integer, Integer> catMap) {
         List<Integer> session = new LinkedList<>();
         for(int i = 0; i < inst.size(); i++){
-            session.add(catMap.get((int)Math.round(inst.get(i))));
+            session.add(catMap.get(inst.get(i)));
         }
         if(!lastSessions.offer(session)){
             lastSessions.poll();

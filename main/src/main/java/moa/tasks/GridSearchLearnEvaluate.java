@@ -32,6 +32,7 @@ import moa.core.dto.SummaryResults;
 import moa.core.utils.UtilitiesPPSDM;
 import moa.learners.patternMining.PatternMiningComponent;
 import moa.learners.patternMining.PatternMiningEstDecPlus;
+import moa.learners.patternMining.PatternMiningIncMine;
 
 
 /**
@@ -64,7 +65,6 @@ public class GridSearchLearnEvaluate implements Task {
         this.config = new Configuration();
         this.om = new OutputManager(pathToSummaryOutputFile);
     }
-
     
     @Override
     public Object doTask() {

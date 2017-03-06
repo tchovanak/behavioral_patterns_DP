@@ -30,7 +30,7 @@ import moa.core.utils.UtilitiesPPSDM;
 */
 public class FrequentItemset implements BehavioralPattern {
     
-    protected List<Integer> items = new ArrayList<Integer>();
+    protected List<Integer> items = new ArrayList<>();
     protected int support;
     protected double supportDouble;
     protected int size;

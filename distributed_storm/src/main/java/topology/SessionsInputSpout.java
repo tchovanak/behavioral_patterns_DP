@@ -1,3 +1,5 @@
+package topology;
+
 
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
@@ -51,15 +53,12 @@ public class SessionsInputSpout implements IRichSpout {
     public SessionsInputSpout(int ews) {
        ews = 2;
        id = 0;
-       
-       
     }
     
     @Override
     public void open(Map map, TopologyContext tc, SpoutOutputCollector soc) {
         this.context = tc;
         this.collector = soc;
-       
     }
     
      @Override
@@ -67,41 +66,36 @@ public class SessionsInputSpout implements IRichSpout {
         // session id - in future unique value generated 
         id++;
         // Use the CloudStorageAccount object to connect to your storage account
-        
         BufferedReader fileReader = null;
         InputStream fileStream = null;
-        try {
+        if(Configuration.LOCAL){
+            try {
             fileStream = new FileInputStream("g:\\workspace_DP2\\Preprocessing\\alef\\alef_sessions_aggregated.csv");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            fileReader = new BufferedReader(new InputStreamReader(fileStream));
+        }else{
+            try {
+                storageAccount = CloudStorageAccount.parse(
+                        Configuration.storageConnectionString);
+            } catch (URISyntaxException | InvalidKeyException ex) {
+                Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            CloudFileClient fileClient = storageAccount.createCloudFileClient();
+            try {
+                // Get a reference to the file share
+                CloudFileShare share = fileClient.getShareReference("alefinput");
+                //Get a reference to the root directory for the share.
+                CloudFileDirectory rootDir = share.getRootDirectoryReference();
+                //Get a reference to the file you want to download
+                CloudFile file = rootDir.getFileReference("aggregated_sessions_sacbee.csv");
+                fileStream = file.openRead();
+                fileReader = new BufferedReader(new InputStreamReader(fileStream));
+            } catch (URISyntaxException | StorageException ex) {
+                Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        fileReader = new BufferedReader(new InputStreamReader(fileStream));
-//        try {
-//            storageAccount = CloudStorageAccount.parse(
-//                    PPSDMStormTopology.storageConnectionString);
-//        } catch (URISyntaxException ex) {
-//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (InvalidKeyException ex) {
-//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        CloudFileClient fileClient = storageAccount.createCloudFileClient();
-//        try {
-//            // Get a reference to the file share
-//            CloudFileShare share = fileClient.getShareReference("input");
-//            //Get a reference to the root directory for the share.
-//            CloudFileDirectory rootDir = share.getRootDirectoryReference();
-//            //Get a reference to the file you want to download
-//            CloudFile file = rootDir.getFileReference("alef_sessions_aggregated.csv");
-//            
-//            //InputStream fileStream = file.openRead();//new URL("https://ppsdmclusterstore.file.core.windows.net/input/alef_sessions_aggregated.csv").openStream();
-//
-//            fileReader = new BufferedReader(new InputStreamReader(fileStream));
-//        } catch (URISyntaxException ex) {
-//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (StorageException ex) {
-//            //Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
         if(fileReader == null){return;}
         try {
             String line;
@@ -109,22 +103,23 @@ public class SessionsInputSpout implements IRichSpout {
             while((line = fileReader.readLine()) != null){
                 in++;
                 String[] lineSplitted = line.split(",");
-                List<Double> values = new ArrayList<>();
-                List<Double> valuesEW = new ArrayList<>();
-                
+                List<Integer> values = new ArrayList<>();
+                List<Integer> valuesEW = new ArrayList<>();
+
                 int uid = (int)Math.round(Double.parseDouble(lineSplitted[0].trim()));
                 for(int i = 1; i < lineSplitted.length; i++){
-                    Double val = Double.parseDouble(lineSplitted[i].trim());
+                    Integer val = Integer.parseInt(lineSplitted[i].trim());
                     values.add(val);
                     valuesEW.add(val);
                     if(valuesEW.size() == ews){
-                        this.collector.emit(new Values(uid,valuesEW,"RECOMMENDATION",id));
+                       // this.collector.emit(new Values(uid,valuesEW,"RECOMMENDATION",id));
                     }
                 }
-                this.collector.emit(new Values(uid,values,"LEARNING",id));
+                this.collector.emit("streamGlobal", new Values(uid,values,"GLOBAL",id));
+                this.collector.emit("streamGroup", new Values(uid,values,"GROUP",id));
                 System.out.println(in);
                 try {
-                    TimeUnit.MILLISECONDS.sleep(10);
+                    TimeUnit.MILLISECONDS.sleep(5);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(SessionsInputSpout.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -139,7 +134,9 @@ public class SessionsInputSpout implements IRichSpout {
     
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declare(new Fields("uid","items", "task", "sid"));
+        ofd.declareStream("streamGroup", new Fields("uid","items", "task", "sid"));
+        ofd.declareStream("streamGlobal", new Fields("uid","items", "task", "sid"));
+      
     }
 
     @Override
@@ -157,8 +154,6 @@ public class SessionsInputSpout implements IRichSpout {
         
     }
 
-   
-
     @Override
     public void ack(Object o) {
        
@@ -168,8 +163,6 @@ public class SessionsInputSpout implements IRichSpout {
     public void fail(Object o) {
        
     }
-
-    
 
     @Override
     public Map<String, Object> getComponentConfiguration() {

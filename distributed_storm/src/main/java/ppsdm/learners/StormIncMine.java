@@ -27,11 +27,9 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import core.PPSDM.Configuration;
 import core.PPSDM.FCITablePPSDM;
 import core.PPSDM.SegmentPPSDM;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCommands;
 
 
 /*
@@ -71,18 +69,15 @@ public class StormIncMine {
         this.r = this.relaxationRateOption;
         this.fciTable = new FCITablePPSDM();
         min_sup = new BigDecimal(this.r*this.sigma).setScale(8, RoundingMode.DOWN).doubleValue(); //necessary to correct double rounding error
-    
-//        // INITIALIZE REDIS
-//        this.jedis = jedis;
-//        // set the value of the key only if the key doesnt exists.
-//        this.jedis.setnx("max_fci_size","0");
+
         
     }
     
     /**
      * Update the FCITable and the InvertedFCIIndex to keep semiFCIs up to date
-     * @param o
-     * @param arg
+     * @param segment
+     * @param groupid
+     * @param windowSize
      */
     public void update(SegmentPPSDM segment, double groupid, int windowSize) {  
         fciTable.nAdded = 0;
@@ -161,17 +156,9 @@ public class StormIncMine {
             fciTable.setCounter(0);
             fciTable.clearTable();
             System.gc();
-        }
-        
+        }        
         fciTable.computeSemiFcis(this.fixedSegmentLengthOption);
-        //System.out.println(fciTable.size() + " SemiFCIs actually stored\n");
-        if(Configuration.RECOMMEND_WITH_FI){
-            fciTable.computeFis(minSupportOption, lastSegmentLenght);
-        }
-        
-        // end of update in  REDIS
-        //this.jedisCommands.set("max_fci_size", String.valueOf(fciTable.getMaxFCISize()));
-        // ADD ALL SEMIFCIs from tmpSemifcis
+
     }
 
     /**

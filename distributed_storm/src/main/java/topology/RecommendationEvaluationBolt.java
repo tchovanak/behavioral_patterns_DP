@@ -1,3 +1,5 @@
+package topology;
+
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -28,7 +30,7 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
     
     private Map<Integer,List<Integer>> SessionRecsMap = new HashMap<>();
     private int ews = 2;
-    
+     
     /**
      * 
      */
@@ -105,5 +107,7 @@ public class RecommendationEvaluationBolt  implements IRichBolt  {
     void cacheRecs(int sid, List<Integer> recs) {
         this.SessionRecsMap.put(sid, recs);
     }
+    
+ 
  
 }

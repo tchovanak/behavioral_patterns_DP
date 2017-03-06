@@ -353,7 +353,11 @@ public class CPTree {
 			
 			// Recursively mine using the child nodes of the current node
 			for (CPTreeNode node : currentNode.children) {
+                            try{
 				itemsetsMining(node, itemsetList.get(node.parents.get(0).pInd));
+                            }catch(Exception e){
+                                System.out.println(e);
+                            }
 			}
 		}
 	}

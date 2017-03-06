@@ -1,98 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>8</zoom_level>
+  <zoom_level>11</zoom_level>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>440</x>
-      <y>64</y>
-      <w>144</w>
-      <h>56</h>
+      <x>517</x>
+      <y>66</y>
+      <w>198</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>B1:Načítanie transakcie
-z prúdu</panel_attributes>
+    <panel_attributes>*A1:Načítanie*
+*sedenia z prúdu*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.Database</type>
     <coordinates>
-      <x>272</x>
-      <y>64</y>
-      <w>120</w>
-      <h>48</h>
+      <x>363</x>
+      <y>66</y>
+      <w>121</w>
+      <h>66</h>
     </coordinates>
-    <panel_attributes>D1: Zdroj prúdu 
-transakčných dát</panel_attributes>
+    <panel_attributes>*Zdroj prúdu dát*
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>440</x>
-      <y>224</y>
-      <w>144</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>B3:Aktualizácia 
-modelu používateľa.
-Inkrementácia 
-počtu zmien v modeli.
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>488</x>
-      <y>256</y>
-      <w>40</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;48;24;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>440</x>
-      <y>144</y>
-      <w>144</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>B2:Použitie transakcie
-na testovanie odporúčania 
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>488</x>
-      <y>96</y>
-      <w>40</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;48;24;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>488</x>
+      <x>517</x>
       <y>176</y>
-      <w>40</w>
-      <h>64</h>
+      <w>198</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>*A2:Aktualizácia modelu*
+*používateľa u;*
+*u.nsc++;*
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>583</x>
+      <y>220</y>
+      <w>54</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;48;24;24</additional_attributes>
+    <additional_attributes>33;55;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>583</x>
+      <y>110</y>
+      <w>54</w>
+      <h>87</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>33;66;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Decision</type>
     <coordinates>
-      <x>496</x>
-      <y>304</y>
-      <w>32</w>
-      <h>32</h>
+      <x>594</x>
+      <y>275</y>
+      <w>44</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>
 
@@ -102,33 +77,33 @@ na testovanie odporúčania
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>384</x>
-      <y>312</y>
-      <w>248</w>
-      <h>80</h>
+      <x>528</x>
+      <y>286</y>
+      <w>156</w>
+      <h>87</h>
     </coordinates>
-    <panel_attributes>[počet zmien v modeli používateľa &gt; muc]
+    <panel_attributes>*[u.nsc &gt; tcu]*
 lt=&lt;-</panel_attributes>
-    <additional_attributes>128;64;128;24</additional_attributes>
+    <additional_attributes>88;66;88;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>336</x>
-      <y>296</y>
-      <w>176</w>
-      <h>272</h>
+      <x>429</x>
+      <y>264</y>
+      <w>186</w>
+      <h>241</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>160;256;24;256;24;24;160;24</additional_attributes>
+    <additional_attributes>165;220;33;220;33;33;165;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.InitialState</type>
     <coordinates>
-      <x>504</x>
-      <y>8</y>
-      <w>16</w>
-      <h>16</h>
+      <x>605</x>
+      <y>22</y>
+      <w>22</w>
+      <h>22</h>
     </coordinates>
     <panel_attributes>i</panel_attributes>
     <additional_attributes/>
@@ -136,58 +111,21 @@ lt=&lt;-</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
+      <x>583</x>
       <y>0</y>
-      <w>40</w>
-      <h>80</h>
+      <w>54</w>
+      <h>87</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;64;24;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>440</x>
-      <y>376</y>
-      <w>152</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>B4: Vynulovanie počítadla 
-zmien v modeli používateľa</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>440</x>
-      <y>456</y>
-      <w>152</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>B5: Aktualizácia mikrozhlukov. 
-	Inkrementácia počtu zmien 
-	v mikrozhlukoch
-	</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>488</x>
-      <y>408</y>
-      <w>40</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;48;24;24</additional_attributes>
+    <additional_attributes>33;66;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Decision</type>
     <coordinates>
-      <x>496</x>
-      <y>536</y>
-      <w>32</w>
-      <h>32</h>
+      <x>594</x>
+      <y>462</y>
+      <w>44</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -195,124 +133,90 @@ zmien v modeli používateľa</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>488</y>
-      <w>40</w>
-      <h>64</h>
+      <x>583</x>
+      <y>407</y>
+      <w>54</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;48;24;24</additional_attributes>
+    <additional_attributes>33;55;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>440</x>
-      <y>600</y>
-      <w>152</w>
-      <h>56</h>
+      <x>517</x>
+      <y>550</y>
+      <w>209</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>B6: Vynulovanie počítadla 
-zmien v mikrozhlukoch</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>440</x>
-      <y>672</y>
-      <w>152</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>B7: Makrozhlukovanie
-Inkrementovanie identifikátora 
-aktuálneho zhlukovania (mcid).</panel_attributes>
+    <panel_attributes>*A4:Makrozhlukovanie;*
+*lmid++;*
+*muc = 0;*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>392</x>
-      <y>544</y>
-      <w>234</w>
-      <h>72</h>
+      <x>539</x>
+      <y>473</y>
+      <w>143</w>
+      <h>98</h>
     </coordinates>
-    <panel_attributes>[počet zmien v mikrozhlukoch &gt; mmcc]
+    <panel_attributes>*[muc &gt; tcm]*
 lt=&lt;-</panel_attributes>
-    <additional_attributes>120;56;120;24</additional_attributes>
+    <additional_attributes>77;77;77;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>632</y>
-      <w>40</w>
-      <h>56</h>
+      <x>583</x>
+      <y>594</y>
+      <w>54</w>
+      <h>87</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;40;24;24</additional_attributes>
+    <additional_attributes>33;66;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>704</y>
-      <w>40</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;40;24;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>560</x>
-      <y>224</y>
-      <w>120</w>
-      <h>112</h>
+      <x>407</x>
+      <y>363</y>
+      <w>131</w>
+      <h>318</h>
     </coordinates>
     <panel_attributes>lt=..&gt;</panel_attributes>
-    <additional_attributes>24;24;104;96</additional_attributes>
+    <additional_attributes>110;33;33;33;33;297</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>368</x>
-      <y>64</y>
-      <w>88</w>
-      <h>40</h>
+      <x>451</x>
+      <y>66</y>
+      <w>87</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=..&gt;</panel_attributes>
-    <additional_attributes>24;24;72;24</additional_attributes>
+    <additional_attributes>33;33;66;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>568</x>
-      <y>304</y>
-      <w>112</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>96;24;24;96</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>504</x>
-      <y>528</y>
-      <w>152</w>
-      <h>320</h>
+      <x>605</x>
+      <y>451</y>
+      <w>175</w>
+      <h>351</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;304;136;304;136;24;24;24</additional_attributes>
+    <additional_attributes>33;330;154;330;154;33;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Decision</type>
     <coordinates>
-      <x>496</x>
-      <y>816</y>
-      <w>32</w>
-      <h>32</h>
+      <x>594</x>
+      <y>759</y>
+      <w>44</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -320,239 +224,151 @@ lt=&lt;-</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>856</y>
-      <w>32</w>
-      <h>40</h>
+      <x>583</x>
+      <y>1067</y>
+      <w>44</w>
+      <h>55</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>232;96;232;96</additional_attributes>
+    <additional_attributes>319;132;319;132</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>440</x>
-      <y>976</y>
-      <w>152</w>
-      <h>56</h>
+      <x>517</x>
+      <y>968</y>
+      <w>209</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>B10: Hľadanie skupinových
-frekventovaných množín</panel_attributes>
+    <panel_attributes>*A7:Dolovanie*
+*frekventovaných množín*
+*pre skupiny používateľov*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>408</x>
-      <y>824</y>
-      <w>196</w>
-      <h>120</h>
+      <x>528</x>
+      <y>770</y>
+      <w>168</w>
+      <h>142</h>
     </coordinates>
-    <panel_attributes>[lcid modelu používateľa = lcid]
+    <panel_attributes>*[u.lmid = lmid]*
 lt=&lt;-</panel_attributes>
-    <additional_attributes>104;104;104;24</additional_attributes>
+    <additional_attributes>88;121;88;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>440</x>
-      <y>1048</y>
-      <w>152</w>
-      <h>56</h>
+      <x>517</x>
+      <y>1078</y>
+      <w>209</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>B11: Hľadanie globálnych 
-frekventovaných množín</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Database</type>
-    <coordinates>
-      <x>288</x>
-      <y>752</y>
-      <w>128</w>
-      <h>48</h>
-    </coordinates>
-    <panel_attributes>D2: Modely používateľov</panel_attributes>
+    <panel_attributes>*A8: Dolovanie*
+*frekventovaných množín*
+*pre všetkých používateľov*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>664</x>
-      <y>304</y>
-      <w>136</w>
-      <h>40</h>
+      <x>748</x>
+      <y>363</y>
+      <w>110</w>
+      <h>55</h>
     </coordinates>
-    <panel_attributes>center:O1:Model používateľa</panel_attributes>
+    <panel_attributes>center:&lt;&lt;datastore&gt;&gt;
+*mikrozhluky*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>560</x>
-      <y>144</y>
-      <w>160</w>
-      <h>176</h>
+      <x>693</x>
+      <y>352</y>
+      <w>76</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>24;24;144;24;144;160</additional_attributes>
+    <additional_attributes>55;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>693</x>
+      <y>385</y>
+      <w>109</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>88;33;88;209;33;209</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>656</x>
-      <y>464</y>
-      <w>144</w>
-      <h>40</h>
+      <x>726</x>
+      <y>792</y>
+      <w>110</w>
+      <h>55</h>
     </coordinates>
-    <panel_attributes>center:O2: Množina mikrozhlukov</panel_attributes>
+    <panel_attributes>center:&lt;&lt;datastore&gt;&gt;
+*makrozhluky*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>568</x>
-      <y>456</y>
-      <w>104</w>
-      <h>40</h>
+      <x>693</x>
+      <y>682</y>
+      <w>109</w>
+      <h>131</h>
     </coordinates>
     <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>88;24;24;24</additional_attributes>
+    <additional_attributes>88;110;88;33;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>568</x>
-      <y>480</y>
-      <w>128</w>
-      <h>168</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>112;24;112;152;24;152</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>568</x>
-      <y>480</y>
-      <w>160</w>
-      <h>232</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>24;216;144;216;144;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>656</x>
-      <y>736</y>
-      <w>152</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>center:O3:Množina makrozhlukov</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>568</x>
-      <y>688</y>
-      <w>160</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>144;48;144;24;24;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>392</x>
-      <y>752</y>
-      <w>64</w>
-      <h>40</h>
+      <x>429</x>
+      <y>671</y>
+      <w>109</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;..&gt;</panel_attributes>
-    <additional_attributes>24;24;48;24</additional_attributes>
+    <additional_attributes>33;33;88;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>376</x>
-      <y>752</y>
-      <w>352</w>
-      <h>176</h>
+      <x>473</x>
+      <y>814</y>
+      <w>351</w>
+      <h>65</h>
     </coordinates>
     <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>24;160;336;160;336;24</additional_attributes>
+    <additional_attributes>33;44;330;44;330;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>248</x>
-      <y>568</y>
-      <w>120</w>
-      <h>80</h>
+      <x>352</x>
+      <y>1012</y>
+      <w>110</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>center:O4: Množina 
-personalizovaných 
-skupinových vzorov 
-správania</panel_attributes>
+    <panel_attributes>center:&lt;&lt;datastore&gt;&gt;
+*vzory*
+*správania*</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>232</x>
-      <y>624</y>
-      <w>224</w>
-      <h>400</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..&gt;</panel_attributes>
-    <additional_attributes>208;384;24;384;24;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>256</x>
-      <y>152</y>
-      <w>200</w>
-      <h>432</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..&gt;</panel_attributes>
-    <additional_attributes>24;416;24;24;184;24</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>120</x>
-      <y>568</y>
-      <w>120</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>center:O5: Množina globálnych 
-vzorov správania
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>152</x>
-      <y>624</y>
-      <w>304</w>
-      <h>472</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;..&gt;</panel_attributes>
-    <additional_attributes>288;456;24;456;24;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.FinalState</type>
     <coordinates>
-      <x>504</x>
-      <y>1112</y>
-      <w>16</w>
-      <h>16</h>
+      <x>605</x>
+      <y>1177</y>
+      <w>22</w>
+      <h>22</h>
     </coordinates>
     <panel_attributes>i </panel_attributes>
     <additional_attributes/>
@@ -560,104 +376,105 @@ vzorov správania
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>1080</y>
-      <w>40</w>
-      <h>56</h>
+      <x>583</x>
+      <y>1122</y>
+      <w>54</w>
+      <h>87</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;40;24;24</additional_attributes>
+    <additional_attributes>33;66;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>232</x>
-      <y>792</y>
-      <w>280</w>
-      <h>104</h>
+      <x>363</x>
+      <y>726</y>
+      <w>252</w>
+      <h>109</h>
     </coordinates>
-    <panel_attributes>[lcid modelu používateľa &lt; mcid]
+    <panel_attributes>*[u.lmid &lt; lmid]*
 lt=&lt;-</panel_attributes>
-    <additional_attributes>104;88;104;40;264;40</additional_attributes>
+    <additional_attributes>88;88;88;55;231;55</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>1008</y>
-      <w>40</w>
-      <h>56</h>
+      <x>583</x>
+      <y>1012</y>
+      <w>54</w>
+      <h>87</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;40;24;24</additional_attributes>
+    <additional_attributes>33;66;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>1032</y>
-      <w>40</w>
-      <h>48</h>
+      <x>583</x>
+      <y>1309</y>
+      <w>55</w>
+      <h>66</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>112;40;112;40</additional_attributes>
+    <additional_attributes>154;55;154;55</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>440</x>
-      <y>744</y>
-      <w>152</w>
-      <h>56</h>
+      <x>517</x>
+      <y>660</y>
+      <w>209</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>B8: Odstránenie starých 
-používateľských modelov
+    <panel_attributes>*A5:Odstránenie*
+*starých modelov*
+*používateľa*
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>776</y>
-      <w>40</w>
-      <h>56</h>
+      <x>583</x>
+      <y>704</y>
+      <w>54</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;40;24;24</additional_attributes>
+    <additional_attributes>33;55;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>272</x>
-      <y>880</y>
-      <w>128</w>
-      <h>56</h>
+      <x>330</x>
+      <y>814</y>
+      <w>176</w>
+      <h>77</h>
     </coordinates>
-    <panel_attributes>B9: Priradenie modelu 
-používateľa do skupiny
-lcid:= mcid
+    <panel_attributes>*A6:priradenie modelu*
+*používateľa do skupiny*
+*u.lmid:= lmid*
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>312</x>
-      <y>912</y>
-      <w>200</w>
-      <h>48</h>
+      <x>385</x>
+      <y>858</y>
+      <w>230</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>184;32;24;32;24;24</additional_attributes>
+    <additional_attributes>209;55;33;55;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Decision</type>
     <coordinates>
-      <x>496</x>
-      <y>928</y>
-      <w>32</w>
-      <h>32</h>
+      <x>594</x>
+      <y>891</y>
+      <w>44</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -665,23 +482,95 @@ lcid:= mcid
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
-      <y>936</y>
-      <w>40</w>
-      <h>56</h>
+      <x>583</x>
+      <y>902</y>
+      <w>54</w>
+      <h>87</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>24;40;24;24</additional_attributes>
+    <additional_attributes>33;66;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>272</x>
-      <y>776</y>
-      <w>40</w>
-      <h>120</h>
+      <x>341</x>
+      <y>704</y>
+      <w>54</w>
+      <h>131</h>
     </coordinates>
     <panel_attributes>lt=&lt;..&gt;</panel_attributes>
-    <additional_attributes>24;24;24;104</additional_attributes>
+    <additional_attributes>33;33;33;110</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>517</x>
+      <y>352</y>
+      <w>209</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>*A3:Aktualizácia*
+*mikrozhlukov;*
+*u.nsc = 0;*
+*muc++;*
+	</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>352</x>
+      <y>660</y>
+      <w>110</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>center:&lt;&lt;datastore&gt;&gt;
+*Modely*
+*používateľa*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>374</x>
+      <y>176</y>
+      <w>164</w>
+      <h>505</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>33;484;33;33;143;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>693</x>
+      <y>572</y>
+      <w>131</w>
+      <h>241</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>110;220;110;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>429</x>
+      <y>979</y>
+      <w>109</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>33;55;88;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>429</x>
+      <y>1034</y>
+      <w>109</w>
+      <h>109</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>33;33;88;88</additional_attributes>
   </element>
 </diagram>

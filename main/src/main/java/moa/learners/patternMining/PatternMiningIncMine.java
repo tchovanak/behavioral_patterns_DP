@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import moa.core.BehavioralPattern;
 import moa.core.Example;
-import moa.core.FrequentItemset;
 import moa.core.FCITablePPSDM;
 import moa.core.dto.FIWrapper;
 import moa.learners.clustering.UserModel;

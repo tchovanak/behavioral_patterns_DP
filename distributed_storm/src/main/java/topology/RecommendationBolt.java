@@ -1,3 +1,5 @@
+package topology;
+
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -13,9 +15,14 @@ import java.util.Map;
 
 import core.FrequentItemset;
 import core.PPSDM.FciValue;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import moa.core.TimingUtils;
 import ppsdm.core.PPSDM.utils.MapUtil;
 import ppsdm.core.PPSDM.utils.UtilitiesPPSDM;
-import ppsdm.learners.StormIncMine;
+
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -44,6 +51,12 @@ public class RecommendationBolt  implements IRichBolt  {
     
     private  int ews = 1;
     
+   
+    
+    private long start = 0;
+    
+
+    
     /**
      * 
      * @param ews - Evaluation window size 
@@ -69,6 +82,7 @@ public class RecommendationBolt  implements IRichBolt  {
 //                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
         pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
         jedis = pool.getResource();
+        
     }
     
     @Override
@@ -89,7 +103,12 @@ public class RecommendationBolt  implements IRichBolt  {
     public void execute(Tuple tuple) {
         // get instance - session for which recommendations should be generated
         // from tuple
+        if(start == 0){
+            TimingUtils.enablePreciseTiming();
+            start = TimingUtils.getNanoCPUTimeOfCurrentThread();
+        }
         List<Double> instance = (List<Double>)tuple.getValue(2);
+        List<Double> ewd = (List<Double>)tuple.getValue(4);
         // get uid of session
         Integer uid = tuple.getInteger(1);
         // get gid of session 
@@ -112,15 +131,24 @@ public class RecommendationBolt  implements IRichBolt  {
         
         // get evaluation window and testing part from instance
         List<Integer> ew = new ArrayList<>(); // items inside window 
+        for(Double d : ewd){
+            ew.add((int) Math.round(d));
+        }
+        List<Integer> inst = new ArrayList<>(); // items inside window 
+        for(Double d : instance){
+            inst.add((int) Math.round(d));
+        }
         
         if((ews >= (instance.size()-2))){ 
             return; // this is when session array is too short - it is ignored.
         }
         
         RecommendationResults recs = generateRecommendations(gid,ew,globItemsets,groupItemsets, 5);
-        
+        // store RECOMMendations to file for further evaluation
+        outputToFileForEvaluation(recs, inst);
         // send recommendations to evaluation bolt
-        collector.emit("streamEvalFromRec",new Values(gid, sid, "REC_CACHE", recs.getRecommendations()));
+        //collector.emit("streamEvalFromRec",new Values(gid, sid, "REC_CACHE", recs.getRecommendations()));
+       
         
     }
     
@@ -266,6 +294,19 @@ public class RecommendationBolt  implements IRichBolt  {
     private double computeSimilarity(List<Integer> items, List<Integer> window) {
         return ((double)UtilitiesPPSDM.computeLongestCommonSubset(items,window)) / 
                 ((double)window.size());
+    }
+
+    private void outputToFileForEvaluation(RecommendationResults recs, List<Integer> session)  {
+         long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
+         List<Integer> recomms = recs.getRecommendations();
+         recomms.retainAll(session);
+         double tp = ((double)(end - start) / 1e9);
+         double transsec = counter++/tp;
+         try(FileWriter writer = new FileWriter("g:\\workspace_DP2\\results_grid\\results_stream.csv", true);) {
+             writer.append(""+(counter)+","+tp+","+transsec+","+recs.getRecommendations().toString()+","+session.toString()+","+recomms.toString()+","+recomms.size()+"\n");
+         } catch (IOException ex) {
+            Logger.getLogger(RecommendationBolt.class.getName()).log(Level.SEVERE, null, ex);
+         }
     }
        
 }

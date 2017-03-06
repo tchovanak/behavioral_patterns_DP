@@ -14,3 +14,5 @@ update code -> access keys to redis and storage
 
 upload with winscp jar topology and start with storm start
 
+password - T301092-solver
+

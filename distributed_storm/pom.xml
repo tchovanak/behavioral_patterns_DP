@@ -95,7 +95,7 @@
                 <includeProjectDependencies>true</includeProjectDependencies>
                 <includePluginDependencies>false</includePluginDependencies>
                 <classpathScope>compile</classpathScope>
-                <mainClass>${storm.topology}</mainClass>
+                <mainClass>PPSDMStormTopology</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -112,21 +112,23 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                      <manifest>
-                        <mainClass>fully.qualified.MainClass</mainClass>
-                      </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
+             
+    <plugin>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <configuration>
+        <archive>
+          <manifest>
+            <mainClass>PPSDMStormTopology</mainClass>
+          </manifest>
+        </archive>
+        <descriptorRefs>
+          <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+      </configuration>
+    </plugin>
+  </plugins>
            
-        </plugins>
+ 
     </build>
     <name>ppsdm_storm</name>
 </project>

@@ -1,455 +1,414 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>9</zoom_level>
+  <zoom_level>7</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>0</x>
-      <y>63</y>
-      <w>315</w>
-      <h>81</h>
+      <x>91</x>
+      <y>112</y>
+      <w>140</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;MOA Class&gt;&gt;
-/MainTask/
+    <panel_attributes>*GridSearch*
 --
+*- pathToConfigFile : string*
 --
-/+ doMainTask(TaskMonitor, ObjectRepository):Object/</panel_attributes>
+*+ startGridEvaluation():void*
+ </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>9</x>
-      <y>189</y>
-      <w>306</w>
-      <h>99</h>
+      <x>91</x>
+      <y>231</y>
+      <w>161</w>
+      <h>105</h>
     </coordinates>
-    <panel_attributes>GridSearch
+    <panel_attributes>*GridSearchLearnEvaluate*
 --
-+ StringOption pathToConfigFile
+*-params:Map&lt;string,Parameter&gt;*
+*-pathToStream:string*
+*-outputManager: OutputManager*
 --
-+ doMainTask(TaskMonitor,ObjectRepository):Object
+*+ doTask():void*
  </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>144</x>
-      <y>117</y>
-      <w>44</w>
-      <h>89</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;27;72</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>342</x>
-      <y>189</y>
-      <w>324</w>
-      <h>99</h>
-    </coordinates>
-    <panel_attributes>GridSearchLearnEvaluate
---
-
---
-+ doTask(tm:TaskMonitor,or:ObjectRepository or):Object
- </panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>288</x>
-      <y>216</y>
-      <w>71</w>
-      <h>44</h>
+      <x>140</x>
+      <y>147</y>
+      <w>34</w>
+      <h>97</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;54;27</additional_attributes>
+    <additional_attributes>21;21;21;84</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>9</x>
-      <y>324</y>
-      <w>306</w>
-      <h>81</h>
+      <x>105</x>
+      <y>364</y>
+      <w>196</w>
+      <h>70</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;new class&gt;&gt;
-RecommendationEvaluator
+    <panel_attributes>
+*RecommendationEvaluator*
 --
+*-config:EvaluationConfiguration*
 --
-+ getResults():SummaryResults
-+ addResult(RecommendationResults)
+*+ getResults():SummaryResults*
+*+ addResult(recs:RecommendationResults)*
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>117</x>
-      <y>261</y>
-      <w>305</w>
-      <h>80</h>
+      <x>196</x>
+      <y>315</y>
+      <w>34</w>
+      <h>62</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>288;27;288;54;27;54;27;63</additional_attributes>
+    <additional_attributes>21;21;21;49</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>90</x>
-      <y>549</y>
-      <w>144</w>
-      <h>81</h>
+      <x>238</x>
+      <y>112</y>
+      <w>126</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;new class&gt;&gt;
-SessionsFileStream
+    <panel_attributes>
+*SessionsFileStream*
 --
 --
+*+restart():void*
+*+nextInstance():Example*
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>207</x>
-      <y>261</y>
-      <w>278</w>
-      <h>350</h>
+      <x>203</x>
+      <y>147</y>
+      <w>104</w>
+      <h>97</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>261;27;261;108;144;108;144;333;27;333</additional_attributes>
+    <additional_attributes>21;84;21;49;91;49;91;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>396</x>
-      <y>540</y>
-      <w>198</w>
-      <h>99</h>
-    </coordinates>
-    <panel_attributes>OutputManager
---
---
-
-+ extractPatternsToFile::void
-+ extractSpeedResultsToFile:void
-+ writeConfigurationToFile
-+ writeResultsToFile</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>441</x>
-      <y>261</y>
-      <w>44</w>
-      <h>296</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;27;279</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>747</x>
-      <y>72</y>
-      <w>261</w>
-      <h>126</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;interface&gt;&gt;
-PatternMiningComponent
---
---
-+trainOnInstance(Instance)
-+resetLearning()
-+getGlobalPatterns():List&lt;BehavioralPattern&gt;
-+getGroupPatterns():List&lt;BehavioralPattern&gt;
-+generateSnapshot():SnapshotResults
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>828</x>
-      <y>369</y>
-      <w>270</w>
-      <h>126</h>
-    </coordinates>
-    <panel_attributes>/ClusteringComponent/
---
---
-/+ resetLearning()/
-/+ getClusterer():Clusterer/
-/+ getClustering():Clustering/
-/+ performMacroclustering()/
-/+ trainOnInstance(in:Instance)/
-/+ updateGroupingInUserModel(um:UserModel)/
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>612</x>
-      <y>540</y>
-      <w>252</w>
-      <h>99</h>
-    </coordinates>
-    <panel_attributes>RecommendationGenerator
---
---
-+ generateRecommendations(Example e):
-RecommendationResults</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>531</x>
-      <y>261</y>
-      <w>152</w>
-      <h>296</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>135;279;135;108;27;108;27;27</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>585</x>
-      <y>261</y>
-      <w>296</w>
-      <h>125</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>279;108;279;72;27;72;27;27</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>639</x>
-      <y>171</y>
-      <w>170</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>153;27;27;63</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>9</x>
-      <y>423</y>
-      <w>297</w>
-      <h>81</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;MOA Class&gt;&gt;
-&lt;&lt;interface&gt;&gt;
-/InstanceStream/
---
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>135</x>
-      <y>477</y>
-      <w>44</w>
-      <h>89</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>27;27;27;72</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>891</x>
-      <y>549</y>
-      <w>153</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>ClustererClustream</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>999</x>
-      <y>531</y>
-      <w>54</w>
-      <h>36</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>-18;18;-18;18</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>954</x>
-      <y>468</y>
-      <w>44</w>
+      <x>399</x>
+      <y>98</y>
+      <w>217</w>
       <h>98</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;27;81</additional_attributes>
+    <panel_attributes>*&lt;&lt;interface&gt;&gt;*
+*PatternMiningComponent*
+--
+--
+*+trainOnInstance(Instance)*
+*+resetLearning()*
+*+getGlobalPatterns():List&lt;BehavioralPattern&gt;*
+*+getGroupPatterns():List&lt;BehavioralPattern&gt;*
+*+generateSnapshot():SnapshotResults*
+</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>801</x>
-      <y>234</y>
-      <w>144</w>
-      <h>72</h>
+      <x>371</x>
+      <y>434</y>
+      <w>224</w>
+      <h>98</h>
     </coordinates>
-    <panel_attributes>PatternMiningIncMine</panel_attributes>
+    <panel_attributes>*/ClusteringComponent/*
+--
+--
+*/+ resetLearning()/*
+*/+ getClusterer():Clusterer/*
+*/+ getClustering():Clustering/*
+*/+ performMacroclustering()/*
+*/+ trainOnInstance(in:Instance)/*
+*/+ updateGroupingInUserModel(um:UserModel)/*
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>147</x>
+      <y>448</y>
+      <w>196</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>*RecommendationGenerator*
+--
+*-config:RecommendationConfiguration*
+--
+*+ generateRecommendations(Example e):*
+*RecommendationResults*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>406</x>
+      <y>553</y>
+      <w>154</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>*ClustererClustream*
+--
+*-config:ClustreamConfiguration*
+--</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>810</x>
-      <y>171</y>
-      <w>44</w>
-      <h>80</h>
+      <x>448</x>
+      <y>511</y>
+      <w>34</w>
+      <h>55</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>27;27;27;63</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;42</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1017</x>
-      <y>252</y>
-      <w>180</w>
-      <h>90</h>
+      <x>469</x>
+      <y>245</y>
+      <w>105</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>PersonalizedIncMine
+    <panel_attributes>*PatternMiningIncMine*
 --
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>455</x>
+      <y>343</y>
+      <w>140</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>*PersonalizedIncMine*
 --
-+trainOnInstance(Example e)
-+update()
-+resetLearning()
+*-config:IncMineConfiguration*
+--
+*+trainOnInstance(Example e)*
+
+*+resetLearning()*
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>918</x>
-      <y>234</y>
-      <w>116</w>
-      <h>89</h>
+      <x>504</x>
+      <y>280</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;99;72</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>486</x>
-      <y>63</y>
-      <w>180</w>
-      <h>81</h>
+      <x>273</x>
+      <y>231</y>
+      <w>189</w>
+      <h>105</h>
     </coordinates>
-    <panel_attributes>PersonalizedPatternsMiner</panel_attributes>
+    <panel_attributes>*PersonalizedPatternsMiner*
+--
+*-config:PatternMiningConfiguration*
+
+--
+*+trainOnInstance(e:Example):void*
+*+getRecommendationsFor(e:Example):*
+*RecommendationResults*
+*+extractSnapshot():SnapshotResults*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>117</y>
-      <w>44</w>
-      <h>89</h>
+      <x>231</x>
+      <y>245</y>
+      <w>55</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;72;27;27</additional_attributes>
+    <additional_attributes>21;21;42;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>639</x>
-      <y>63</y>
-      <w>125</w>
-      <h>71</h>
+      <x>350</x>
+      <y>133</y>
+      <w>62</w>
+      <h>111</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;108;54</additional_attributes>
+    <additional_attributes>21;98;21;21;49;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>639</x>
-      <y>90</y>
-      <w>206</w>
-      <h>350</h>
+      <x>385</x>
+      <y>315</y>
+      <w>34</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;189;333</additional_attributes>
+    <additional_attributes>21;21;21;119</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>630</x>
-      <y>117</y>
-      <w>143</w>
-      <h>440</h>
+      <x>315</x>
+      <y>315</y>
+      <w>34</w>
+      <h>146</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>27;27;126;423</additional_attributes>
+    <additional_attributes>21;21;21;133</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1053</x>
-      <y>9</y>
-      <w>207</w>
-      <h>99</h>
+      <x>623</x>
+      <y>98</y>
+      <w>210</w>
+      <h>105</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;interface&gt;&gt;
-BehavioralPattern</panel_attributes>
+    <panel_attributes>*&lt;&lt;interface&gt;&gt;*
+*BehavioralPattern*
+--
+--
+*+getConsequenceOf(List&lt;Integer&gt;):*
+*List&lt;Integer&gt;*
+*+computeSimilarityTo(window:List&lt;Integer&gt;):*
+*double*
+*+setWeight(w:double)*
+*+getWeight():double*</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1062</x>
-      <y>153</y>
-      <w>198</w>
-      <h>90</h>
+      <x>693</x>
+      <y>245</y>
+      <w>119</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>FrequentItemset</panel_attributes>
+    <panel_attributes>*FrequentItemset*
+--
+*-items:List&lt;Integer&gt;*
+--
+*+getItems():List&lt;Integer&gt;*
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1116</x>
-      <y>81</y>
-      <w>53</w>
-      <h>89</h>
+      <x>721</x>
+      <y>182</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>27;27;36;72</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>981</x>
-      <y>36</y>
-      <w>89</w>
-      <h>107</h>
+      <x>595</x>
+      <y>119</y>
+      <w>35</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>72;27;27;90</additional_attributes>
+    <additional_attributes>28;21;28;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>504</x>
+      <y>175</y>
+      <w>34</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>581</x>
+      <y>245</y>
+      <w>105</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>*PatternMiningEstDec*
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>532</x>
+      <y>175</y>
+      <w>97</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;49;84;49;84;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>602</x>
+      <y>343</y>
+      <w>147</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>*PersonalizedEstDec*
+--
+*-config:EstDecConfiguration*
+--
+*+trainOnInstance(Example e)*
+*+resetLearning()*
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>623</x>
+      <y>280</y>
+      <w>34</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
 </diagram>

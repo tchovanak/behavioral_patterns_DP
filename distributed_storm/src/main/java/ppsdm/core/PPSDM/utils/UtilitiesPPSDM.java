@@ -18,16 +18,16 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 package ppsdm.core.PPSDM.utils;
-
 import java.util.*;
 import core.FrequentItemset;
-import core.PPSDM.Configuration;
+import topology.Configuration;
 import ppsdm.core.PPSDM.enums.DistanceMetricsEnum;
 import moa.core.TimingUtils;
 import net.sf.javaml.distance.CosineDistance;
 import net.sf.javaml.distance.CosineSimilarity;
 import net.sf.javaml.distance.EuclideanDistance;
 import net.sf.javaml.distance.PearsonCorrelationCoefficient;
+import static ppsdm.core.PPSDM.enums.DistanceMetricsEnum.EUCLIDEAN;
 
 
 /*
@@ -40,7 +40,7 @@ public class UtilitiesPPSDM {
     private static CosineSimilarity cs = new CosineSimilarity();
     
     public static double distanceBetweenVectors(double[] a, double b[]){
-        switch (Configuration.DISTANCE_METRIC) {
+        switch (Configuration.distanceMetric) {
             case EUCLIDEAN:
                 return ed.calculateDistance(a,b);
             case PEARSON:
@@ -78,7 +78,7 @@ public class UtilitiesPPSDM {
     }
     
     public static double similarityBetweenVectors(double[] a, double b[]){
-        switch (Configuration.DISTANCE_METRIC) {
+        switch (Configuration.distanceMetric) {
             case EUCLIDEAN:
                 throw new UnsupportedOperationException();
             case PEARSON:
@@ -170,32 +170,8 @@ public class UtilitiesPPSDM {
         }
     }
 
-    public static double[] getActualTransSec() {
-        long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        double tp =((double)(end - Configuration.STREAM_START_TIME) / 1e9);
-        double transsec = Configuration.TRANSACTION_COUNTER/tp;
-        double[] res = new double[2];
-        res[0] = transsec; res[1] = tp;
-        return res;
-    }
+ 
     
-    public static void configureMaxUpdateTime() {
-        
-        //long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
-//        double tp = Configuration.START_UPDATE_TIME/1e9 - Configuration.STREAM_START_TIME/1e9;
-        double update = 
-                (Configuration.TRANSACTION_COUNTER / Configuration.MIN_TRANSSEC ) - Configuration.START_UPDATE_TIME/1e9 + Configuration.STREAM_START_TIME/1e9;
-        if(update < 0){
-            update = 0;
-        }
-        Configuration.MAX_UPDATE_TIME = update;
-    }
-    
-    public static double getUpdateProgress(){
-        long end = TimingUtils.getNanoCPUTimeOfCurrentThread();
-        double tp =((double)(end - Configuration.START_UPDATE_TIME) / 1e9);
-        return tp/Configuration.MAX_UPDATE_TIME;
-    }
     
     private UtilitiesPPSDM(){};
     

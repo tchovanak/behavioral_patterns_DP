@@ -23,7 +23,6 @@ public class FciValue implements Comparable {
     private List<Integer> items;
     
     public void computeValue(double lcsVal, double support){
-        this.value = Configuration.A*lcsVal + Configuration.B*support; //- preference*Configuration.C;
         this.lcsVal = lcsVal;
         this.support = support;
        
@@ -75,35 +74,19 @@ public class FciValue implements Comparable {
     @Override
     public int compareTo(Object o) {
         FciValue other = (FciValue)o;
-       if(Configuration.SORT_STRATEGY.equals("PREFER_SUPPORT")){
-            if(this.lcsVal < other.getLcsVal()){
+        if(this.lcsVal < other.getLcsVal()){
+            return 1;
+        }else if(this.lcsVal == other.getLcsVal()){
+            if(this.support < other.getSupport()){
                 return 1;
-            }else if(this.lcsVal == other.getLcsVal()){
-
-                if(this.support < other.getSupport()){
-                    return 1;
-                }else if (this.support == other.getSupport()){
-                    return 0;
-                }else{
-                    return -1;
-                }
-
-            }else{
-                return -1;
-            }
-       }
-       if(Configuration.SORT_STRATEGY.equals("PREFER_VALUE")){
-
-            if(this.value < other.getValue()){
-                return 1;
-            }else if(this.value > other.getValue()){
-                return -1;
-            }else{
+            }else if (this.support == other.getSupport()){
                 return 0;
+            }else{
+                return -1;
             }
-       }
-       return 0;
-       
+        }else{
+            return -1;
+        }
     }
     
     public void setDistance(double distance) {

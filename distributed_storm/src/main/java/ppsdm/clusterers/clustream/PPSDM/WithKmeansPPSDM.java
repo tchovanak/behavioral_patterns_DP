@@ -43,9 +43,9 @@ import com.yahoo.labs.samoa.instances.DenseInstance;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.util.Map;
 import moa.core.AutoExpandVector;
-import core.PPSDM.Configuration;
+
 import ppsdm.core.PPSDM.utils.UtilitiesPPSDM;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+
 
 /* Changes > Author: Tomas Chovanak
  * Choice of distance metric is now made with parameter from static Configuration 
@@ -79,7 +79,7 @@ public class WithKmeansPPSDM extends AbstractClusterer {
 	private double t;
 	private int m;
 	
-	public WithKmeansPPSDM() {
+	public WithKmeansPPSDM(int maxNumKernels) {
                 this.kernels = new ClustreamKernelPPSDM[maxNumKernelsOption.getValue()];
 		this.timeWindow = timeWindowOption.getValue();
 		this.initialized = false;

@@ -1,3 +1,5 @@
+package topology;
+
 
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
@@ -7,15 +9,11 @@ import com.microsoft.azure.storage.file.CloudFileDirectory;
 import com.microsoft.azure.storage.file.CloudFileShare;
 import com.yahoo.labs.samoa.instances.Instance;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +26,10 @@ import ppsdm.cluster.Clustering;
 import ppsdm.cluster.PPSDM.SphereClusterPPSDM;
 import ppsdm.clusterers.clustream.PPSDM.WithKmeansPPSDM;
 import moa.core.AutoExpandVector;
-import core.PPSDM.Configuration;
+
 import core.PPSDM.UserModelPPSDM;
 import java.io.File;
+import moa.core.TimingUtils;
 import ppsdm.core.PPSDM.enums.DistanceMetricsEnum;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -47,62 +46,37 @@ import org.apache.storm.tuple.Values;
 public class PreprocessingBolt implements IRichBolt {
     
     private OutputCollector collector;
-    private WithKmeansPPSDM clusterer = new WithKmeansPPSDM();
-    public Integer numberOfGroups = 6;
+    private WithKmeansPPSDM clusterer;
     private Clustering kmeansClustering = null;
     private Clustering cleanedKmeansClustering = null;
     private int clusteringId = 1;
     private Map<Integer,UserModelPPSDM> usermodels = new ConcurrentHashMap<>();
     private Map<Integer,Integer> catsToSupercats = new ConcurrentHashMap<>();
-    private int numMinNumberOfChangesInUserModel = 5;
-    private int numOfDimensionsInUserModel = 18;
     private int microclusteringUpdatesCounter = 0;
-    private int numMinNumberOfMicroclustersUpdates;
-    private transient String categoryMappingFile = null;
+    private  String categoryMappingFile = "g:\\workspace_DP2\\";
     private  String categoryMappingCloudFile = null;
     private transient CloudStorageAccount storageAccount = null; 
+    private int ews = 1;
+    private int counter = 0;
+    private long start = 0;
     
-    public PreprocessingBolt(int numMinNumberOfChangesInUserModel, int numOfDimensionsInUserModel, 
-            int numMinNumberOfMicroclustersUpdates, int numOfGroups, String pathToCategoryMappingFile) {
-        this.numOfDimensionsInUserModel = numOfDimensionsInUserModel;
-        this.numMinNumberOfChangesInUserModel = numMinNumberOfChangesInUserModel;
-        this.numMinNumberOfMicroclustersUpdates = numMinNumberOfMicroclustersUpdates;
-        
-        this.categoryMappingFile  = pathToCategoryMappingFile;
-     
-        this.numberOfGroups = numOfGroups;
-    }
-    
-    public PreprocessingBolt(int numMinNumberOfChangesInUserModel, int numOfDimensionsInUserModel, 
-            int numMinNumberOfMicroclustersUpdates, int numOfGroups, URL pathToCategoryMappingFile) {
-        this.numOfDimensionsInUserModel = numOfDimensionsInUserModel;
-        this.numMinNumberOfChangesInUserModel = numMinNumberOfChangesInUserModel;
-        this.numMinNumberOfMicroclustersUpdates = numMinNumberOfMicroclustersUpdates;
-        
-        // Use the CloudStorageAccount object to connect to your storage account
-        try {
-            storageAccount = CloudStorageAccount.parse(
-                    PPSDMStormTopology.storageConnectionString);
-                        // Create the file storage client.
-            CloudFileClient fileClient = storageAccount.createCloudFileClient();
-            // Get a reference to the file share
-            CloudFileShare share = fileClient.getShareReference("input");
-            //Get a reference to the root directory for the share.
-            CloudFileDirectory rootDir = share.getRootDirectoryReference();
-            //Get a reference to the file you want to download
-            CloudFile file = rootDir.getFileReference("categories_mapping.csv");
-            this.categoryMappingCloudFile = file.downloadText();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (StorageException ex) {
-            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
+    public PreprocessingBolt() {
+        clusterer = new WithKmeansPPSDM(Configuration.mmc);
+        if(!Configuration.LOCAL && Configuration.pathToCategoryMapping != null){
+            try {
+                storageAccount = CloudStorageAccount.parse(
+                        Configuration.storageConnectionString);
+                CloudFileClient fileClient = storageAccount.createCloudFileClient();
+                CloudFileShare share = fileClient.getShareReference("alefinput");
+                CloudFileDirectory rootDir = share.getRootDirectoryReference();
+                CloudFile file = rootDir.getFileReference("categories_mapping.csv");
+                this.categoryMappingCloudFile = file.downloadText();
+            } catch (URISyntaxException | StorageException | IOException | InvalidKeyException ex) {
+                Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            this.categoryMappingFile = Configuration.pathToCategoryMapping;
         }
-
-        this.numberOfGroups = numOfGroups;
     }
     
     @Override
@@ -110,7 +84,9 @@ public class PreprocessingBolt implements IRichBolt {
         this.collector = oc;
         try {
             // prepare catsToSupercats - read from redis
-            this.catsToSupercats = this.readCategoriesMap();
+            if(Configuration.pathToCategoryMapping != null){
+                this.catsToSupercats = this.readCategoriesMap();
+            }
         } catch (IOException ex) {
             Logger.getLogger(PreprocessingBolt.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -119,45 +95,40 @@ public class PreprocessingBolt implements IRichBolt {
     @Override
     public void execute(Tuple tuple) {
         if(tuple.getString(2).equals("RECOMMENDATION")){
-            // this tuple is to be used for recommendation purpose only
-            // send it to RecommendationBolt with identified GID
-            // first send tuple to global method
-            UserModelPPSDM um = updateUserModel(tuple);
-            collector.emit("streamRec",new Values(um.getGroupid(), tuple.getInteger(0),tuple.getValue(1), tuple.getValue(3)));
-            
+            //collector.emit("streamEval",new Values(-1.0, tuple.getValue(3),"REC_EVAL",tuple.getValue(1)));
+            //collector.emit("streamGlobal",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1)));
+            //collector.emit("streamRec",new Values(um.getGroupid(), tuple.getInteger(0),tuple.getValue(1), tuple.getValue(3),values.subList(0, ews)));
         }else{
-            // send tuple to recommendation evaluation bolt
-            // GID, SID, TASK, TEST WINDOW
-            collector.emit("streamEval",new Values(-1.0, tuple.getValue(3),"REC_EVAL",tuple.getValue(1)));
-            // first send tuple to global method
-            collector.emit("streamGlobal",new Values(-1.0, tuple.getInteger(0),tuple.getValue(1)));
-            // then resolve group uid belongs to
-            // get user model by uid
+            counter++;
+            //System.out.println("GLOBAL " + counter + "Thread.currentThread().getId()" + Thread.currentThread().getId());
+            if(start == 0){
+                TimingUtils.enablePreciseTiming();
+                start = TimingUtils.getNanoCPUTimeOfCurrentThread();
+            }
             UserModelPPSDM um = updateUserModel(tuple);
-
             if(kmeansClustering != null){
                 updateGroupingInUserModelClustream(um);
                 if(um.getGroupid() != -1.0){
                     // send it to group method
                     collector.emit("streamGroup" + (int)Math.round(um.getGroupid()),new Values(um.getGroupid(),um.getId(),tuple.getValue(1)));
                 }
-            }   
+            }  
+            // ack when finished
+            collector.ack(tuple);
             // PERFORM CLUSTERING
-            this.performClustering(um); 
+            this.performClustering(um);
         }
-        // ack when finished
-        collector.ack(tuple);
-        
     }
     
      private Map<Integer,Integer> readCategoriesMap() throws FileNotFoundException, IOException {
         BufferedReader br;
-        if(categoryMappingCloudFile != null)
+        if(!Configuration.LOCAL ){
             br = new BufferedReader(new StringReader(categoryMappingCloudFile));
-        else
+        }else {
             br = new BufferedReader(new FileReader(new File(categoryMappingFile)));
+        }   
         Map<Integer,Integer> map = new HashMap<>();
-        String line = "";
+        String line;
         while ((line = br.readLine()) != null) {
             // use comma as separator
             String[] words = line.split(",");
@@ -177,12 +148,12 @@ public class PreprocessingBolt implements IRichBolt {
                 List<Clustering> clusterings;
                 if(this.kmeansClustering == null){
                     clusterings =
-                            clusterer.kMeans_rand(this.numberOfGroups,results);
+                            clusterer.kMeans_rand(Configuration.gc,results);
                     this.kmeansClustering = clusterings.get(0);
                     this.cleanedKmeansClustering = clusterings.get(1);
                 }else{
                     clusterings =
-                            clusterer.kMeans_gta(this.numberOfGroups,results, 
+                            clusterer.kMeans_gta(Configuration.gc,results, 
                                     cleanedKmeansClustering, kmeansClustering);
                     this.kmeansClustering = clusterings.get(0);
                     this.cleanedKmeansClustering = clusterings.get(1);
@@ -196,13 +167,13 @@ public class PreprocessingBolt implements IRichBolt {
     
     
     private void performClustering(UserModelPPSDM um) {
-        if(um.getNumOfNewSessions() > this.numMinNumberOfChangesInUserModel){
-            Instance umInstance = um.getNewSparseInstance(numOfDimensionsInUserModel);
+        if(um.getNumOfNewSessions() > Configuration.tuc){
+            Instance umInstance = um.getNewSparseInstance(Configuration.dimensionsInUserModel);
             // SEND umINSTANCE TO CLUSTERING BOLT TO PERFORM CLUSTERING
             //collector.emit("streamClustering_ID" + (this.clusteringId + 1),new Values(um.getId(),umInstance));
             clusterer.trainOnInstance(umInstance);
             this.microclusteringUpdatesCounter++;
-            if(this.microclusteringUpdatesCounter > this.numMinNumberOfMicroclustersUpdates){
+            if(this.microclusteringUpdatesCounter > Configuration.tcm){
                 // perform macroclustering
                 this.microclusteringUpdatesCounter = 0;
                 // this means macroclustering was performed therefore clustering id is updated.
@@ -223,15 +194,12 @@ public class PreprocessingBolt implements IRichBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
         ofd.declareStream("streamEval", new Fields("gid","sid","task","test"));
-        ofd.declareStream("streamRec", new Fields("gid","uid","items", "sid"));
-        ofd.declareStream("streamGlobal", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup0", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup1", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup2", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup3", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup4", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup5", new Fields("gid","uid","items"));
-   
+        ofd.declareStream("streamRec", new Fields("gid","uid","items", "sid", "ew"));
+        for(int i = 0; i < Configuration.gc; i++){
+            ofd.declareStream("streamGroup"+i, new Fields("gid","uid","items"));
+            
+        }
+        
     }
 
     @Override
@@ -244,18 +212,18 @@ public class PreprocessingBolt implements IRichBolt {
         if(usermodels.containsKey(uid)){
             UserModelPPSDM um = usermodels.get(uid);
             if(this.catsToSupercats.size() > 0){
-                um.updateWithTuple((List<Double>)tuple.getValue(1),catsToSupercats);
+                um.updateWithTuple((List<Integer>)tuple.getValue(1),catsToSupercats);
             }else{
-                um.updateWithTuple((List<Double>)tuple.getValue(1));
+                um.updateWithTuple((List<Integer>)tuple.getValue(1));
             }
             return um;
         }else{
             UserModelPPSDM um = new UserModelPPSDM(tuple.getInteger(0), 
-                    this.numMinNumberOfChangesInUserModel);
+                    Configuration.tuc);
             if(this.catsToSupercats.size() > 0){
-                um.updateWithTuple((List<Double>)tuple.getValue(1),catsToSupercats);
+                um.updateWithTuple((List<Integer>)tuple.getValue(1),catsToSupercats);
             }else{
-                um.updateWithTuple((List<Double>)tuple.getValue(1));
+                um.updateWithTuple((List<Integer>)tuple.getValue(1));
             }
             usermodels.put(uid, um);
             return um;
@@ -296,7 +264,7 @@ public class PreprocessingBolt implements IRichBolt {
     public void clearUserModels() {
         for(Map.Entry<Integer, UserModelPPSDM> entry : this.usermodels.entrySet()){
             UserModelPPSDM model = entry.getValue();
-            if(this.clusteringId - model.getClusteringId() > Configuration.MAX_DIFFERENCE_OF_CLUSTERING_ID){
+            if(this.clusteringId - model.getClusteringId() > Configuration.tcdiff){
                 // delete 
                 this.usermodels.remove(entry.getKey());
             }

@@ -1,8 +1,9 @@
+package topology;
+
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.apache.storm.task.TopologyContext;
 import static org.apache.storm.topology.BasicBoltExecutor.LOG;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
-import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -34,7 +34,7 @@ public class GroupPatternsBolt  implements IRichBolt  {
     protected LinkedBlockingQueue<Tuple> queue = new LinkedBlockingQueue<>();
     
     /** The threshold after which the batch should be flushed out. */
-    int batchSize = 25;
+    int batchSize;
     
     int counter = 0;
     
@@ -64,18 +64,24 @@ public class GroupPatternsBolt  implements IRichBolt  {
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector oc) {
         this.collector = oc;
-//        pool = new JedisPool(new JedisPoolConfig(), 
-//                "ppsdmcache.redis.cache.windows.net", 
-//                6379,
-//                1000, 
-//                "u60CWY5OXG22FEA9K6iwGSiIi2OSdHSsz3mFrRbA+oM=");
-        pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
-        this.sincmine = new StormIncMine(15,10,0.05, 0.1, 25);
+        if(Configuration.LOCAL){
+             pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
+        }else{
+             pool = new JedisPool(new JedisPoolConfig(), 
+                Configuration.redishost, 
+                Configuration.redisport,
+                1000, 
+                Configuration.redisAK);
+        }
+        this.sincmine = new StormIncMine(Configuration.ws,Configuration.mil,Configuration.ms,
+                Configuration.rr,Configuration.fsl);
+        batchSize = Configuration.fsl;
         jedis = pool.getResource();
     }
 
     @Override
     public void execute(Tuple tuple) {
+        System.out.println("GROUP " + "groupid " + groupid + " " + counter + "Thread.currentThread().getId()" + Thread.currentThread().getId());
         if (TupleHelpers.isTickTuple(tuple)) {
             // If so, it is indication for batch flush. But don't flush if previous
             // flush was done very recently (either due to batch size threshold was
@@ -108,12 +114,13 @@ public class GroupPatternsBolt  implements IRichBolt  {
     
     private <T> byte[] serialize(List<T> objectsToSerialize) {
         Kryo kryo = new Kryo();
-        Output output = new Output();
-        byte[] buffer = new byte[1024*1024];
-        output.setBuffer(buffer, 1024*1024);
-        kryo.writeObject(output, objectsToSerialize);
-        byte[] ret = output.toBytes();
-        output.close();
+        byte[] ret;
+        try (Output output = new Output()) {
+            byte[] buffer = new byte[1024*1024];
+            output.setBuffer(buffer, 1024*1024);
+            kryo.writeObject(output, objectsToSerialize);
+            ret = output.toBytes();
+        }
         return ret;
     }
     
@@ -132,13 +139,12 @@ public class GroupPatternsBolt  implements IRichBolt  {
         queue.drainTo(tuples);
         
         // Perform INCMINE with collected segment
-        
         SegmentPPSDM segment= new SegmentPPSDM(sincmine.getMin_sup(),10);
         for(Tuple t: tuples){
             Itemset itemset  = new Itemset();
-            List<Double> list = (List<Double>)t.getValue(2);
-            for(Double val : list){
-                itemset.addItem((int)Math.round(val));
+            List<Integer> list = (List<Integer>)t.getValue(2);
+            for(Integer val : list){
+                itemset.addItem(val);
             }
             segment.addItemset(itemset);
         }
@@ -146,17 +152,13 @@ public class GroupPatternsBolt  implements IRichBolt  {
         sincmine.update(segment, tuples.get(0).getDouble(0), 15);
         // FINALLY ACK BACK TO SPOUT
         collector.ack(tuples.get(tuples.size()-1));
-//        //store to redis
+        //store to redis
         List<FrequentItemset> sfcis = sincmine.getFciTable().getSemiFcis();
         Collections.sort(sfcis);
         
-        
-        //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String key = "SFCIS_GID=" + tuples.get(0).getDouble(0);
         byte[] bytes = this.serialize(sfcis);
         jedis.set(key.getBytes(), bytes);
-        //byte[] results = jedis.get(key.getBytes());
-        //List<FrequentItemset> res = this.deSerialize(results);
         
     }
     
@@ -167,10 +169,7 @@ public class GroupPatternsBolt  implements IRichBolt  {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer ofd) {
-        ofd.declareStream("streamGroup0", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup1", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup2", new Fields("gid","uid","items"));
-        ofd.declareStream("streamGroup3", new Fields("gid","uid","items"));
+   
    
     }
 

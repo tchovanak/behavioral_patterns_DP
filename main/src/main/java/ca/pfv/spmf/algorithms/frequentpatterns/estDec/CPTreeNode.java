@@ -124,7 +124,7 @@ public class CPTreeNode {
 		int level = 0;
 		while (true) {
 			level++;
-			if (j != 0)
+			if (j != 0 && parents.size() > j)
 				j = parents.get(j).pInd;
 			else
 				return level;

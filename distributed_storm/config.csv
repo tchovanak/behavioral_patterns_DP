@@ -1,0 +1,13 @@
+EWS,2
+storageConnectionString,DefaultEndpointsProtocol=https;AccountName=ppsdmclusterstore;AccountKey=ihWVQtcRxDhgy1r+GlkksOnUS7PegSem1dZMjk5H5WgP+v5brpquMjvu+iP/Y1uWRRY6ZC/RRO90C2T5yLTKXA==;
+TUC,5
+UserModelDimensions,18
+TMC,400
+categoryMappingFile,g:\\workspace_DP2\\results_grid\\alef\\categories_mapping.csv
+GC,6
+FSL,25
+MS,0.05
+RR,0.1
+WS,15
+accessKeyRedis,vpm07VlOwBX8Q4BnfAN/kg90sCQyfwpJyKdlTqTm6Cw=
+portRedis,6379
